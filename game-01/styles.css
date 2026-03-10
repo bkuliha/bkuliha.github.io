@@ -1,0 +1,207 @@
+:root {
+  color-scheme: light;
+  --bg: #fbf7ef;
+  --panel: rgba(255, 252, 244, 0.88);
+  --text: #1e293b;
+  --muted: #5b6470;
+  --line: rgba(30, 41, 59, 0.12);
+  --accent: #c8553d;
+  --accent-2: #0f766e;
+  --shadow: rgba(15, 23, 42, 0.16);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Trebuchet MS", Verdana, sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at top, rgba(200, 85, 61, 0.2), transparent 24rem),
+    linear-gradient(180deg, #fff8ec 0%, var(--bg) 100%);
+}
+
+.game-shell {
+  width: min(960px, 100%);
+  margin: 0 auto;
+  padding: 2rem 1rem 3rem;
+}
+
+.hero,
+.hud,
+.instructions {
+  width: min(760px, 100%);
+  margin: 0 auto;
+}
+
+.hero {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.eyebrow {
+  margin: 0;
+  font-size: 0.82rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--accent-2);
+}
+
+h1 {
+  margin: 0.4rem 0;
+  font-size: clamp(2.1rem, 5vw, 4rem);
+  line-height: 1;
+}
+
+.subtitle,
+.instructions p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.hud {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+  margin-bottom: 1.5rem;
+}
+
+.stat,
+.start-button {
+  min-width: 8.5rem;
+  padding: 0.9rem 1rem;
+  border-radius: 18px;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 12px 32px var(--shadow);
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.label {
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.stat strong {
+  font-size: 1.75rem;
+}
+
+.start-button {
+  cursor: pointer;
+  color: #fff;
+  background: linear-gradient(135deg, var(--accent) 0%, #e07a5f 100%);
+  border-color: transparent;
+  font-size: 1rem;
+  font-weight: 700;
+  transition: transform 140ms ease, box-shadow 140ms ease;
+}
+
+.start-button:hover,
+.start-button:focus-visible {
+  transform: translateY(-1px);
+  box-shadow: 0 18px 40px rgba(200, 85, 61, 0.28);
+}
+
+.arena-wrap {
+  width: min(760px, 100%);
+  margin: 0 auto;
+}
+
+.arena {
+  position: relative;
+  height: min(62vh, 520px);
+  min-height: 320px;
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.72)),
+    repeating-linear-gradient(
+      90deg,
+      rgba(15, 118, 110, 0.05) 0,
+      rgba(15, 118, 110, 0.05) 1px,
+      transparent 1px,
+      transparent 40px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(15, 118, 110, 0.05) 0,
+      rgba(15, 118, 110, 0.05) 1px,
+      transparent 1px,
+      transparent 40px
+    );
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), 0 24px 50px rgba(15, 23, 42, 0.12);
+  overflow: hidden;
+}
+
+.target {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 72px;
+  height: 72px;
+  margin: 0;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  background:
+    radial-gradient(circle at 32% 30%, #fff 0, #fff 12%, #ffd7cf 13%, #ffd7cf 28%, #c8553d 29%, #c8553d 100%);
+  box-shadow: 0 16px 30px rgba(200, 85, 61, 0.28);
+  transform: translate(-50%, -50%);
+  transition: transform 80ms ease-out;
+}
+
+.target:active {
+  transform: translate(-50%, -50%) scale(0.94);
+}
+
+.target.hidden {
+  display: none;
+}
+
+.message {
+  position: absolute;
+  inset: auto 1rem 1rem;
+  margin: 0;
+  padding: 0.8rem 1rem;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid var(--line);
+  color: var(--text);
+  text-align: center;
+}
+
+.instructions {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+@media (max-width: 640px) {
+  .game-shell {
+    padding-inline: 0.75rem;
+  }
+
+  .arena {
+    min-height: 380px;
+    height: 58vh;
+  }
+
+  .target {
+    width: 62px;
+    height: 62px;
+  }
+}
