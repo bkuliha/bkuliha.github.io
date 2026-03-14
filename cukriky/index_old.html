@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cukríkový Kvíz</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #e67e22;
+            --danger: #e74c3c;
+            --success: #27ae60;
+            --bg: #ecf0f1;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 { color: var(--primary); }
+
+        /* Tabuľka hráčov */
+        .scoreboard {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .player-card {
+            background: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            text-align: center;
+            min-width: 100px;
+        }
+
+        .player-name {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .score {
+            font-size: 1.5rem;
+            color: var(--accent);
+        }
+
+        /* Hracia plocha */
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 15px;
+            max-width: 1000px;
+            width: 100%;
+        }
+
+        .category-header {
+            background: var(--primary);
+            color: white;
+            padding: 15px 5px;
+            text-align: center;
+            font-weight: bold;
+            border-radius: 5px;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        .question-btn {
+            background: white;
+            border: 2px solid var(--primary);
+            padding: 20px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+
+        .question-btn:hover { background: #d5dbdb; }
+        .question-btn.used {
+            background: #bdc3c7;
+            border-color: #95a5a6;
+            cursor: not-allowed;
+            color: transparent;
+        }
+
+        /* Modálne okno */
+        #modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            max-width: 600px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+        }
+
+        #timer {
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--danger);
+            margin-bottom: 20px;
+        }
+
+        .question-text { font-size: 1.4rem; margin-bottom: 20px; line-height: 1.4; }
+        .answer-text { 
+            display: none; 
+            color: var(--success); 
+            font-weight: bold; 
+            margin: 20px 0;
+            font-size: 1.2rem;
+        }
+
+        .controls { display: flex; justify-content: center; gap: 10px; margin-top: 20px; }
+        
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-correct { background: var(--success); color: white; }
+        .btn-wrong { background: var(--danger); color: white; }
+        .btn-show { background: var(--primary); color: white; }
+    </style>
+</head>
+<body>
+
+    <h1>Cukríkový Súboj</h1>
+
+    <div class="scoreboard" id="scoreboard">
+        </div>
+
+    <div class="game-grid" id="gameGrid">
+        </div>
+
+    <div id="modal">
+        <div class="modal-content">
+            <div id="timer">30</div>
+            <div class="question-text" id="qText">Otázka...</div>
+            <button class="btn-show" id="showBtn" onclick="showAnswer()">Ukázať odpoveď</button>
+            <div class="answer-text" id="aText">Odpoveď...</div>
+            
+            <div class="controls">
+                <p>Komu priradiť výsledok?</p>
+                <select id="playerSelect"></select>
+                <button class="btn-correct" onclick="handleResult(true)">Správne (+1🍬)</button>
+                <button class="btn-wrong" onclick="handleResult(false)">Nesprávne (-1🍬)</button>
+            </div>
+            <br>
+            <button onclick="closeModal()">Zavrieť bez bodu</button>
+        </div>
+    </div>
+
+    <script>
+        const categories = [
+            { name: "Autá", questions: [
+                { q: "Ktorá automobilka má v znaku vzpínajúceho sa koňa a sídli v Maranelle?", a: "Ferrari" },
+                { q: "Čo v kontexte motorov znamená skratka 'TDI'?", a: "Turbocharged Direct Injection" },
+                { q: "V ktorej krajine bola založená značka Volvo?", a: "Švédsko" },
+                { q: "Ktorý model auta od Tesly bol prvý masovo vyrábaný sedan?", a: "Model S" }
+            ]},
+            { name: "Šport", questions: [
+                { q: "Ktorý basketbalista má prezývku 'King' a hrá za LA Lakers?", a: "LeBron James" },
+                { q: "V ktorom športe sa udeľuje 'Stanley Cup'?", a: "Hokej (NHL)" },
+                { q: "Koľko hráčov má jeden tím amerického futbalu na ihrisku počas hry?", a: "11" },
+                { q: "Ktorý tenista drží rekord v počte vyhratých French Open (Roland Garros)?", a: "Rafael Nadal" }
+            ]},
+            { name: "Krajiny", questions: [
+                { q: "Ktorá krajina má najväčšiu rozlohu na svete?", a: "Rusko" },
+                { q: "Ako sa volá hlavné mesto Kanady?", a: "Ottawa" },
+                { q: "Ktorý štát v Európe má tvar čižmy?", a: "Taliansko" },
+                { q: "V ktorej krajine by ste našli bájne mesto Machu Picchu?", a: "Peru" }
+            ]},
+            { name: "Zvuky", questions: [
+                { q: "Ako sa volá fyzikálna jednotka intenzity zvuku?", a: "Decibel (dB)" },
+                { q: "Akou rýchlosťou sa šíri zvuk vo vzduchu (približne m/s)?", a: "cca 340 m/s" },
+                { q: "Čo vzniká, keď lietadlo prekoná rýchlosť zvuku?", a: "Aerodynamický (sonický) tresk" },
+                { q: "Ktorý orgán v ľudskom tele premieňa zvukové vlny na elektrické signály?", a: "Ucho (slimák vo vnútornom uchu)" }
+            ]},
+            { name: "Škola", questions: [
+                { q: "Kto napísal dielo Rysavá jalovica?", a: "Martin Kukučín" },
+                { q: "Aký je chemický vzorec kyseliny sírovej?", a: "H2SO4" },
+                { q: "Ktorý slovenský panovník zaviedol povinnú školskú dochádzku?", a: "Mária Terézia" },
+                { q: "Ako sa nazýva najdlhšia strana pravouhlého trojuholníka?", a: "Prepona" }
+            ]},
+            { name: "Pamiatky", questions: [
+                { q: "V ktorom meste sa nachádza Koloseum?", a: "Rím" },
+                { q: "Ako sa volá slávny most v San Franciscu známy svojou oranžovou farbou?", a: "Golden Gate Bridge" },
+                { q: "V ktorej krajine stoja pyramídy v Gize?", a: "Egypt" },
+                { q: "Ktorý indický monument nechal postaviť panovník Šáhdžahán pre svoju manželku?", a: "Tádž Mahal" }
+            ]}
+        ];
+
+        let players = [];
+        let timeLeft = 30;
+        let timerInterval;
+        let currentBtn = null;
+
+        // Inicializácia mien
+        function initGame() {
+            for (let i = 1; i <= 5; i++) {
+                let name = prompt(`Zadaj meno pre hráča č. ${i}:`, `Hráč ${i}`);
+                players.push({ name: name || `Hráč ${i}`, score: 0 });
+            }
+            renderScoreboard();
+            renderGrid();
+            fillPlayerSelect();
+        }
+
+        function renderScoreboard() {
+            const container = document.getElementById('scoreboard');
+            container.innerHTML = players.map(p => `
+                <div class="player-card">
+                    <span class="player-name">${p.name}</span>
+                    <span class="score" id="score-${p.name}">${p.score} 🍬</span>
+                </div>
+            `).join('');
+        }
+
+        function fillPlayerSelect() {
+            const select = document.getElementById('playerSelect');
+            select.innerHTML = players.map((p, index) => `<option value="${index}">${p.name}</option>`).join('');
+        }
+
+        function renderGrid() {
+            const grid = document.getElementById('gameGrid');
+            
+            // Hlavičky
+            categories.forEach(cat => {
+                const head = document.createElement('div');
+                head.className = 'category-header';
+                head.innerText = cat.name;
+                grid.appendChild(head);
+            });
+
+            // Tlačidlá s otázkami
+            for (let qIdx = 0; qIdx < 4; qIdx++) {
+                categories.forEach((cat, catIdx) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'question-btn';
+                    btn.innerText = "1🍬";
+                    btn.onclick = () => openQuestion(catIdx, qIdx, btn);
+                    grid.appendChild(btn);
+                });
+            }
+        }
+
+        function openQuestion(catIdx, qIdx, btn) {
+            if (btn.classList.contains('used')) return;
+            
+            currentBtn = btn;
+            const q = categories[catIdx].questions[qIdx];
+            document.getElementById('qText').innerText = q.q;
+            document.getElementById('aText').innerText = q.a;
+            document.getElementById('aText').style.display = 'none';
+            document.getElementById('showBtn').style.display = 'inline-block';
+            
+            document.getElementById('modal').style.display = 'flex';
+            startTimer();
+        }
+
+        function startTimer() {
+            timeLeft = 30;
+            document.getElementById('timer').innerText = timeLeft;
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer').innerText = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    document.getElementById('timer').innerText = "ČAS VYPRŠAL!";
+                }
+            }, 1000);
+        }
+
+        function showAnswer() {
+            document.getElementById('aText').style.display = 'block';
+            document.getElementById('showBtn').style.display = 'none';
+        }
+
+        function handleResult(isCorrect) {
+            const playerIdx = document.getElementById('playerSelect').value;
+            if (isCorrect) {
+                players[playerIdx].score += 1;
+            } else {
+                players[playerIdx].score -= 1;
+            }
+            
+            currentBtn.classList.add('used');
+            renderScoreboard();
+            closeModal();
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+            clearInterval(timerInterval);
+        }
+
+        initGame();
+    </script>
+</body>
+</html>

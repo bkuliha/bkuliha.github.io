@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cukríkový Kvíz 2.3</title>
+    <style>
+        :root {
+            --primary: #2c3e50; --accent: #e67e22; --danger: #e74c3c;
+            --success: #27ae60; --bg: #ecf0f1; --blue: #3498db;
+        }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        
+        .scoreboard { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; justify-content: center; }
+        .player-card { background: white; padding: 15px; border-radius: 10px; text-align: center; min-width: 110px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border-top: 5px solid var(--blue); }
+        .score { font-size: 1.8rem; font-weight: bold; color: var(--accent); display: block; }
+        
+        .game-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; width: 100%; max-width: 1100px; }
+        .category-header { background: var(--primary); color: white; padding: 12px 5px; text-align: center; font-weight: bold; font-size: 0.8rem; border-radius: 5px; min-height: 40px; display: flex; align-items: center; justify-content: center; text-transform: uppercase; }
+        
+        .question-btn { 
+            background: white; border: 2px solid var(--primary); padding: 15px; 
+            font-size: 1.3rem; cursor: pointer; border-radius: 8px; font-weight: bold; 
+            transition: 0.2s; color: var(--primary);
+        }
+        .question-btn:hover { background: #d5dbdb; transform: scale(1.05); }
+        .question-btn.used { visibility: hidden; }
+
+        #modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); justify-content: center; align-items: center; z-index: 100; }
+        .modal-content { background: white; padding: 30px; border-radius: 20px; text-align: center; width: 90%; max-width: 500px; color: #333; }
+        
+        #timer { font-size: 3.5rem; font-weight: bold; color: var(--danger); margin-bottom: 10px; font-family: monospace; }
+        #qText { font-size: 1.4rem; margin-bottom: 20px; min-height: 50px; font-weight: 500; }
+        
+        .sound-btn { background: var(--blue); color: white; border: none; padding: 20px; border-radius: 50%; width: 90px; height: 90px; font-size: 2.5rem; cursor: pointer; margin-bottom: 20px; display: none; transition: 0.2s; }
+        .sound-btn:active { transform: scale(0.9); }
+
+        .answer-text { display: none; color: var(--success); font-size: 1.6rem; font-weight: bold; margin: 20px 0; padding: 10px; border: 2px dashed var(--success); border-radius: 10px; }
+        
+        .controls { background: #f8f9fa; padding: 15px; border-radius: 10px; margin-top: 10px; border: 1px solid #ddd; }
+        select { width: 100%; padding: 10px; margin-bottom: 10px; font-size: 1rem; border-radius: 5px; }
+        
+        .btn-row { display: flex; gap: 10px; }
+        button.action { padding: 12px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; font-size: 1rem; }
+        .btn-correct { background: var(--success); color: white; }
+        .btn-wrong { background: var(--danger); color: white; }
+        .btn-show { background: var(--primary); color: white; margin-bottom: 10px; }
+        
+        .close-link { color: #95a5a6; cursor: pointer; text-decoration: underline; font-size: 0.9rem; margin-top: 15px; display: inline-block; }
+    </style>
+</head>
+<body>
+
+    <h1>🍬 Cukríkový Súboj</h1>
+    <div class="scoreboard" id="scoreboard"></div>
+    <div class="game-grid" id="gameGrid"></div>
+
+    <div id="modal">
+        <div class="modal-content">
+            <div id="timer">30</div>
+            
+            <button id="audioControl" class="sound-btn" onclick="playQuestionSound()">🔊</button>
+            
+            <div id="qText"></div>
+            
+            <button class="action btn-show" id="showBtn" onclick="showAnswer()">Ukázať odpoveď</button>
+            <div id="aText" class="answer-text"></div>
+
+            <div class="controls">
+                <label style="display:block; margin-bottom:5px; font-weight:bold;">Kto odpovedal?</label>
+                <select id="playerSelect"></select>
+                <div class="btn-row">
+                    <button class="action btn-correct" onclick="handleResult(true)">Správne +1</button>
+                    <button class="action btn-wrong" onclick="handleResult(false)">Zle -1</button>
+                </div>
+            </div>
+            <span class="close-link" onclick="closeModal()">Zavrieť bez bodu</span>
+        </div>
+    </div>
+
+    <script>
+        const categories = [
+            { name: "Autá", questions: [
+                {q:"Značka s bielo-modrou vrtuľou v znaku?", a:"BMW"},
+                {q:"Krajina pôvodu značky Ferrari?", a:"Taliansko"},
+                {q:"Čo znamená skratka EV?", a:"Elektromobil"},
+                {q:"Slávny 'Muscle Car' od Fordu?", a:"Mustang"},
+                {q:"Ktorá nemecká značka má v znaku trojcípu hviezdu?", a:"Mercedes-Benz"}
+            ]},
+            { name: "Šport", questions: [
+                {q:"V ktorom meste boli letné OH 2024?", a:"Paríž"},
+                {q:"Kto vyhral v roku 2024 zlato v tenise (Srb)?", a:"Novak Djokovič"},
+                {q:"Historicky najlepší strelec NHL?", a:"Wayne Gretzky"},
+                {q:"Majstri sveta v hokeji 2024?", a:"Česko"},
+                {q:"Koľko kôl sa beží v disciplíne 1500m na 400m atletickom ovále?", a:"3 a trištvrte kolesa"}
+            ]},
+            { name: "Krajiny", questions: [
+                {q:"Hlavné mesto Chorvátska?", a:"Záhreb"},
+                {q:"Najväčší štát Južnej Ameriky?", a:"Brazília"},
+                {q:"Krajina s najviac osemtisícovkami?", a:"Nepál"},
+                {q:"Vlajka s javorovým listom patrí...", a:"Kanade"},
+                {q:"V ktorom štáte leží najväčšie jazero sveta (Kaspické more)?", a:"Rusko / Kazachstan / Irán..."}
+            ]},
+            { name: "Zvuky", questions: [
+                {q:"Identifikuj zvuk:", a:"Dinosaurus", file: "dinosaur.mp3"},
+                {q:"Identifikuj zvuk:", a:"Helikoptéra / Vrtuľník", file: "helicopter.mp3"},
+                {q:"Identifikuj zvuk:", a:"Dážď / Búrka", file: "dazd.m4a"},
+                {q:"Identifikuj zvuk:", a:"Oheň / Praskanie", file: "fire.mp3"},
+                {q:"Identifikuj zvuk:", a:"Listovanie knihou", file: "kniha.mp3"}
+            ]},
+            { name: "Škola", questions: [
+                {q:"Výsledok 7 x 8?", a:"56"},
+                {q:"Planéta najbližšie k Slnku?", a:"Merkúr"},
+                {q:"Autor textu slovenskej hymny?", a:"Janko Matúška"},
+                {q:"Počet gramatických pádov v SR?", a:"6"},
+                {q:"V ktorom roku skončila 2. svetová vojna?", a:"1945"}
+            ]},
+            { name: "Pamiatky", questions: [
+                {q:"Kde stojí Big Ben?", a:"Londýn"},
+                {q:"Kde sa nachádza Machu Picchu?", a:"Peru"},
+                {q:"V ktorom meste je Koloseum?", a:"Rím"},
+                {q:"Biela mramorová hrobka v Indii?", a:"Tádž Mahal"},
+                {q:"Ako sa volá slávna väznica v San Franciscu na ostrove?", a:"Alcatraz"}
+            ]}
+        ];
+
+        let players = [];
+        let timerInterval;
+        let currentBtn;
+        let activeAudio = null;
+
+        function init() {
+            for(let i=1; i<=5; i++) {
+                let n = prompt(`Zadaj meno chlapca č. ${i}:`, `Hráč ${i}`);
+                players.push({name: n || `Hráč ${i}`, score: 0});
+            }
+            render();
+        }
+
+        function render() {
+            document.getElementById('scoreboard').innerHTML = players.map(p => `
+                <div class="player-card"><b>${p.name}</b><br><span class="score">${p.score} 🍬</span></div>
+            `).join('');
+            
+            document.getElementById('playerSelect').innerHTML = players.map((p, i) => `<option value="${i}">${p.name}</option>`).join('');
+            
+            const grid = document.getElementById('gameGrid');
+            grid.innerHTML = '';
+            categories.forEach(c => grid.innerHTML += `<div class="category-header">${c.name}</div>`);
+            
+            for(let r=0; r<5; r++) {
+                categories.forEach((c, ci) => {
+                    const b = document.createElement('button');
+                    b.className = 'question-btn';
+                    b.innerText = "1";
+                    b.onclick = () => openQ(ci, r, b);
+                    grid.appendChild(b);
+                });
+            }
+        }
+
+        function openQ(ci, ri, btn) {
+            currentBtn = btn;
+            const q = categories[ci].questions[ri];
+            document.getElementById('qText').innerText = q.q;
+            document.getElementById('aText').innerText = q.a;
+            document.getElementById('aText').style.display = 'none';
+            document.getElementById('showBtn').style.display = 'block';
+            
+            const sBtn = document.getElementById('audioControl');
+            if (q.file) {
+                sBtn.style.display = 'inline-block';
+                activeAudio = new Audio(q.file);
+            } else {
+                sBtn.style.display = 'none';
+                activeAudio = null;
+            }
+
+            document.getElementById('modal').style.display = 'flex';
+            startTimer();
+        }
+
+        function playQuestionSound() {
+            if (activeAudio) activeAudio.play();
+        }
+
+        function startTimer() {
+            let sec = 30;
+            document.getElementById('timer').innerText = sec;
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                sec--;
+                document.getElementById('timer').innerText = sec;
+                if(sec <= 0) clearInterval(timerInterval);
+            }, 1000);
+        }
+
+        function showAnswer() {
+            document.getElementById('aText').style.display = 'block';
+            document.getElementById('showBtn').style.display = 'none';
+            if (activeAudio) activeAudio.pause();
+        }
+
+        function handleResult(correct) {
+            const idx = document.getElementById('playerSelect').value;
+            players[idx].score += (correct ? 1 : -1);
+            currentBtn.classList.add('used');
+            closeModal();
+            renderScoreboardOnly();
+        }
+
+        function renderScoreboardOnly() {
+            document.getElementById('scoreboard').innerHTML = players.map(p => `
+                <div class="player-card"><b>${p.name}</b><br><span class="score">${p.score} 🍬</span></div>
+            `).join('');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+            if (activeAudio) { activeAudio.pause(); activeAudio = null; }
+            clearInterval(timerInterval);
+        }
+
+        init();
+    </script>
+</body>
+</html>
