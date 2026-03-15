@@ -1,0 +1,10 @@
+{
+  "name": "bkuliha-github-io-tools",
+  "private": true,
+  "scripts": {
+    "serve": "node scripts/serve-project.mjs"
+  },
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}

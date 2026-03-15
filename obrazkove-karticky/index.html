@@ -1,0 +1,65 @@
+﻿<!DOCTYPE html>
+<html lang="sk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Obrázkové kartičky</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <main class="app-shell">
+    <header class="hero">
+      <p class="eyebrow">Obrázkový kvíz</p>
+      <h1>Obrázkové kartičky</h1>
+      <p class="subtitle">
+        V každej hre dostaneš 15 náhodných otázok zo stovky kariet. Bod získaš len vtedy, keď
+        trafíš správnu odpoveď na prvý pokus.
+      </p>
+    </header>
+
+    <section class="status-bar" aria-label="Stav hry">
+      <div class="status-pill">
+        <span class="status-label">Otázka</span>
+        <strong id="progressValue">0 / 15</strong>
+      </div>
+      <div class="status-pill">
+        <span class="status-label">Skóre</span>
+        <strong id="scoreValue">0</strong>
+      </div>
+      <button id="restartButton" class="ghost-button" type="button">Nová hra</button>
+    </section>
+
+    <section id="introScreen" class="panel intro-panel">
+      <div class="intro-copy">
+        <h2>Pripravené na klikacie učenie</h2>
+        <p>
+          Každá kartička má obrázok aj text. Nesprávne možnosti stmavnú, správna ťa posunie na
+          ďalšiu otázku.
+        </p>
+      </div>
+      <button id="startButton" class="primary-button" type="button">Začať hru</button>
+    </section>
+
+    <section id="gameScreen" class="panel game-panel hidden">
+      <div class="question-wrap">
+        <p id="questionBadge" class="question-badge">Kartička 1 z 15</p>
+        <h2 id="questionText" class="question-text"></h2>
+        <p id="feedbackText" class="feedback-text" aria-live="polite">
+          Vyber jednu z možností.
+        </p>
+      </div>
+
+      <div id="optionsGrid" class="options-grid" aria-label="Možnosti odpovede"></div>
+    </section>
+
+    <section id="resultScreen" class="panel result-panel hidden">
+      <p class="result-kicker">Koniec hry</p>
+      <h2 id="resultTitle">Tvoje skóre: 0 / 15</h2>
+      <p id="resultText" class="result-text"></p>
+      <button id="playAgainButton" class="primary-button" type="button">Hrať znova</button>
+    </section>
+  </main>
+
+  <script src="./game.js"></script>
+</body>
+</html>

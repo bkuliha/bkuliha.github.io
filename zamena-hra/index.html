@@ -1,0 +1,128 @@
+﻿<!DOCTYPE html>
+<html lang="sk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>zamena-hra | Zámenový trenažér</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <div class="hero-grid">
+        <div>
+          <p class="eyebrow">zamena-hra</p>
+          <h1>Zámenový trenažér</h1>
+          <p class="hero-copy">
+            Hra je zameraná na osobné základné a privlastňovacie zámená. V každom kole
+            dostane žiak 10 náhodne vybraných viet z banky 50 úloh a po každej vete sa hneď
+            ukáže správne riešenie.
+          </p>
+        </div>
+        <aside class="hero-note">
+          <strong>Tri typy úloh</strong>
+          <p>Dopĺňanie do vety, výber správnej možnosti a hľadanie zámena priamo vo vete.</p>
+        </aside>
+      </div>
+    </section>
+
+    <section class="layout">
+      <aside class="panel sidebar">
+        <div class="stats">
+          <div class="stat">
+            <span class="stat-label">Skóre</span>
+            <div class="stat-value" id="scoreValue">0 / 10</div>
+            <small>Body sa pripočítajú po každej správnej odpovedi.</small>
+          </div>
+
+          <div class="stat">
+            <span class="stat-label">Postup</span>
+            <div class="stat-value" id="progressValue">0 / 10</div>
+            <small>Jedno kolo obsahuje 10 náhodných viet z celej banky.</small>
+          </div>
+
+          <div class="stat">
+            <span class="stat-label">Banka viet</span>
+            <div class="stat-value">50</div>
+            <small>Precvičujú sa osobné základné aj privlastňovacie zámená.</small>
+          </div>
+        </div>
+
+        <button id="startRoundButton" class="primary-button" type="button">Spustiť nové kolo</button>
+
+        <ul class="tip-list">
+          <li><strong>Osobné základné zámeno</strong> pomenúva osobu alebo vec, o ktorej sa hovorí: ja, ty, on...</li>
+          <li><strong>Privlastňovacie zámeno</strong> vyjadruje, komu niečo patrí: môj, tvoja, jeho...</li>
+          <li>Po každej úlohe sa zobrazí správna odpoveď a môžeš pokračovať na ďalšiu vetu.</li>
+        </ul>
+      </aside>
+
+      <section class="panel game-card" aria-live="polite">
+        <div class="card-top">
+          <span id="taskBadge" class="badge">Pripravené</span>
+          <div class="progress-wrap">
+            <div class="progress-label">
+              <span id="progressLabel">Stlač tlačidlo a začni hrať.</span>
+              <span id="roundLabel">0 / 10</span>
+            </div>
+            <div class="progress-bar" aria-hidden="true">
+              <span id="progressBar"></span>
+            </div>
+          </div>
+        </div>
+
+        <div id="questionShell" class="question-shell">
+          <h2 class="prompt" id="promptTitle">Vyber si nové kolo</h2>
+          <p class="instruction" id="instructionText">
+            Hra náhodne pripraví desať viet a bude sa medzi nimi striedať dopĺňanie, výber aj
+            hľadanie zámena vo vete.
+          </p>
+
+          <div class="sentence-box">
+            <p class="sentence" id="sentenceText">Po spustení sa tu objaví prvá veta.</p>
+          </div>
+
+          <form id="textForm" class="text-form" hidden>
+            <label class="visually-hidden" for="textAnswer">Doplň správne zámeno</label>
+            <input id="textAnswer" class="text-input" type="text" autocomplete="off" placeholder="Napíš správne zámeno">
+            <button id="textSubmit" class="text-submit" type="submit">Skontrolovať</button>
+          </form>
+
+          <div id="choiceGrid" class="choice-grid" hidden></div>
+          <div id="wordGrid" class="word-grid" hidden></div>
+
+          <section id="feedbackBox" class="feedback" hidden>
+            <h3 id="feedbackTitle" class="feedback-title">Výsledok</h3>
+            <p id="feedbackAnswer"></p>
+            <p id="feedbackType"></p>
+            <p id="feedbackReason"></p>
+          </section>
+
+          <div class="footer-actions">
+            <button id="nextButton" class="secondary-button" type="button" hidden>Ďalšia veta</button>
+          </div>
+        </div>
+
+        <section id="summaryBox" class="summary" hidden>
+          <h2>Kolo je hotové</h2>
+          <div class="summary-score"><span id="summaryScore">0</span><span>/ 10</span></div>
+          <p id="summaryMessage">Spusti ďalšie kolo a precvič si novú desiatku viet.</p>
+          <div class="summary-meta">
+            <div class="summary-chip">
+              <span>Osobné základné</span>
+              <strong id="summaryPersonal">0</strong>
+            </div>
+            <div class="summary-chip">
+              <span>Privlastňovacie</span>
+              <strong id="summaryPossessive">0</strong>
+            </div>
+          </div>
+          <button id="restartButton" class="primary-button" type="button">Hrať ďalšie kolo</button>
+        </section>
+      </section>
+    </section>
+  </main>
+
+  <script src="./game.js"></script>
+</body>
+</html>

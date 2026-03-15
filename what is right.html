@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detský Kvíz - 60 Otázok</title>
+    <style>
+        :root { --primary: #007bff; --success: #28a745; --warning: #ff9800; --bg: #f8f9fa; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 10px; }
+        #game-box { background: white; width: 100%; max-width: 700px; padding: 25px; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 5px solid var(--primary); text-align: center; }
+        .header-row { background: #eef6ff; padding: 15px; border-radius: 20px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; gap: 15px; }
+        .q-text { color: #0056b3; font-size: 24px; font-weight: 800; margin: 0; text-align: left; }
+        .main-speaker { background: var(--warning); color: white; border: none; border-radius: 12px; width: 65px; height: 65px; cursor: pointer; font-size: 32px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 0 #cc7a00; }
+        .main-speaker:active { transform: translateY(3px); box-shadow: none; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .card { border: 2px solid #ddd; border-radius: 18px; padding: 15px; cursor: pointer; background: #fff; transition: 0.2s; display: flex; flex-direction: column; align-items: center; }
+        .card:hover { border-color: var(--primary); background: #f0f7ff; }
+        .emoji { font-size: 65px; margin-bottom: 5px; }
+        .label { font-size: 20px; font-weight: bold; color: #333; }
+        .correct { background: #d4edda !important; border-color: var(--success) !important; transform: scale(1.03); }
+        .wrong { opacity: 0.2; filter: grayscale(1); pointer-events: none; }
+        #next-btn { margin-top: 20px; padding: 15px; background: var(--success); color: white; border: none; border-radius: 12px; font-size: 20px; font-weight: bold; cursor: pointer; display: none; width: 100%; }
+        #score-bar { margin-top: 15px; font-weight: bold; color: #777; }
+        #final-screen { display: none; padding: 30px; }
+        @media (max-width: 500px) { .grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+<div id="game-box">
+    <div id="quiz-screen">
+        <div class="header-row">
+            <p class="q-text" id="q-title">Načítavam hru...</p>
+            <button class="main-speaker" onclick="citajText(document.getElementById('q-title').innerText)">🔊</button>
+        </div>
+        <div class="grid" id="options-container"></div>
+        <button id="next-btn" onclick="dalsiaOtazka()">Ďalšia otázka ➔</button>
+        <p id="score-bar">Otázka: 1 / 15 | Body: 0</p>
+    </div>
+    <div id="final-screen">
+        <h1 style="font-size: 60px;">🏆</h1>
+        <h2 id="final-msg">Koniec hry!</h2>
+        <p id="final-score" style="font-size: 24px; font-weight: bold;"></p>
+        <button onclick="location.reload()" style="padding: 15px 40px; font-size: 18px; cursor: pointer; border-radius: 10px; background: var(--primary); color: white; border: none;">Hrať znova</button>
+    </div>
+</div>
+
+<script>
+    const banka = [
+        { q: "Čo sa zapaľuje na torte?", a: "Sviečky", o: [{t:"Sviečky", e:"🕯️"}, {t:"Budík", e:"⏰"}, {t:"Zrkadlo", e:"🪞"}, {t:"Kľúč", e:"🔑"}] },
+        { q: "Čo čítaš, keď chceš príbeh?", a: "Knihu", o: [{t:"Knihu", e:"📖"}, {t:"Noviny", e:"📰"}, {t:"List", e:"✉️"}, {t:"Mapu", e:"🗺️"}] },
+        { q: "Čo si vezmeš, keď vonku prší?", a: "Dáždnik", o: [{t:"Dáždnik", e:"☂️"}, {t:"Okuliare", e:"🕶️"}, {t:"Loptu", e:"⚽"}, {t:"Čiapku", e:"🧢"}] },
+        { q: "Čím odomykáš dvere?", a: "Kľúčom", o: [{t:"Kľúčom", e:"🔑"}, {t:"Mobilom", e:"📱"}, {t:"Lyžičkou", e:"🥄"}, {t:"Ponožkami", e:"🧦"}] },
+        { q: "V čom spíš počas noci?", a: "Posteli", o: [{t:"Posteli", e:"🛏️"}, {t:"Vani", e:"🛁"}, {t:"Aute", e:"🚗"}, {t:"Skrini", e:"🚪"}] },
+        { q: "Čím si češeš vlasy?", a: "Hrebeňom", o: [{t:"Hrebeňom", e:"🪮"}, {t:"Kefkou", e:"🪥"}, {t:"Nožnicami", e:"✂️"}, {t:"Lyžicou", e:"🥄"}] },
+        { q: "Čo robíš v bazéne?", a: "Plávanie", o: [{t:"Plávanie", e:"🏊"}, {t:"Lyžovanie", e:"⛷️"}, {t:"Bicyklovanie", e:"🚲"}, {t:"Behanie", e:"🏃"}] },
+        { q: "Aký je citrón na chuť?", a: "Kyslý", o: [{t:"Kyslý", e:"🍋"}, {t:"Sladký", e:"🍭"}, {t:"Slaný", e:"🧂"}, {t:"Pálivý", e:"🌶️"}] },
+        { q: "Čo svieti v noci na oblohe?", a: "Mesiac", o: [{t:"Mesiac", e:"🌙"}, {t:"Slnko", e:"☀️"}, {t:"Mrak", e:"☁️"}, {t:"Lietadlo", e:"✈️"}] },
+        { q: "Kto má veľmi dlhý krk?", a: "Žirafa", o: [{t:"Žirafa", e:"🦒"}, {t:"Slon", e:"🐘"}, {t:"Lev", e:"🦁"}, {t:"Opica", e:"🐒"}] },
+        { q: "Čo používaš na strihanie papiera?", a: "Nožnice", o: [{t:"Nožnice", e:"✂️"}, {t:"Pero", e:"🖋️"}, {t:"Kladivo", e:"🔨"}, {t:"Nôž", e:"🔪"}] },
+        { q: "Ktoré ovocie je červené?", a: "Jahoda", o: [{t:"Jahoda", e:"🍓"}, {t:"Banán", e:"🍌"}, {t:"Citrón", e:"🍋"}, {t:"Hruška", e:"🍐"}] },
+        { q: "Čo patrí do peračníka?", a: "Pero", o: [{t:"Pero", e:"🖋️"}, {t:"Jablko", e:"🍎"}, {t:"Topánka", e:"👟"}, {t:"Lopta", e:"⚽"}] },
+        { q: "Čo používaš na čistenie zubov?", a: "Kefku", o: [{t:"Kefku", e:"🪥"}, {t:"Mydlo", e:"🧼"}, {t:"Hrebeň", e:"🪮"}, {t:"Tehlu", e:"🧱"}] },
+        { q: "Ako sa volá miesto, kde rastie zelenina?", a: "Záhrada", o: [{t:"Záhrada", e:"🏡"}, {t:"Cesta", e:"🛣️"}, {t:"Obchod", e:"🛒"}, {t:"Kino", e:"🎬"}] },
+        { q: "Čo sa používa na umývanie rúk?", a: "Mydlo", o: [{t:"Mydlo", e:"🧼"}, {t:"Pastelka", e:"🖍️"}, {t:"Džús", e:"🧃"}, {t:"Mlieko", e:"🥛"}] },
+        { q: "Čo letí v oblakoch?", a: "Lietadlo", o: [{t:"Lietadlo", e:"✈️"}, {t:"Loď", e:"🚢"}, {t:"Vlak", e:"🚂"}, {t:"Auto", e:"🚗"}] },
+        { q: "Čo nosíš na rukách, keď mrzne?", a: "Rukavice", o: [{t:"Rukavice", e:"🧤"}, {t:"Ponožky", e:"🧦"}, {t:"Topánky", e:"👟"}, {t:"Klobúk", e:"👒"}] },
+        { q: "Čo dáva sliepka?", a: "Vajíčko", o: [{t:"Vajíčko", e:"🥚"}, {t:"Mlieko", e:"🥛"}, {t:"Jablko", e:"🍎"}, {t:"Chlieb", e:"🍞"}] },
+        { q: "Čo jeme lyžicou?", a: "Polievku", o: [{t:"Polievku", e:"🥣"}, {t:"Jablko", e:"🍎"}, {t:"Chlieb", e:"🍞"}, {t:"Čokoládu", e:"🍫"}] },
+        { q: "Ktoré zviera mňauká?", a: "Mačka", o: [{t:"Mačka", e:"🐱"}, {t:"Pes", e:"🐶"}, {t:"Zajac", e:"🐰"}, {t:"Krava", e:"🐮"}] },
+        { q: "Čo sa používa na kreslenie?", a: "Pastelka", o: [{t:"Krieda", e:"🖍️"}, {t:"Dáždnik", e:"☂️️"}, {t:"Lupa", e:"🔎️"}, {t:"Mydlo", e:"🧼"}] },
+        { q: "Čo rastie v lese?", a: "Strom", o: [{t:"Strom", e:"🌳"}, {t:"Auto", e:"🚗"}, {t:"Lampa", e:"💡"}, {t:"Dom", e:"🏠"}] },
+        { q: "Čo svieti cez deň?", a: "Slnko", o: [{t:"Slnko", e:"☀️"}, {t:"Mesiac", e:"🌙"}, {t:"Hviezda", e:"⭐"}, {t:"Blesk", e:"⚡"}] },
+        { q: "Čo dám na pitie malému bábätku?", a: "Mlieko", o: [{t:"Mlieko", e:"🍼"}, {t:"Kávu", e:"☕"}, {t:"Limonádu", e:"🥤"}, {t:"Dážď", e:"🌧️"}] },
+        { q: "Ktoré zviera je kráľ lesa?", a: "Lev", o: [{t:"Lev", e:"🦁"}, {t:"Myš", e:"🐭"}, {t:"Ryba", e:"🐟"}, {t:"Motýľ", e:"🦋"}] },
+        { q: "Čo nosíš na nohách?", a: "Topánky", o: [{t:"Topánky", e:"👟"}, {t:"Rukavice", e:"🧤"}, {t:"Okuliare", e:"👓"}, {t:"Hodinky", e:"⌚"}] },
+        { q: "Čo sa používa na strihanie nechtov?", a: "Nožničky", o: [{t:"Nožničky", e:"✂️"}, {t:"Kladivo", e:"🔨"}, {t:"Píla", e:"🪚"}, {t:"Hrebeň", e:"🪮"}] },
+        { q: "Čo robí včela?", a: "Med", o: [{t:"Med", e:"🍯"}, {t:"Mlieko", e:"🥛"}, {t:"Vajíčko", e:"🥚"}, {t:"Mäso", e:"🥩"}] },
+        { q: "Čo sa používa na zalievanie kvety?", a: "Krha", o: [{t:"Krha", e:"🚿"}, {t:"Hrniec", e:"🍲"}, {t:"Metla", e:"🧹"}, {t:"Panvica", e:"🍳"}] },
+        { q: "Čo sa stavia z kociek?", a: "Veža", o: [{t:"Veža", e:"🗼"}, {t:"Cesta", e:"🛣️"}, {t:"Voda", e:"💧"}, {t:"Vietor", e:"🌬️"}] },
+        { q: "Čo jazdí po koľajniciach?", a: "Vlak", o: [{t:"Vlak", e:"🚂"}, {t:"Lietadlo", e:"✈️"}, {t:"Loď", e:"🚢"}, {t:"Bicykel", e:"🚲"}] },
+        { q: "Čo nosíme na hlave v zime?", a: "Čiapku", o: [{t:"Čiapku", e:"🧢"}, {t:"Prsteň", e:"💍"}, {t:"Opasok", e:"🎫"}, {t:"Vestu", e:"🦺"}] },
+        { q: "Ako sa voláý miesto, kde si kupujeme lieky?", a: "Lekáreň", o: [{t:"Lekáreň", e:"🏥"}, {t:"Pekáreň", e:"🍞"}, {t:"Hračkárstvo", e:"🧸"}, {t:"Kino", e:"🎬"}] },
+        { q: "Čo robí budík?", a: "Budí", o: [{t:"Budí", e:"⏰"}, {t:"Spí", e:"😴"}, {t:"Varí", e:"🍲"}, {t:"Tancuje", e:"💃"}] },
+        { q: "Čím zametáme dlážku?", a: "Metlou", o: [{t:"Metlou", e:"🧹"}, {t:"Ihlou", e:"🪡"}, {t:"Lyžicou", e:"🥄"}, {t:"Vejárom", e:"🪭"}] },
+        { q: "Čo je sladké a studené?", a: "Zmrzlina", o: [{t:"Zmrzlina", e:"🍦"}, {t:"Polievka", e:"🥣"}, {t:"Zemiak", e:"🥔"}, {t:"Chlieb", e:"🍞"}] },
+        { q: "Čo má štyri kolesá?", a: "Auto", o: [{t:"Auto", e:"🚗"}, {t:"Bicykel", e:"🚲"}, {t:"Loď", e:"🚢"}, {t:"Lietadlo", e:"✈️"}] },
+        { q: "Ktoré zviera má chobot?", a: "Slon", o: [{t:"Slon", e:"🐘"}, {t:"Žirafa", e:"🦒"}, {t:"Lev", e:"🦁"}, {t:"Pes", e:"🐶"}] },
+        { q: "Čo môžešm jesť k mäsu?", a: "Ryžu", o: [{t:"Ryžu", e:"🍚️"}, {t:"Keksík", e:"🍪"}, {t:"Zmrzlinu", e:"🍧"}, {t:"Mydlo", e:"🧼️"}] },
+        { q: "Čo svieti v izbe?", a: "Lampa", o: [{t:"Lampa", e:"💡"}, {t:"Stolička", e:"🪑"}, {t:"Kniha", e:"📖"}, {t:"Posteľ", e:"🛌"}] },
+        { q: "Čo nás chráni pred slnkom?", a: "Okuliare", o: [{t:"Okuliare", e:"🕶️"}, {t:"Rukavice", e:"🧤"}, {t:"Šál", e:"🧣"}, {t:"Ponožky", e:"🧦"}] },
+        { q: "Čo robí prasiatko?", a: "Kvíka", o: [{t:"Kvíka", e:"🐷"}, {t:"Spieva", e:"🎤"}, {t:"Lieta", e:"🕊️"}, {t:"Pláva", e:"🐟"}] },
+        { q: "Kde môžeme vidieť lietadlo?", a: "Na oblohe", o: [{t:"Na oblohe", e:"☁️"}, {t:"V garáži", e:"🏠"}, {t:"Na stavbe", e:"🏗️"}, {t:"V prístave", e:"⚓"}] },
+        { q: "Čo sa je na narodeniny?", a: "Torta", o: [{t:"Torta", e:"🎂"}, {t:"Mäso", e:"🥩"}, {t:"Zelenina", e:"🥦"}, {t:"Ryba", e:"🐟"}] },
+        { q: "Čo si obúvame, keď ideme von?", a: "Tenisky", o: [{t:"Tenisky", e:"👟"}, {t:"Tričko", e:"👕"}, {t:"Nohavice", e:"👖"}, {t:"Čiapka", e:"🧢"}] },
+        { q: "Čo sa pije z hrnčeka?", a: "Čaj", o: [{t:"Čaj", e:"🍵"}, {t:"Pizza", e:"🍕"}, {t:"Banán", e:"🍌"}, {t:"Vajíčko", e:"🥚"}] },
+        { q: "Kto lieči chorých ľudí?", a: "Lekár", o: [{t:"Lekár", e:"👨‍⚕️"}, {t:"Kuchár", e:"👨‍🍳"}, {t:"Hasič", e:"👨‍🚒"}, {t:"Policajt", e:"👮"}] },
+        { q: "Ktorá farba nie je na semafore?", a: "Modrá", o: [{t:"Modrá", e:"🔵"}, {t:"Červená", e:"🔴"}, {t:"Oranžová", e:"🟠"}, {t:"Zelená", e:"🟢"}] },
+        { q: "Čo padá v zime z neba?", a: "Sneh", o: [{t:"Sneh", e:"❄️"}, {t:"Piesok", e:"🏖️"}, {t:"Kamene", e:"🪨"}, {t:"Listy", e:"🍂"}] },
+        { q: "Čo rastie v kvetináči?", a: "Kvet", o: [{t:"Kvet", e:"🌻"}, {t:"Auto", e:"🚗"}, {t:"Chlieb", e:"🍞"}, {t:"Srdce", e:"💖"}] },
+        { q: "Čím krájame chlieb?", a: "Nožom", o: [{t:"Nožom", e:"🔪"}, {t:"Lyžicou", e:"🥄"}, {t:"Vidličkou", e:"🍴"}, {t:"Kladivom", e:"🔨"}] },
+        { q: "Čím naberáme polievku?", a: "Naberačkou", o: [{t:"Naberačka", e:"🥣"}, {t:"Nožnicami", e:"✂️"}, {t:"Perom", e:"🖋️"}, {t:"Hrebeňom", e:"🪮"}] },
+        { q: "Čo sa dáva do poštovej schránky?", a: "List", o: [{t:"List", e:"✉️"}, {t:"Lopta", e:"⚽"}, {t:"Topánka", e:"👟"}, {t:"Jablko", e:"🍎"}] },
+        { q: "Kde spí bábätko?", a: "V postieľke", o: [{t:"V postieľke", e:"🛏️"}, {t:"V aute", e:"🚗"}, {t:"Na ceste", e:"🛣️"}, {t:"Vo vani", e:"🛁"}] },
+        { q: "Ktoré zviera skáče?", a: "Zajac", o: [{t:"Zajac", e:"🐰"}, {t:"Korytnačka", e:"🐢"}, {t:"Slimák", e:"🐌"}, {t:"Had", e:"🐍"}] },
+        { q: "Čo svieti na semafore?", a: "Svetlo", o: [{t:"Svetlo", e:"💡"}, {t:"Strom", e:"🌳"}, {t:"Cesta", e:"🛣️"}, {t:"Dom", e:"🏠"}] },
+        { q: "Čo sa dáva na chlieb?", a: "Maslo", o: [{t:"Maslo", e:"🧈"}, {t:"Voda", e:"💧"}, {t:"Kameň", e:"🪨"}, {t:"Mydlo", e:"🧼"}] },
+        { q: "Čo robí hasič?", a: "Hasí", o: [{t:"Hasí", e:"🔥"}, {t:"Varí", e:"🍲"}, {t:"Spí", e:"😴"}, {t:"Tancuje", e:"💃"}] },
+        { q: "Čím si utierame nos?", a: "Vreckovka", o: [{t:"Vreckovka", e:"🤧"}, {t:"Uterák", e:"🧼"}, {t:"Deka", e:"🧶"}, {t:"Papier", e:"📄"}] }
+    ];
+
+    let idx = 0; let body = 0; let active = true; let vybrane = [];
+
+    function citajText(t) {
+        window.speechSynthesis.cancel();
+        let u = new SpeechSynthesisUtterance(t); u.lang = 'sk-SK'; u.rate = 0.9;
+        window.speechSynthesis.speak(u);
+    }
+
+    function init() {
+        vybrane = banka.sort(() => 0.5 - Math.random()).slice(0, 15);
+        show();
+    }
+
+    function show() {
+        active = true; document.getElementById('next-btn').style.display = 'none';
+        const q = vybrane[idx];
+        document.getElementById('q-title').innerText = q.q;
+        document.getElementById('score-bar').innerText = `Otázka: ${idx + 1} / 15 | Body: ${body}`;
+        
+        const plocha = document.getElementById('options-container');
+        plocha.innerHTML = '';
+
+        [...q.o].sort(() => 0.5 - Math.random()).forEach(o => {
+            const k = document.createElement('div');
+            k.className = 'card';
+            k.innerHTML = `<span class="emoji">${o.e}</span><span class="label">${o.t}</span>`;
+            
+            k.onclick = () => {
+                if(!active) return;
+                if(o.t === q.a) {
+                    k.classList.add('correct'); body++;
+                    document.getElementById('score-bar').innerText = `Otázka: ${idx + 1} / 15 | Body: ${body}`;
+                    document.getElementById('next-btn').style.display = 'block';
+                    active = false; citajText("Správne!");
+                } else {
+                    k.classList.add('wrong'); citajText("Skús iné"); active = false;
+                    document.getElementById('next-btn').style.display = 'block'; // Povolíme pokračovať bez bodu
+                }
+            };
+            plocha.appendChild(k);
+        });
+    }
+
+    function dalsiaOtazka() {
+        idx++;
+        if(idx < 15) show();
+        else {
+            document.getElementById('quiz-screen').style.display = 'none';
+            document.getElementById('final-screen').style.display = 'block';
+            document.getElementById('final-score').innerText = `Získal si ${body} z 15 bodov!`;
+            citajText(`Koniec hry. Tvoj výsledok je ${body} bodov.`);
+        }
+    }
+
+    init();
+</script>
+</body>
+</html>

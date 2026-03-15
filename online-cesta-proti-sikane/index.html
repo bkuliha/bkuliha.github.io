@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Online cesta proti šikane</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <main class="page-shell">
+    <section id="introScreen" class="screen">
+      <div class="hero-layout">
+        <article class="screen-card hero-card">
+          <p class="eyebrow">Interaktívna triedna hra</p>
+          <h1>Online cesta proti šikane</h1>
+          <p class="lead">
+            Hra je rozdelená na kroky. Najprv otvoríš úvod, potom vyberieš hráčov
+            a napokon sa každý hráč vydá na svoju online cestu.
+          </p>
+          <div class="hero-points">
+            <div class="hero-point">
+              <strong>15 zastávok</strong>
+              <span>Každý hráč rieši 15 náhodných úloh z veľkej banky otázok.</span>
+            </div>
+            <div class="hero-point">
+              <strong>Modal otázok</strong>
+              <span>Otázky sa zobrazujú v samostatnom okne nad hernou mapou.</span>
+            </div>
+            <div class="hero-point">
+              <strong>Diplom a poradie</strong>
+              <span>Na konci získa každý výsledok a celá skupina aj prehľad poradia.</span>
+            </div>
+          </div>
+        </article>
+
+        <aside class="screen-card side-card">
+          <p class="card-title">Najlepší uložený výsledok</p>
+          <p id="bestRunIntroText" class="record-text">Zatiaľ bez uloženého výsledku.</p>
+          <div class="screen-actions compact">
+            <button id="startFlowButton" class="primary-button" type="button">Pokračovať na výber hráčov</button>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="playersScreen" class="screen hidden">
+      <article class="screen-card section-card">
+        <p class="eyebrow">Krok 1</p>
+        <h2>Vyber hráčov</h2>
+        <p class="lead small-lead">
+          Pridaj hráčov, ktorí budú hrať po jednom. Po skončení jedného kola sa automaticky
+          presunieš na ďalšieho hráča.
+        </p>
+
+        <div class="input-row">
+          <input id="playerNameInput" class="name-input" type="text" maxlength="40" placeholder="Napíš meno hráča">
+          <button id="addPlayerButton" class="ghost-button" type="button">Pridať hráča</button>
+        </div>
+        <p id="playerHintText" class="helper-text">Pridaj aspoň jedného hráča.</p>
+      </article>
+
+      <div class="players-layout">
+        <article class="screen-card section-card">
+          <div class="section-head">
+            <div>
+              <p class="card-title">Zoznam hráčov</p>
+              <h3>Pripravení na štart</h3>
+            </div>
+            <span id="playerCountBadge" class="badge-pill">0 hráčov</span>
+          </div>
+          <div id="playerList" class="player-list" aria-live="polite"></div>
+        </article>
+
+        <aside class="screen-card side-card">
+          <p class="card-title">Ako to bude prebiehať</p>
+          <ul class="rules-list">
+            <li>Každý hráč ide vlastnú cestu s 15 zastávkami.</li>
+            <li>Otázky sa otvoria v modalnom okne nad mapou.</li>
+            <li>Po každom kole sa zobrazí výsledok, diplom a priebežné poradie.</li>
+          </ul>
+        </aside>
+      </div>
+
+      <div class="screen-actions">
+        <button id="backToIntroButton" class="ghost-button" type="button">Späť na úvod</button>
+        <button id="beginGameButton" class="primary-button" type="button" disabled>Začať hru</button>
+      </div>
+    </section>
+
+    <section id="gameScreen" class="screen hidden">
+      <section class="game-shell">
+        <article class="screen-card game-hero">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Krok 2</p>
+              <h2 id="gameHeadline">Pripraviť ďalšie kolo</h2>
+            </div>
+            <span id="activePlayerBadge" class="journey-status">Na rade</span>
+          </div>
+
+          <p id="gameLead" class="lead small-lead">
+            Keď bude hráč pripravený, spusti jeho cestu. Každá otázka sa otvorí v modalnom okne.
+          </p>
+
+          <div class="screen-actions compact">
+            <button id="launchTurnButton" class="primary-button" type="button">Začať kolo</button>
+            <button id="openQuestionButton" class="ghost-button hidden" type="button">Otvoriť otázku</button>
+          </div>
+
+          <div class="turn-meta-grid">
+            <div class="meta-box">
+              <span class="stat-label">Hráč</span>
+              <strong id="turnPlayerName">-</strong>
+            </div>
+            <div class="meta-box">
+              <span class="stat-label">Aktuálna zastávka</span>
+              <strong id="turnStationText">Štart</strong>
+            </div>
+            <div class="meta-box">
+              <span class="stat-label">Stav kola</span>
+              <strong id="turnStateText">Pripravené</strong>
+            </div>
+          </div>
+        </article>
+
+        <section class="dashboard">
+          <article class="stats-card">
+            <p class="card-title">Tvoj postup</p>
+            <div class="stat-grid">
+              <div class="stat-box">
+                <span class="stat-label">Zastávka</span>
+                <strong id="progressText">0 / 15</strong>
+              </div>
+              <div class="stat-box">
+                <span class="stat-label">Správne</span>
+                <strong id="scoreText">0</strong>
+              </div>
+              <div class="stat-box">
+                <span class="stat-label">Úspešnosť</span>
+                <strong id="percentText">0 %</strong>
+              </div>
+              <div class="stat-box">
+                <span class="stat-label">Téma</span>
+                <strong id="categoryText">Pripravené</strong>
+              </div>
+            </div>
+          </article>
+
+          <article class="stats-card">
+            <div class="stickers-header">
+              <p class="card-title">Album nálepiek</p>
+              <span id="stickerCount" class="badge-pill">0 / 15</span>
+            </div>
+            <div id="stickerAlbum" class="sticker-album" aria-live="polite"></div>
+          </article>
+        </section>
+
+        <section class="world-panel">
+          <div class="world-header">
+            <div>
+              <p class="eyebrow">Cesta online svetom</p>
+              <h2>Mapa sa mení podľa toho, kam sa hráč práve dostal</h2>
+            </div>
+            <div id="journeyStatus" class="journey-status">Čakám na štart</div>
+          </div>
+
+          <div id="mapTrack" class="map-track" aria-label="Mapa cesty"></div>
+        </section>
+
+        <section class="play-area">
+          <article class="screen-card turn-card">
+            <p class="card-title">Priebeh hry</p>
+            <h3 id="turnCardHeadline">Otázky sa zobrazia v modálnom okne</h3>
+            <p id="turnCardText" class="lead small-lead">
+              Po spustení sa otvorí prvá otázka. Ak modal zavrieš, môžeš ho znovu otvoriť tlačidlom.
+            </p>
+          </article>
+
+          <aside class="side-notes">
+            <article class="legend-card">
+              <p class="card-title">Hodnotenie</p>
+              <ul class="rating-list">
+                <li>100 - 90 %: najlepšie</li>
+                <li>89 - 75 %: veľmi dobre</li>
+                <li>74 - 50 %: dobre</li>
+                <li>49 - 25 %: slabé</li>
+                <li>Menej ako 24 %: veľmi zle</li>
+              </ul>
+            </article>
+
+            <article class="legend-card">
+              <p class="card-title">Poradie hráčov</p>
+              <div id="playerProgressList" class="player-progress" aria-live="polite"></div>
+            </article>
+          </aside>
+        </section>
+      </section>
+    </section>
+
+    <section id="resultsScreen" class="screen hidden">
+      <section class="results-section">
+        <div class="results-copy screen-card">
+          <p class="eyebrow">Krok 3</p>
+          <h2 id="resultHeadline">Výsledok cesty</h2>
+          <p id="resultSummary" class="lead small-lead"></p>
+          <div id="resultBadge" class="result-badge">Pripravené</div>
+          <div class="result-sticker-block">
+            <div class="stickers-header">
+              <p class="card-title">Zozbierané nálepky</p>
+              <span id="resultStickerCount" class="badge-pill">0 / 15</span>
+            </div>
+            <div id="resultStickerAlbum" class="sticker-album" aria-live="polite"></div>
+          </div>
+        </div>
+
+        <div class="result-actions screen-card">
+          <button id="printDiplomaButton" class="primary-button" type="button">Vytlačiť diplom</button>
+          <button id="downloadDiplomaButton" class="ghost-button" type="button">Stiahnuť diplom</button>
+          <button id="repeatTurnButton" class="ghost-button" type="button">Zahrať kolo znova</button>
+          <button id="nextPlayerButton" class="primary-button" type="button">Pokračovať s ďalším hráčom</button>
+          <button id="backToPlayersFromResultsButton" class="ghost-button" type="button">Späť na hráčov</button>
+        </div>
+      </section>
+
+      <section class="scoreboard-layout">
+        <article class="screen-card scoreboard-section">
+          <div class="section-head">
+            <div>
+              <p class="card-title">Priebežné poradie</p>
+              <h3>Výsledky hráčov</h3>
+            </div>
+            <span id="finishedCountBadge" class="badge-pill">0 / 0</span>
+          </div>
+          <div id="rankingList" class="ranking-list" aria-live="polite"></div>
+        </article>
+
+        <section id="diplomaSection" class="diploma-section">
+          <div class="diploma-frame">
+            <p class="diploma-kicker">Diplom za bezpečný pohyb online svetom</p>
+            <h2>Diplom</h2>
+            <p class="diploma-line">Tento diplom získava</p>
+            <p id="diplomaName" class="diploma-name">Odvážny hráč</p>
+            <p id="diplomaAchievement" class="diploma-text">
+              za úspešné zvládnutie úloh o šikane, kyberšikane a bezpečnom správaní online.
+            </p>
+            <div class="diploma-stats">
+              <div>
+                <span>Úspešnosť</span>
+                <strong id="diplomaPercent">0 %</strong>
+              </div>
+              <div>
+                <span>Nálepky</span>
+                <strong id="diplomaStickers">0 / 15</strong>
+              </div>
+              <div>
+                <span>Hodnotenie</span>
+                <strong id="diplomaRating">Pripravené</strong>
+              </div>
+            </div>
+            <div class="diploma-footer">
+              <p id="diplomaDate">Dátum: -</p>
+              <p>Podpis učiteľa: ____________________</p>
+            </div>
+          </div>
+        </section>
+      </section>
+    </section>
+  </main>
+
+  <div id="questionModal" class="modal hidden" aria-hidden="true">
+    <div class="modal-backdrop" data-close-modal="true"></div>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="questionPrompt">
+      <button id="closeModalButton" class="modal-close" type="button" aria-label="Zavrieť otázku">×</button>
+
+      <div class="question-topline">
+        <span id="stationLabel" class="station-pill">Štart</span>
+        <span id="questionType" class="station-meta">Pripravené</span>
+      </div>
+
+      <h3 id="questionPrompt">Otázka sa zobrazí po spustení kola.</h3>
+      <p id="questionHelp" class="question-help">
+        Vyber jednu odpoveď, ktorá je najbezpečnejšia alebo najpresnejšia.
+      </p>
+
+      <div id="choices" class="choices" aria-live="polite"></div>
+
+      <div class="question-footer">
+        <p id="feedbackText" class="feedback-text">Po spustení sa otvorí prvá otázka.</p>
+        <button id="nextButton" class="primary-button hidden" type="button">Ďalšia zastávka</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="./game.js"></script>
+</body>
+</html>
