@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="sk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>bkuliha.github.io</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f4efe6;
+        --panel: rgba(255, 252, 246, 0.92);
+        --line: #d7c8af;
+        --text: #1f1b16;
+        --muted: #6c6256;
+        --accent: #1f6f5f;
+        --accent-strong: #155145;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+        color: var(--text);
+        background:
+          radial-gradient(circle at top left, rgba(31, 111, 95, 0.22), transparent 28%),
+          radial-gradient(circle at top right, rgba(196, 146, 61, 0.18), transparent 24%),
+          linear-gradient(180deg, #f8f3eb 0%, var(--bg) 100%);
+      }
+
+      main {
+        width: min(960px, calc(100% - 32px));
+        margin: 48px auto;
+        padding: 32px;
+        background: var(--panel);
+        border: 1px solid rgba(215, 200, 175, 0.9);
+        border-radius: 24px;
+        box-shadow: 0 24px 60px rgba(45, 34, 23, 0.1);
+      }
+
+      h1 {
+        margin: 0 0 8px;
+        font-size: clamp(2rem, 4vw, 3rem);
+      }
+
+      p {
+        margin: 0 0 28px;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+
+      .list {
+        display: grid;
+        gap: 12px;
+      }
+
+      .row {
+        display: grid;
+        grid-template-columns: minmax(180px, 240px) minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 16px;
+        padding: 16px 18px;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.72);
+      }
+
+      .folder {
+        font-weight: 700;
+        word-break: break-word;
+      }
+
+      .url {
+        color: var(--accent);
+        text-decoration: none;
+        word-break: break-all;
+      }
+
+      .url:hover,
+      .url:focus-visible {
+        text-decoration: underline;
+      }
+
+      .copy-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border: 0;
+        border-radius: 999px;
+        padding: 10px 14px;
+        background: var(--accent);
+        color: #fff;
+        cursor: pointer;
+        font: inherit;
+        font-weight: 700;
+      }
+
+      .copy-button:hover,
+      .copy-button:focus-visible {
+        background: var(--accent-strong);
+      }
+
+      .copy-button svg {
+        width: 16px;
+        height: 16px;
+        fill: currentColor;
+      }
+
+      .copy-button.copied {
+        background: #9a5c12;
+      }
+
+      @media (max-width: 700px) {
+        main {
+          margin: 24px auto;
+          padding: 20px;
+        }
+
+        .row {
+          grid-template-columns: 1fr;
+          gap: 10px;
+        }
+
+        .copy-button {
+          justify-self: start;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Zoznam hier a aplikacii</h1>
+      <p>Kazdy riadok obsahuje nazov priecinka, plnu GitHub Pages URL a tlacidlo na skopirovanie odkazu.</p>
+      <section class="list" id="app-list" aria-label="Zoznam priecinkov"></section>
+    </main>
+
+    <script>
+      const baseUrl = "https://bkuliha.github.io";
+      const projects = [
+        "cukriky",
+        "hra-plus-minus",
+        "obrazkove-karticky",
+        "online-cesta-proti-sikane",
+        "zamena-hra"
+      ];
+
+      const list = document.getElementById("app-list");
+
+      const copyIcon = `
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M16 1H6a2 2 0 0 0-2 2v12h2V3h10V1Zm3 4H10a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2Zm0 16H10V7h9v14Z"/>
+        </svg>
+      `;
+
+      function setButtonState(button, label) {
+        button.classList.add("copied");
+        button.querySelector(".button-label").textContent = label;
+        window.setTimeout(() => {
+          button.classList.remove("copied");
+          button.querySelector(".button-label").textContent = "Kopirovat";
+        }, 1600);
+      }
+
+      async function copyUrl(button, url) {
+        try {
+          await navigator.clipboard.writeText(url);
+          setButtonState(button, "Skopirovane");
+        } catch (error) {
+          const input = document.createElement("input");
+          input.value = url;
+          document.body.appendChild(input);
+          input.select();
+          document.execCommand("copy");
+          document.body.removeChild(input);
+          setButtonState(button, "Skopirovane");
+        }
+      }
+
+      projects.forEach((project) => {
+        const url = `${baseUrl}/${project}/`;
+        const row = document.createElement("article");
+        row.className = "row";
+
+        const folder = document.createElement("div");
+        folder.className = "folder";
+        folder.textContent = project;
+
+        const link = document.createElement("a");
+        link.className = "url";
+        link.href = url;
+        link.textContent = url;
+        link.target = "_blank";
+        link.rel = "noreferrer";
+
+        const button = document.createElement("button");
+        button.className = "copy-button";
+        button.type = "button";
+        button.setAttribute("aria-label", `Skopirovat link pre ${project}`);
+        button.innerHTML = `${copyIcon}<span class="button-label">Kopirovat</span>`;
+        button.addEventListener("click", () => copyUrl(button, url));
+
+        row.append(folder, link, button);
+        list.appendChild(row);
+      });
+    </script>
+  </body>
+</html>
