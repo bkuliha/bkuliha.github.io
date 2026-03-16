@@ -7,18 +7,20 @@
     <style>
       :root {
         color-scheme: light;
-        --sky-top: #8fe1ff;
-        --sky-bottom: #f7fbff;
-        --grass: #79d65a;
-        --grass-dark: #389635;
-        --panel: rgba(255, 255, 255, 0.88);
-        --ink: #23411b;
-        --pink: #ff6fae;
-        --yellow: #ffd84d;
-        --leaf: #45b54a;
-        --leaf-dark: #21863c;
-        --danger: #ff7a7a;
-        --shadow: rgba(37, 77, 32, 0.18);
+        --sky-top: #8fdfff;
+        --sky-bottom: #f6fdff;
+        --grass-top: #cff6a0;
+        --grass-bottom: #61c94d;
+        --panel: rgba(255, 255, 255, 0.9);
+        --ink: #21401f;
+        --muted: rgba(33, 64, 31, 0.74);
+        --shadow: rgba(32, 86, 25, 0.17);
+        --leaf-1: #9af267;
+        --leaf-2: #3eb547;
+        --pink-1: #ff94bf;
+        --pink-2: #ff5f98;
+        --yellow-1: #ffe676;
+        --yellow-2: #ffb845;
       }
 
       * {
@@ -31,41 +33,22 @@
         font-family: "Trebuchet MS", "Comic Sans MS", "Verdana", sans-serif;
         color: var(--ink);
         background:
-          radial-gradient(circle at 15% 18%, rgba(255, 255, 255, 0.9), transparent 13%),
-          radial-gradient(circle at 85% 14%, rgba(255, 255, 255, 0.7), transparent 10%),
-          linear-gradient(180deg, var(--sky-top) 0%, #caf6ff 48%, #f4ffe5 100%);
-      }
-
-      body::before,
-      body::after {
-        content: "";
-        position: fixed;
-        inset: auto;
-        z-index: -1;
-        pointer-events: none;
+          radial-gradient(circle at 13% 18%, rgba(255, 255, 255, 0.92), transparent 11%),
+          radial-gradient(circle at 86% 12%, rgba(255, 255, 255, 0.88), transparent 12%),
+          linear-gradient(180deg, var(--sky-top) 0%, #cdf7ff 42%, #efffde 42%, #8bdd67 100%);
       }
 
       body::before {
-        width: 220px;
-        height: 220px;
-        top: 20px;
-        right: 20px;
+        content: "";
+        position: fixed;
+        top: 18px;
+        right: 22px;
+        width: 210px;
+        height: 210px;
         border-radius: 50%;
-        background: radial-gradient(circle, rgba(255, 238, 124, 0.95) 0%, rgba(255, 214, 74, 0.95) 38%, rgba(255, 214, 74, 0) 68%);
-      }
-
-      body::after {
-        left: 0;
-        right: 0;
-        bottom: 0;
-        height: 220px;
-        background:
-          radial-gradient(circle at 10% 110%, #8ce66a 0 22%, transparent 23%),
-          radial-gradient(circle at 24% 115%, #80d05f 0 21%, transparent 22%),
-          radial-gradient(circle at 38% 108%, #8ce66a 0 24%, transparent 25%),
-          radial-gradient(circle at 54% 112%, #74cf53 0 22%, transparent 23%),
-          radial-gradient(circle at 72% 110%, #7edc5d 0 24%, transparent 25%),
-          radial-gradient(circle at 88% 114%, #68bc49 0 21%, transparent 22%);
+        background: radial-gradient(circle, rgba(255, 239, 120, 0.96) 0%, rgba(255, 211, 82, 0.96) 36%, rgba(255, 211, 82, 0) 68%);
+        z-index: -1;
+        pointer-events: none;
       }
 
       .app {
@@ -83,27 +66,16 @@
 
       .card {
         background: var(--panel);
-        border: 3px solid rgba(255, 255, 255, 0.72);
+        border: 3px solid rgba(255, 255, 255, 0.74);
         border-radius: 28px;
         box-shadow: 0 18px 40px var(--shadow);
         backdrop-filter: blur(10px);
       }
 
-      .intro {
-        padding: 28px;
-        overflow: hidden;
-        position: relative;
-      }
-
-      .intro::after {
-        content: "";
-        position: absolute;
-        right: -10px;
-        bottom: -14px;
-        width: 170px;
-        height: 170px;
-        border-radius: 50%;
-        background: radial-gradient(circle, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0));
+      .intro,
+      .setup,
+      .scores {
+        padding: 24px;
       }
 
       h1,
@@ -118,24 +90,24 @@
         gap: 8px;
         padding: 8px 14px;
         border-radius: 999px;
-        background: rgba(255, 255, 255, 0.74);
+        background: rgba(255, 255, 255, 0.76);
         font-size: 0.95rem;
-        font-weight: 700;
+        font-weight: 800;
       }
 
       .intro h1 {
         margin-top: 12px;
         font-size: clamp(2.2rem, 4vw, 4rem);
         line-height: 0.95;
-        color: #1f7a22;
-        text-shadow: 0 3px 0 rgba(255, 255, 255, 0.6);
+        color: #1c7f26;
+        text-shadow: 0 3px 0 rgba(255, 255, 255, 0.65);
       }
 
       .intro p {
         margin-top: 14px;
-        max-width: 56ch;
-        font-size: 1.08rem;
+        max-width: 58ch;
         line-height: 1.5;
+        font-size: 1.06rem;
       }
 
       .steps {
@@ -148,19 +120,13 @@
       .step {
         padding: 12px 16px;
         border-radius: 20px;
-        font-weight: 700;
-        background: rgba(255, 255, 255, 0.76);
-        box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.55);
+        background: rgba(255, 255, 255, 0.75);
+        font-weight: 800;
       }
 
       .step strong {
         display: block;
-        font-size: 1.05rem;
-      }
-
-      .setup,
-      .scores {
-        padding: 22px;
+        font-size: 1.02rem;
       }
 
       .setup h2,
@@ -181,23 +147,23 @@
       }
 
       label {
-        font-weight: 700;
+        font-weight: 800;
       }
 
       input[type="text"] {
         width: 100%;
-        border: 3px solid rgba(70, 144, 63, 0.25);
-        border-radius: 18px;
         padding: 14px 16px;
-        font: inherit;
-        font-size: 1.08rem;
+        border: 3px solid rgba(70, 144, 63, 0.28);
+        border-radius: 18px;
         background: rgba(255, 255, 255, 0.96);
+        font: inherit;
+        font-size: 1.05rem;
       }
 
       input[type="text"]:focus {
         outline: none;
-        border-color: rgba(51, 166, 56, 0.8);
-        box-shadow: 0 0 0 4px rgba(140, 224, 102, 0.25);
+        border-color: rgba(44, 162, 59, 0.8);
+        box-shadow: 0 0 0 4px rgba(136, 231, 100, 0.24);
       }
 
       .button {
@@ -205,29 +171,29 @@
         border-radius: 999px;
         padding: 14px 20px;
         font: inherit;
-        font-weight: 800;
-        font-size: 1.05rem;
-        cursor: pointer;
+        font-size: 1.02rem;
+        font-weight: 900;
         color: #fff;
-        background: linear-gradient(180deg, #ff8ec0, #ff5a94);
-        box-shadow: 0 10px 18px rgba(255, 90, 148, 0.28);
-        transition: transform 0.15s ease, box-shadow 0.15s ease;
+        cursor: pointer;
+        background: linear-gradient(180deg, var(--pink-1), var(--pink-2));
+        box-shadow: 0 10px 18px rgba(255, 95, 152, 0.28);
+        transition: transform 0.14s ease, box-shadow 0.14s ease;
       }
 
       .button:hover,
       .button:focus-visible {
         transform: translateY(-2px) scale(1.01);
-        box-shadow: 0 14px 24px rgba(255, 90, 148, 0.32);
+        box-shadow: 0 14px 24px rgba(255, 95, 152, 0.32);
       }
 
       .button.secondary {
-        background: linear-gradient(180deg, #72ca53, #3ba240);
-        box-shadow: 0 10px 18px rgba(59, 162, 64, 0.25);
+        background: linear-gradient(180deg, #7ad55d, #43ac47);
+        box-shadow: 0 10px 18px rgba(67, 172, 71, 0.24);
       }
 
       .tiny-note {
+        color: var(--muted);
         font-size: 0.95rem;
-        color: rgba(35, 65, 27, 0.78);
       }
 
       .dashboard {
@@ -243,27 +209,17 @@
 
       .info-box span {
         display: block;
-        font-size: 0.9rem;
-        font-weight: 700;
+        font-size: 0.85rem;
+        font-weight: 800;
         text-transform: uppercase;
-        letter-spacing: 0.04em;
-        color: rgba(35, 65, 27, 0.72);
+        letter-spacing: 0.05em;
+        color: var(--muted);
       }
 
       .info-box strong {
         display: block;
         margin-top: 6px;
-        font-size: clamp(1.15rem, 2.4vw, 1.8rem);
-      }
-
-      .phase-badge {
-        display: inline-flex;
-        justify-content: center;
-        align-items: center;
-        gap: 8px;
-        padding: 8px 14px;
-        border-radius: 999px;
-        background: rgba(255, 255, 255, 0.72);
+        font-size: clamp(1.1rem, 2.2vw, 1.75rem);
       }
 
       .progress-card {
@@ -276,30 +232,30 @@
         justify-content: space-between;
         align-items: center;
         gap: 12px;
-        font-weight: 700;
+        font-weight: 800;
       }
 
       .progress-track {
         margin-top: 12px;
         height: 18px;
         border-radius: 999px;
-        background: rgba(255, 255, 255, 0.65);
         overflow: hidden;
+        background: rgba(255, 255, 255, 0.68);
       }
 
       .progress-fill {
         width: 0;
         height: 100%;
         border-radius: inherit;
-        background: linear-gradient(90deg, #7bd83e, #f7dd57, #ff96bf);
-        transition: width 0.3s ease;
+        background: linear-gradient(90deg, #7fdc49, #ffe06b, #ff9dc3);
+        transition: width 0.25s ease;
       }
 
-      .prompt {
-        padding: 0 4px;
-        font-size: 1.1rem;
-        font-weight: 800;
+      .prompt-box {
+        padding: 16px 18px;
         text-align: center;
+        font-size: 1.04rem;
+        font-weight: 900;
       }
 
       .world-card {
@@ -308,13 +264,13 @@
 
       .world {
         position: relative;
-        min-height: 560px;
-        overflow: hidden;
+        min-height: 640px;
         border-radius: 28px;
+        overflow: hidden;
         background:
-          linear-gradient(180deg, rgba(255, 255, 255, 0.38), rgba(255, 255, 255, 0) 18%),
-          linear-gradient(180deg, #a7ebff 0%, #d9fbff 35%, #d5f6b0 35%, #67c84f 100%);
-        box-shadow: inset 0 -18px 40px rgba(31, 119, 40, 0.18);
+          linear-gradient(180deg, rgba(255, 255, 255, 0.38), rgba(255, 255, 255, 0) 16%),
+          linear-gradient(180deg, #a7ebff 0%, #dffbff 34%, #d6f6a6 34%, #69cb51 100%);
+        box-shadow: inset 0 -18px 40px rgba(31, 119, 40, 0.14);
       }
 
       .world::before {
@@ -322,336 +278,307 @@
         position: absolute;
         inset: 0;
         background:
-          radial-gradient(circle at 17% 16%, rgba(255, 255, 255, 0.92) 0 5%, transparent 5.2%),
-          radial-gradient(circle at 21% 15%, rgba(255, 255, 255, 0.9) 0 6%, transparent 6.2%),
-          radial-gradient(circle at 25% 16%, rgba(255, 255, 255, 0.88) 0 5%, transparent 5.2%),
+          radial-gradient(circle at 18% 16%, rgba(255, 255, 255, 0.92) 0 5%, transparent 5.2%),
+          radial-gradient(circle at 22% 15%, rgba(255, 255, 255, 0.9) 0 6%, transparent 6.2%),
+          radial-gradient(circle at 26% 16%, rgba(255, 255, 255, 0.88) 0 5%, transparent 5.2%),
           radial-gradient(circle at 76% 18%, rgba(255, 255, 255, 0.94) 0 6%, transparent 6.2%),
           radial-gradient(circle at 81% 17%, rgba(255, 255, 255, 0.86) 0 5%, transparent 5.2%),
           radial-gradient(circle at 85% 18%, rgba(255, 255, 255, 0.82) 0 6%, transparent 6.2%);
-        opacity: 0.95;
         pointer-events: none;
       }
 
-      .world::after {
-        content: "";
+      .world-header {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        padding: 18px 20px 6px;
+        flex-wrap: wrap;
+      }
+
+      .world-title {
+        font-size: 1.35rem;
+        font-weight: 900;
+      }
+
+      .world-subtitle {
+        color: var(--muted);
+        font-weight: 800;
+      }
+
+      .decor-line {
         position: absolute;
         inset: auto 0 0;
-        height: 130px;
+        height: 120px;
         background:
-          radial-gradient(circle at 8% 100%, #5fb848 0 28%, transparent 29%),
-          radial-gradient(circle at 22% 110%, #70cb52 0 29%, transparent 30%),
-          radial-gradient(circle at 40% 102%, #61c94a 0 30%, transparent 31%),
-          radial-gradient(circle at 60% 107%, #57ba43 0 29%, transparent 30%),
-          radial-gradient(circle at 79% 102%, #70cf57 0 28%, transparent 29%),
-          radial-gradient(circle at 94% 112%, #53a83e 0 28%, transparent 29%);
+          radial-gradient(circle at 7% 100%, #5fba48 0 28%, transparent 29%),
+          radial-gradient(circle at 20% 108%, #71ce56 0 29%, transparent 30%),
+          radial-gradient(circle at 36% 102%, #63c94c 0 30%, transparent 31%),
+          radial-gradient(circle at 53% 108%, #58b842 0 29%, transparent 30%),
+          radial-gradient(circle at 74% 102%, #71cf57 0 28%, transparent 29%),
+          radial-gradient(circle at 92% 110%, #53a83e 0 28%, transparent 29%);
         pointer-events: none;
       }
 
-      .decor,
-      .items-layer,
-      .feedback-layer,
-      .transition-layer {
-        position: absolute;
-        inset: 0;
+      .snake-stage,
+      .cocoon-stage,
+      .butterfly-stage {
+        position: relative;
+        z-index: 1;
+        width: min(900px, calc(100% - 28px));
+        margin: 8px auto 0;
       }
 
-      .decor-flower {
-        position: absolute;
-        font-size: clamp(2rem, 4vw, 3rem);
-        filter: drop-shadow(0 8px 6px rgba(41, 107, 29, 0.18));
-        animation: sway 3.2s ease-in-out infinite;
-      }
-
-      .decor-flower:nth-child(2n) {
-        animation-duration: 4.4s;
-      }
-
-      .item {
-        position: absolute;
-        width: 84px;
-        height: 84px;
-        border: 0;
-        border-radius: 24px;
-        display: grid;
-        place-items: center;
-        gap: 4px;
-        color: #1f3d19;
-        font: inherit;
-        font-weight: 800;
-        cursor: pointer;
-        transform: translate(-50%, -50%);
-        transition: transform 0.15s ease, box-shadow 0.2s ease, opacity 0.18s ease;
-        box-shadow: 0 12px 22px rgba(42, 94, 35, 0.18);
-        animation: bob 2.6s ease-in-out infinite;
-      }
-
-      .item:hover,
-      .item:focus-visible {
-        transform: translate(-50%, -54%) scale(1.06);
-      }
-
-      .item__emoji {
-        font-size: 2rem;
-        line-height: 1;
-      }
-
-      .item__label {
-        font-size: 0.82rem;
-      }
-
-      .item--leaf {
-        background: linear-gradient(180deg, #b0f693, #68cf61);
-      }
-
-      .item--flower {
-        background: linear-gradient(180deg, #ffd1e6, #ff9cc4);
-      }
-
-      .item--danger {
-        background: linear-gradient(180deg, #ffe7a6, #ffb86a);
-      }
-
-      .creature {
-        position: absolute;
-        left: 18%;
-        top: 76%;
-        width: 150px;
-        height: 110px;
-        transform: translate(-50%, -50%);
-        transition: left 0.65s ease, top 0.65s ease, transform 0.18s ease;
-        z-index: 2;
-        --grow-scale: 1;
-      }
-
-      .creature.hurt {
-        animation: wobble 0.4s ease;
-      }
-
-      .creature.good {
-        animation: hop 0.35s ease;
-      }
-
-      .creature__caterpillar,
-      .creature__butterfly,
-      .creature__cocoon {
-        position: absolute;
-        inset: 0;
+      .snake-stage[hidden],
+      .cocoon-stage[hidden],
+      .butterfly-stage[hidden] {
         display: none;
       }
 
-      .creature[data-phase="caterpillar"] .creature__caterpillar,
-      .creature[data-phase="butterfly"] .creature__butterfly,
-      .creature[data-phase="cocoon"] .creature__cocoon {
-        display: block;
+      .board {
+        display: grid;
+        grid-template-columns: repeat(14, minmax(0, 1fr));
+        gap: 6px;
+        aspect-ratio: 14 / 10;
+        padding: 14px;
+        border-radius: 28px;
+        background: rgba(255, 255, 255, 0.2);
+        box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.42);
       }
 
-      .creature__caterpillar {
-        transform: scale(var(--grow-scale));
-        transform-origin: bottom center;
+      .cell {
+        display: grid;
+        place-items: center;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.18);
+        font-size: clamp(1rem, 2.2vw, 1.7rem);
+        transition: transform 0.12s ease, background 0.12s ease;
       }
 
-      .segment {
-        position: absolute;
-        bottom: 18px;
-        width: 34px;
-        height: 34px;
-        border-radius: 50%;
-        background: linear-gradient(180deg, #89ec53, #3dba3f);
-        box-shadow: inset 0 -4px 0 rgba(21, 107, 39, 0.22);
+      .cell--body {
+        background: linear-gradient(180deg, #9cf56d, #4cbc47);
       }
 
-      .segment.s1 {
-        left: 10px;
+      .cell--head {
+        background: linear-gradient(180deg, #7bdf4b, #2f9e38);
+        transform: scale(1.02);
       }
 
-      .segment.s2 {
-        left: 34px;
-        bottom: 24px;
+      .cell--leaf {
+        background: linear-gradient(180deg, #d4ffb0, #74d668);
+        box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.42);
       }
 
-      .segment.s3 {
-        left: 60px;
+      .cell--danger {
+        background: linear-gradient(180deg, #fff0b7, #ffc885);
       }
 
-      .segment.s4 {
-        left: 86px;
-        bottom: 25px;
+      .control-pad {
+        position: relative;
+        z-index: 2;
+        width: min(260px, calc(100% - 28px));
+        margin: 18px auto 20px;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
       }
 
-      .segment.head {
-        left: 112px;
-        bottom: 22px;
-        width: 38px;
-        height: 38px;
-        background: linear-gradient(180deg, #7ad64d, #289a38);
+      .control-pad button {
+        height: 60px;
+        border: 0;
+        border-radius: 18px;
+        font: inherit;
+        font-size: 1.45rem;
+        font-weight: 900;
+        cursor: pointer;
+        color: #24521f;
+        background: rgba(255, 255, 255, 0.84);
+        box-shadow: 0 10px 18px rgba(35, 80, 28, 0.14);
       }
 
-      .eye {
-        position: absolute;
-        top: 11px;
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: #143114;
+      .control-pad button:disabled {
+        opacity: 0.45;
+        cursor: default;
       }
 
-      .eye.left {
-        left: 9px;
+      .control-pad .blank {
+        visibility: hidden;
       }
 
-      .eye.right {
-        right: 9px;
+      .cocoon-wrap {
+        display: grid;
+        justify-items: center;
+        gap: 18px;
+        padding: 42px 18px 50px;
       }
 
-      .smile {
-        position: absolute;
-        left: 50%;
-        bottom: 8px;
-        width: 14px;
-        height: 8px;
-        margin-left: -7px;
-        border-bottom: 3px solid #143114;
-        border-radius: 0 0 16px 16px;
-      }
-
-      .antenna {
-        position: absolute;
-        top: -10px;
+      .cocoon-thread {
         width: 4px;
-        height: 18px;
-        background: #2d7f37;
+        height: 120px;
+        background: rgba(74, 116, 51, 0.68);
         border-radius: 999px;
       }
 
-      .antenna.left {
-        left: 12px;
-        transform: rotate(-28deg);
-      }
-
-      .antenna.right {
-        right: 12px;
-        transform: rotate(28deg);
-      }
-
-      .creature__cocoon {
-        inset: 10px auto auto 50%;
-        width: 58px;
-        height: 88px;
-        margin: 0;
-        transform: translateX(-50%);
-        border-radius: 40px 40px 44px 44px;
-        background: linear-gradient(180deg, #d3b572, #a8712c);
+      .cocoon-body {
+        position: relative;
+        width: 92px;
+        height: 136px;
+        border-radius: 50px 50px 56px 56px;
+        background: linear-gradient(180deg, #d7bb78, #a86f2b);
         box-shadow:
-          inset 0 -8px 0 rgba(111, 67, 18, 0.2),
-          0 10px 16px rgba(88, 57, 18, 0.18);
+          inset 0 -10px 0 rgba(112, 69, 18, 0.22),
+          0 16px 26px rgba(73, 52, 14, 0.16);
+        animation: sway 2.4s ease-in-out infinite;
       }
 
-      .creature__cocoon::before {
+      .cocoon-body::before,
+      .cocoon-body::after {
         content: "";
         position: absolute;
-        top: -18px;
-        left: 50%;
-        width: 4px;
-        height: 22px;
-        margin-left: -2px;
-        background: #5a7d2d;
-      }
-
-      .creature__butterfly .wing {
-        position: absolute;
-        top: 12px;
-        width: 56px;
-        height: 74px;
-        border-radius: 50% 50% 48% 48%;
-        box-shadow: inset 0 -10px 0 rgba(255, 255, 255, 0.16);
-        animation: flap 0.55s ease-in-out infinite alternate;
-      }
-
-      .creature__butterfly .wing.left {
         left: 18px;
-        background: linear-gradient(180deg, #ff95bd, #ff6faa);
+        right: 18px;
+        height: 6px;
+        border-radius: 999px;
+        background: rgba(130, 84, 30, 0.28);
+      }
+
+      .cocoon-body::before {
+        top: 40px;
+      }
+
+      .cocoon-body::after {
+        top: 74px;
+      }
+
+      .cocoon-note {
+        text-align: center;
+        font-size: 1.1rem;
+        font-weight: 900;
+      }
+
+      .butterfly-field {
+        position: relative;
+        min-height: 470px;
+        border-radius: 28px;
+        overflow: hidden;
+        background:
+          radial-gradient(circle at 14% 28%, rgba(255, 255, 255, 0.3), transparent 18%),
+          radial-gradient(circle at 86% 22%, rgba(255, 255, 255, 0.24), transparent 16%),
+          linear-gradient(180deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0) 24%);
+        box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.38);
+        touch-action: none;
+        cursor: crosshair;
+      }
+
+      .butterfly-tip {
+        position: absolute;
+        top: 14px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 10px 14px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.82);
+        font-weight: 900;
+        color: #2b5e24;
+        z-index: 2;
+      }
+
+      .butterfly-item {
+        position: absolute;
+        transform: translate(-50%, -50%);
+        width: 74px;
+        height: 74px;
+        border-radius: 24px;
+        display: grid;
+        place-items: center;
+        font-size: 2rem;
+        box-shadow: 0 14px 22px rgba(42, 94, 35, 0.16);
+      }
+
+      .butterfly-item--flower {
+        background: linear-gradient(180deg, #ffd0e6, #ffa5c9);
+      }
+
+      .butterfly-item--danger {
+        background: linear-gradient(180deg, #fff1b9, #ffca80);
+      }
+
+      .butterfly {
+        position: absolute;
+        width: 120px;
+        height: 98px;
+        transform: translate(-50%, -50%);
+        z-index: 3;
+        pointer-events: none;
+      }
+
+      .wing {
+        position: absolute;
+        top: 10px;
+        width: 48px;
+        height: 68px;
+        border-radius: 50% 50% 48% 48%;
+        box-shadow: inset 0 -10px 0 rgba(255, 255, 255, 0.14);
+        animation: flap 0.42s ease-in-out infinite alternate;
+      }
+
+      .wing.left {
+        left: 16px;
+        background: linear-gradient(180deg, #ff94be, #ff5b93);
         transform-origin: right center;
       }
 
-      .creature__butterfly .wing.right {
-        right: 18px;
-        background: linear-gradient(180deg, #ffd95f, #ff9c48);
+      .wing.right {
+        right: 16px;
+        background: linear-gradient(180deg, #ffe16c, #ffae47);
         transform-origin: left center;
       }
 
-      .creature__butterfly .body {
+      .butterfly-body {
         position: absolute;
-        top: 20px;
+        top: 18px;
         left: 50%;
-        width: 22px;
-        height: 72px;
-        margin-left: -11px;
+        width: 18px;
+        height: 62px;
+        margin-left: -9px;
         border-radius: 999px;
-        background: linear-gradient(180deg, #4d443b, #2c241f);
+        background: linear-gradient(180deg, #4d443b, #2a241f);
       }
 
-      .creature__butterfly .body::before,
-      .creature__butterfly .body::after {
+      .butterfly-body::before,
+      .butterfly-body::after {
         content: "";
         position: absolute;
-        top: -12px;
+        top: -10px;
         width: 3px;
-        height: 18px;
+        height: 16px;
         background: #3a2f26;
         border-radius: 999px;
       }
 
-      .creature__butterfly .body::before {
-        left: 6px;
-        transform: rotate(-24deg);
+      .butterfly-body::before {
+        left: 5px;
+        transform: rotate(-28deg);
       }
 
-      .creature__butterfly .body::after {
-        right: 6px;
-        transform: rotate(24deg);
+      .butterfly-body::after {
+        right: 5px;
+        transform: rotate(28deg);
       }
 
-      .transition-layer {
-        display: grid;
-        place-items: center;
-        background: rgba(255, 255, 255, 0.04);
-        pointer-events: none;
-        opacity: 0;
-        transition: opacity 0.25s ease;
-      }
-
-      .transition-layer.show {
-        opacity: 1;
-      }
-
-      .transition-bubble {
-        padding: 22px 26px;
-        border-radius: 28px;
-        background: rgba(255, 255, 255, 0.9);
-        text-align: center;
-        box-shadow: 0 16px 30px rgba(39, 86, 25, 0.16);
-      }
-
-      .transition-bubble strong {
-        display: block;
-        font-size: clamp(1.3rem, 3vw, 2.2rem);
-      }
-
-      .feedback {
+      .status-pop {
         position: absolute;
-        transform: translate(-50%, -50%);
-        font-size: 1.4rem;
+        left: 50%;
+        bottom: 18px;
+        transform: translateX(-50%);
+        padding: 12px 18px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.82);
         font-weight: 900;
-        pointer-events: none;
-        animation: float-up 0.9s ease forwards;
-      }
-
-      .feedback.good {
-        color: #208539;
-      }
-
-      .feedback.bad {
-        color: #c44949;
+        box-shadow: 0 12px 24px rgba(30, 73, 24, 0.14);
+        z-index: 4;
       }
 
       .scores ol {
@@ -669,12 +596,12 @@
         gap: 12px;
         padding: 12px 14px;
         border-radius: 18px;
-        background: rgba(255, 255, 255, 0.66);
+        background: rgba(255, 255, 255, 0.68);
       }
 
       .score-row.active {
         outline: 3px solid rgba(255, 130, 182, 0.56);
-        background: rgba(255, 239, 247, 0.96);
+        background: rgba(255, 240, 247, 0.96);
       }
 
       .rank {
@@ -683,9 +610,9 @@
         border-radius: 50%;
         display: grid;
         place-items: center;
-        font-weight: 900;
-        color: #fff;
         background: linear-gradient(180deg, #7fd65e, #3da543);
+        color: #fff;
+        font-weight: 900;
       }
 
       .score-meta strong,
@@ -696,7 +623,7 @@
       .score-meta span {
         display: block;
         margin-top: 2px;
-        color: rgba(35, 65, 27, 0.68);
+        color: var(--muted);
         font-size: 0.9rem;
       }
 
@@ -707,8 +634,9 @@
         align-items: center;
         justify-content: center;
         padding: 20px;
-        background: rgba(25, 52, 19, 0.34);
+        background: rgba(24, 54, 17, 0.34);
         backdrop-filter: blur(5px);
+        z-index: 20;
       }
 
       .modal.open {
@@ -716,16 +644,16 @@
       }
 
       .modal-card {
-        width: min(500px, 100%);
+        width: min(540px, 100%);
         padding: 28px;
         border-radius: 28px;
-        background: rgba(255, 255, 255, 0.95);
+        background: rgba(255, 255, 255, 0.96);
         text-align: center;
-        box-shadow: 0 20px 50px rgba(21, 54, 12, 0.24);
+        box-shadow: 0 22px 54px rgba(21, 54, 12, 0.24);
       }
 
       .modal-card h2 {
-        font-size: clamp(1.6rem, 4vw, 2.4rem);
+        font-size: clamp(1.55rem, 4vw, 2.3rem);
       }
 
       .modal-card p {
@@ -733,11 +661,30 @@
         line-height: 1.45;
       }
 
+      .quiz-options {
+        display: grid;
+        gap: 10px;
+        margin-top: 18px;
+      }
+
+      .quiz-button {
+        border: 0;
+        border-radius: 18px;
+        padding: 14px 16px;
+        background: rgba(255, 255, 255, 0.96);
+        box-shadow: inset 0 0 0 3px rgba(120, 203, 84, 0.24);
+        color: #275b20;
+        font: inherit;
+        font-size: 1rem;
+        font-weight: 900;
+        cursor: pointer;
+      }
+
       .modal-score {
         margin: 16px 0;
-        font-size: 2.4rem;
+        font-size: 2.3rem;
         font-weight: 900;
-        color: #ff5b93;
+        color: #ff5c95;
       }
 
       .button-row {
@@ -748,73 +695,24 @@
         margin-top: 18px;
       }
 
-      @keyframes bob {
-        0%,
-        100% {
-          transform: translate(-50%, -50%);
-        }
-
-        50% {
-          transform: translate(-50%, -56%);
-        }
-      }
-
-      @keyframes sway {
-        0%,
-        100% {
-          transform: rotate(-4deg);
-        }
-
-        50% {
-          transform: rotate(5deg);
-        }
-      }
-
       @keyframes flap {
         from {
           transform: rotate(0deg) scaleY(1);
         }
 
         to {
-          transform: rotate(10deg) scaleY(0.94);
+          transform: rotate(12deg) scaleY(0.94);
         }
       }
 
-      @keyframes hop {
+      @keyframes sway {
         0%,
         100% {
-          transform: translate(-50%, -50%);
+          transform: rotate(-3deg);
         }
 
         50% {
-          transform: translate(-50%, -58%);
-        }
-      }
-
-      @keyframes wobble {
-        0%,
-        100% {
-          transform: translate(-50%, -50%) rotate(0deg);
-        }
-
-        25% {
-          transform: translate(-50%, -50%) rotate(-5deg);
-        }
-
-        75% {
-          transform: translate(-50%, -50%) rotate(5deg);
-        }
-      }
-
-      @keyframes float-up {
-        from {
-          opacity: 1;
-          transform: translate(-50%, -50%) scale(0.8);
-        }
-
-        to {
-          opacity: 0;
-          transform: translate(-50%, -120%) scale(1.16);
+          transform: rotate(3deg);
         }
       }
 
@@ -829,13 +727,13 @@
         }
 
         .world {
-          min-height: 500px;
+          min-height: 700px;
         }
       }
 
       @media (max-width: 640px) {
         .app {
-          width: min(100% - 14px, 100%);
+          width: min(100% - 12px, 100%);
           margin-top: 10px;
         }
 
@@ -851,21 +749,18 @@
         }
 
         .world {
-          min-height: 470px;
+          min-height: 690px;
         }
 
-        .item {
-          width: 72px;
-          height: 72px;
-          border-radius: 20px;
+        .board {
+          gap: 4px;
+          padding: 10px;
         }
 
-        .item__emoji {
-          font-size: 1.7rem;
-        }
-
-        .item__label {
-          font-size: 0.74rem;
+        .butterfly-item {
+          width: 64px;
+          height: 64px;
+          font-size: 1.75rem;
         }
       }
     </style>
@@ -874,29 +769,30 @@
     <main class="app">
       <section class="hero">
         <article class="card intro">
-          <div class="kicker">🐛 Farebná klikacia hra pre deti</div>
+          <div class="kicker">🐛 Snake húsenica a lietajúci motýľ</div>
           <h1>Život húsenice</h1>
           <p>
-            Klikaj len na správne dobroty. Húsenica papá listy, potom sa zakuklí a zmení na motýľa.
-            Motýľ už pije iba nektár z kvetov. Na iné veci nesmie sadnúť, lebo by ho to bolelo.
+            Húsenica sa hýbe ako snake. Zbiera listy, rastie a vyhýba sa všetkému ostatnému.
+            Keď dorastie na 10 článkov, odpovie na otázku. Ak odpovie správne, zmení sa na kuklu.
+            Potom príde druhá otázka a z kukly sa stane motýľ, ktorý sleduje kurzor a zbiera kvety.
           </p>
           <div class="steps">
-            <div class="step"><strong>1. Húsenica</strong> Jedz listy a rast.</div>
-            <div class="step"><strong>2. Kukla</strong> Počkaj na premenu.</div>
-            <div class="step"><strong>3. Motýľ</strong> Pi nektár z kvetov.</div>
+            <div class="step"><strong>1. Snake húsenica</strong> Šípky alebo tlačidlá smeru.</div>
+            <div class="step"><strong>2. Otázka a kukla</strong> Správna odpoveď pustí ďalej.</div>
+            <div class="step"><strong>3. Motýľ</strong> Sleduje kurzor a zbiera kvety.</div>
           </div>
         </article>
 
         <aside class="card setup">
           <h2>Začni hru</h2>
-          <p>Zadaj meno hráča. Po skončení sa uloží meno a získané skóre.</p>
+          <p>Zadaj meno hráča. Po skončení sa uloží meno aj dosiahnuté skóre.</p>
           <form id="start-form">
             <div>
               <label for="player-name">Meno hráča</label>
               <input id="player-name" name="player-name" type="text" maxlength="18" placeholder="Napríklad Ela" autocomplete="name" />
             </div>
-            <button class="button" type="submit">Spustiť dobrodružstvo</button>
-            <div class="tiny-note">Tip: klikaj iba na to, čo je teraz správne jedlo.</div>
+            <button class="button" type="submit">Spustiť hru</button>
+            <div class="tiny-note">Tip: húsenicu ovládaš šípkami na klávesnici alebo veľkými tlačidlami pod lúkou.</div>
           </form>
         </aside>
       </section>
@@ -911,78 +807,90 @@
           <strong id="score-display">0</strong>
         </article>
         <article class="card info-box">
-          <span>Srdiečka</span>
-          <strong id="hearts-display">💚💚💚💚</strong>
-        </article>
-        <article class="card info-box">
-          <span>Čas</span>
-          <strong id="timer-display">75 s</strong>
-        </article>
-        <article class="card info-box">
           <span>Fáza</span>
-          <strong class="phase-badge" id="phase-display">🐛 Húsenica</strong>
+          <strong id="phase-display">🐛 Húsenica</strong>
+        </article>
+        <article class="card info-box">
+          <span>Dĺžka / Kvety</span>
+          <strong id="goal-display">4 / 10</strong>
+        </article>
+        <article class="card info-box">
+          <span>Stav</span>
+          <strong id="status-display">Hra ešte nezačala</strong>
         </article>
         <article class="card progress-card">
           <div class="progress-head">
-            <span id="progress-label">Najedz sa listov: 0 / 6</span>
-            <strong id="progress-value">0%</strong>
+            <span id="progress-label">Dorásť na 10 článkov</span>
+            <strong id="progress-value">40%</strong>
           </div>
           <div class="progress-track" aria-hidden="true">
             <div class="progress-fill" id="progress-fill"></div>
           </div>
         </article>
-        <article class="card info-box prompt">
-          <span>Úloha</span>
-          <strong id="prompt-display">Klikni na listy, aby húsenica rástla.</strong>
+        <article class="card prompt-box" id="prompt-display">
+          Klikni na „Spustiť hru“. Potom zbieraj listy a vyhýbaj sa prekážkam.
         </article>
       </section>
 
       <section class="card world-card">
-        <div class="world" id="world">
-          <div class="decor" aria-hidden="true">
-            <div class="decor-flower" style="left: 6%; bottom: 40px;">🌷</div>
-            <div class="decor-flower" style="left: 15%; bottom: 64px;">🌼</div>
-            <div class="decor-flower" style="left: 28%; bottom: 32px;">🌺</div>
-            <div class="decor-flower" style="left: 41%; bottom: 58px;">🌸</div>
-            <div class="decor-flower" style="left: 58%; bottom: 36px;">🌻</div>
-            <div class="decor-flower" style="left: 72%; bottom: 62px;">🌷</div>
-            <div class="decor-flower" style="left: 86%; bottom: 34px;">🌼</div>
+        <div class="world">
+          <div class="world-header">
+            <div class="world-title" id="world-title">Lúka pre húsenicu</div>
+            <div class="world-subtitle" id="world-subtitle">Použi šípky alebo tlačidlá smeru.</div>
           </div>
 
-          <div class="creature" id="creature" data-phase="caterpillar">
-            <div class="creature__caterpillar">
-              <div class="segment s1"></div>
-              <div class="segment s2"></div>
-              <div class="segment s3"></div>
-              <div class="segment s4"></div>
-              <div class="segment head">
-                <div class="antenna left"></div>
-                <div class="antenna right"></div>
-                <div class="eye left"></div>
-                <div class="eye right"></div>
-                <div class="smile"></div>
+          <div class="snake-stage" id="snake-stage">
+            <div class="board" id="board" aria-label="Hracia plocha pre húsenicu"></div>
+          </div>
+
+          <div class="cocoon-stage" id="cocoon-stage" hidden>
+            <div class="cocoon-wrap">
+              <div class="cocoon-thread"></div>
+              <div class="cocoon-body"></div>
+              <div class="cocoon-note">Kukla sa jemne hojdá a čaká na ďalšiu otázku.</div>
+            </div>
+          </div>
+
+          <div class="butterfly-stage" id="butterfly-stage" hidden>
+            <div class="butterfly-field" id="butterfly-field" aria-label="Lúka pre motýľa">
+              <div class="butterfly-tip">Pohybuj kurzorom alebo ťukaj po lúke.</div>
+              <div id="butterfly-items"></div>
+              <div class="butterfly" id="butterfly">
+                <div class="wing left"></div>
+                <div class="wing right"></div>
+                <div class="butterfly-body"></div>
               </div>
-            </div>
-            <div class="creature__cocoon"></div>
-            <div class="creature__butterfly">
-              <div class="wing left"></div>
-              <div class="wing right"></div>
-              <div class="body"></div>
+              <div class="status-pop" id="field-message">Motýľ čaká na premenu.</div>
             </div>
           </div>
 
-          <div class="items-layer" id="items-layer" aria-live="polite"></div>
-          <div class="feedback-layer" id="feedback-layer" aria-hidden="true"></div>
-          <div class="transition-layer" id="transition-layer" aria-live="polite"></div>
+          <div class="control-pad" id="control-pad">
+            <div class="blank"></div>
+            <button type="button" data-dir="up" aria-label="Hore">↑</button>
+            <div class="blank"></div>
+            <button type="button" data-dir="left" aria-label="Doľava">←</button>
+            <button type="button" data-dir="down" aria-label="Dole">↓</button>
+            <button type="button" data-dir="right" aria-label="Doprava">→</button>
+          </div>
+
+          <div class="decor-line" aria-hidden="true"></div>
         </div>
       </section>
 
       <aside class="card scores">
         <h2>Najlepšie skóre</h2>
-        <p>Ukladá sa meno a bodový výsledok priamo v tomto zariadení.</p>
+        <p>Tabuľka sa ukladá priamo v tomto zariadení.</p>
         <ol id="score-list"></ol>
       </aside>
     </main>
+
+    <div class="modal" id="quiz-modal" role="dialog" aria-modal="true" aria-labelledby="quiz-title">
+      <div class="modal-card">
+        <h2 id="quiz-title">Otázka pre premenu</h2>
+        <p id="quiz-text"></p>
+        <div class="quiz-options" id="quiz-options"></div>
+      </div>
+    </div>
 
     <div class="modal" id="end-modal" role="dialog" aria-modal="true" aria-labelledby="end-title">
       <div class="modal-card">
@@ -999,67 +907,76 @@
     <script>
       const STORAGE_NAME = "zivot-husenice-player-name";
       const STORAGE_SCORES = "zivot-husenice-high-scores";
-      const CATERPILLAR_GOAL = 6;
-      const BUTTERFLY_GOAL = 8;
-      const STARTING_HEARTS = 4;
-      const ROUND_TIME = 75;
+      const GRID_COLS = 14;
+      const GRID_ROWS = 10;
+      const TARGET_LENGTH = 10;
+      const TARGET_FLOWERS = 12;
+      const SNAKE_SPEED_MS = 340;
 
-      const PHASES = {
-        caterpillar: {
-          icon: "🐛",
-          label: "Húsenica",
-          prompt: "Klikni na listy, aby húsenica rástla.",
-          progress: "Najedz sa listov"
-        },
-        cocoon: {
-          icon: "🟤",
-          label: "Kukla",
-          prompt: "Premena prebieha. Húsenica sa mení na motýľa.",
-          progress: "Premena"
-        },
-        butterfly: {
-          icon: "🦋",
-          label: "Motýľ",
-          prompt: "Klikni na kvety, aby motýľ pil nektár.",
-          progress: "Vypi nektár"
-        }
-      };
-
-      const ITEM_POOLS = {
-        caterpillar: [
-          { kind: "leaf", emoji: "🍃", label: "List", good: true, css: "item--leaf" },
-          { kind: "leaf", emoji: "🌿", label: "List", good: true, css: "item--leaf" },
-          { kind: "flower", emoji: "🌸", label: "Nie", good: false, css: "item--flower item--danger" },
-          { kind: "rock", emoji: "🪨", label: "Au", good: false, css: "item--danger" },
-          { kind: "web", emoji: "🕸️", label: "Au", good: false, css: "item--danger" }
+      const QUESTIONS = {
+        cocoon: [
+          {
+            title: "Otázka pre kuklu",
+            text: "Čo urobí húsenica, keď už dosť vyrastie?",
+            options: ["Zakuklí sa", "Zahrá sa na auto", "Skočí do vody"],
+            correct: 0
+          },
+          {
+            title: "Otázka pre kuklu",
+            text: "Čo nasleduje po veľkej húsenici?",
+            options: ["Kukla", "Lopta", "Snehuliak"],
+            correct: 0
+          }
         ],
         butterfly: [
-          { kind: "flower", emoji: "🌼", label: "Kvet", good: true, css: "item--flower" },
-          { kind: "flower", emoji: "🌺", label: "Kvet", good: true, css: "item--flower" },
-          { kind: "flower", emoji: "🌷", label: "Kvet", good: true, css: "item--flower" },
-          { kind: "leaf", emoji: "🍃", label: "Nie", good: false, css: "item--leaf item--danger" },
-          { kind: "rock", emoji: "🪨", label: "Au", good: false, css: "item--danger" },
-          { kind: "web", emoji: "🕸️", label: "Au", good: false, css: "item--danger" }
+          {
+            title: "Otázka pre motýľa",
+            text: "Čo pije motýľ z kvetov?",
+            options: ["Nektár", "Polievku", "Mlieko"],
+            correct: 0
+          },
+          {
+            title: "Otázka pre motýľa",
+            text: "Na čo si má motýľ sadať, aby mu nič neublížilo?",
+            options: ["Na kvety", "Na kamene", "Na pavučinu"],
+            correct: 0
+          }
         ]
       };
+
+      const SNAKE_DANGERS = ["🪨", "🕸️", "🍄", "🌵"];
+      const BUTTERFLY_FLOWERS = ["🌼", "🌸", "🌺", "🌷", "🌻"];
+      const BUTTERFLY_DANGERS = ["🪨", "🍃", "🕸️", "🍄"];
 
       const elements = {
         startForm: document.getElementById("start-form"),
         playerName: document.getElementById("player-name"),
         playerDisplay: document.getElementById("player-display"),
         scoreDisplay: document.getElementById("score-display"),
-        heartsDisplay: document.getElementById("hearts-display"),
-        timerDisplay: document.getElementById("timer-display"),
         phaseDisplay: document.getElementById("phase-display"),
+        goalDisplay: document.getElementById("goal-display"),
+        statusDisplay: document.getElementById("status-display"),
         progressLabel: document.getElementById("progress-label"),
         progressValue: document.getElementById("progress-value"),
         progressFill: document.getElementById("progress-fill"),
         promptDisplay: document.getElementById("prompt-display"),
-        creature: document.getElementById("creature"),
-        itemsLayer: document.getElementById("items-layer"),
-        feedbackLayer: document.getElementById("feedback-layer"),
-        transitionLayer: document.getElementById("transition-layer"),
+        worldTitle: document.getElementById("world-title"),
+        worldSubtitle: document.getElementById("world-subtitle"),
+        board: document.getElementById("board"),
+        snakeStage: document.getElementById("snake-stage"),
+        cocoonStage: document.getElementById("cocoon-stage"),
+        butterflyStage: document.getElementById("butterfly-stage"),
+        butterflyField: document.getElementById("butterfly-field"),
+        butterflyItems: document.getElementById("butterfly-items"),
+        butterfly: document.getElementById("butterfly"),
+        fieldMessage: document.getElementById("field-message"),
+        controlPad: document.getElementById("control-pad"),
+        controlButtons: Array.from(document.querySelectorAll("#control-pad button[data-dir]")),
         scoreList: document.getElementById("score-list"),
+        quizModal: document.getElementById("quiz-modal"),
+        quizTitle: document.getElementById("quiz-title"),
+        quizText: document.getElementById("quiz-text"),
+        quizOptions: document.getElementById("quiz-options"),
         endModal: document.getElementById("end-modal"),
         endTitle: document.getElementById("end-title"),
         endText: document.getElementById("end-text"),
@@ -1068,24 +985,32 @@
         closeModal: document.getElementById("close-modal")
       };
 
-      const game = {
-        running: false,
-        phase: "caterpillar",
+      const state = {
         playerName: "",
         score: 0,
-        hearts: STARTING_HEARTS,
-        timeLeft: ROUND_TIME,
-        growth: 0,
-        nectar: 0,
-        items: [],
-        spawnTimer: null,
-        tickTimer: null,
-        transitionTimer: null,
-        nextId: 1,
-        targetX: 18,
-        targetY: 76,
-        lastScoreId: null
+        phase: "idle",
+        statusText: "Hra ešte nezačala",
+        promptText: "Klikni na „Spustiť hru“. Potom zbieraj listy a vyhýbaj sa prekážkam.",
+        snake: [],
+        direction: { x: 1, y: 0 },
+        nextDirection: { x: 1, y: 0 },
+        leaf: null,
+        dangers: [],
+        snakeTimer: null,
+        cocoonTimer: null,
+        butterflySpawnTimer: null,
+        butterflyFrame: null,
+        butterflyItemTimers: [],
+        butterflyItems: [],
+        flowersCollected: 0,
+        butterflyPosition: { x: 160, y: 220 },
+        butterflyTarget: { x: 160, y: 220 },
+        currentQuestion: null,
+        lastScoreId: null,
+        ended: false
       };
+
+      const boardCells = [];
 
       function safeLoad(key, fallback) {
         try {
@@ -1104,12 +1029,41 @@
         }
       }
 
+      function createBoard() {
+        elements.board.innerHTML = "";
+
+        for (let row = 0; row < GRID_ROWS; row += 1) {
+          for (let col = 0; col < GRID_COLS; col += 1) {
+            const cell = document.createElement("div");
+            cell.className = "cell";
+            elements.board.appendChild(cell);
+            boardCells.push(cell);
+          }
+        }
+      }
+
+      function getCellIndex(x, y) {
+        return y * GRID_COLS + x;
+      }
+
+      function sameCell(a, b) {
+        return a && b && a.x === b.x && a.y === b.y;
+      }
+
+      function clamp(value, min, max) {
+        return Math.max(min, Math.min(max, value));
+      }
+
+      function randomItem(list) {
+        return list[Math.floor(Math.random() * list.length)];
+      }
+
       function loadStoredName() {
         const saved = safeLoad(STORAGE_NAME, "");
         if (typeof saved === "string" && saved.trim()) {
-          game.playerName = saved.trim();
-          elements.playerName.value = saved.trim();
-          elements.playerDisplay.textContent = saved.trim();
+          state.playerName = saved.trim();
+          elements.playerName.value = state.playerName;
+          elements.playerDisplay.textContent = state.playerName;
         }
       }
 
@@ -1125,12 +1079,13 @@
           score,
           result
         };
+
         const updated = [...loadScores(), entry]
           .sort((a, b) => b.score - a.score)
           .slice(0, 8);
 
         safeSave(STORAGE_SCORES, updated);
-        game.lastScoreId = entry.id;
+        state.lastScoreId = entry.id;
         renderScores();
       }
 
@@ -1150,7 +1105,7 @@
           const row = document.createElement("li");
           row.className = "score-row";
 
-          if (entry.id === game.lastScoreId) {
+          if (entry.id === state.lastScoreId) {
             row.classList.add("active");
           }
 
@@ -1178,310 +1133,590 @@
         });
       }
 
-      function resetGameState() {
-        clearTimers();
-        game.running = false;
-        game.phase = "caterpillar";
-        game.score = 0;
-        game.hearts = STARTING_HEARTS;
-        game.timeLeft = ROUND_TIME;
-        game.growth = 0;
-        game.nectar = 0;
-        game.items = [];
-        game.nextId = 1;
-        game.targetX = 18;
-        game.targetY = 76;
-        elements.itemsLayer.innerHTML = "";
-        elements.feedbackLayer.innerHTML = "";
-        elements.transitionLayer.innerHTML = "";
-        elements.transitionLayer.classList.remove("show");
-        elements.creature.dataset.phase = "caterpillar";
-        elements.creature.style.left = `${game.targetX}%`;
-        elements.creature.style.top = `${game.targetY}%`;
-        elements.creature.style.setProperty("--grow-scale", "1");
-        updateHud();
+      function clearLoops() {
+        window.clearInterval(state.snakeTimer);
+        window.clearTimeout(state.cocoonTimer);
+        window.clearInterval(state.butterflySpawnTimer);
+        window.cancelAnimationFrame(state.butterflyFrame);
+        state.butterflyItemTimers.forEach((timerId) => window.clearTimeout(timerId));
+        state.butterflyItemTimers = [];
       }
 
-      function clearTimers() {
-        window.clearInterval(game.spawnTimer);
-        window.clearInterval(game.tickTimer);
-        window.clearTimeout(game.transitionTimer);
+      function resetState() {
+        clearLoops();
+        state.score = 0;
+        state.phase = "idle";
+        state.statusText = "Hra ešte nezačala";
+        state.promptText = "Klikni na „Spustiť hru“. Potom zbieraj listy a vyhýbaj sa prekážkam.";
+        state.snake = [
+          { x: 3, y: 4 },
+          { x: 2, y: 4 },
+          { x: 1, y: 4 },
+          { x: 0, y: 4 }
+        ];
+        state.direction = { x: 1, y: 0 };
+        state.nextDirection = { x: 1, y: 0 };
+        state.leaf = { x: 9, y: 3 };
+        state.dangers = [
+          { x: 7, y: 2, emoji: "🪨" },
+          { x: 10, y: 7, emoji: "🕸️" },
+          { x: 5, y: 8, emoji: "🍄" }
+        ];
+        state.flowersCollected = 0;
+        state.butterflyItems = [];
+        state.butterflyPosition = { x: 160, y: 220 };
+        state.butterflyTarget = { x: 160, y: 220 };
+        state.currentQuestion = null;
+        state.ended = false;
+        elements.quizModal.classList.remove("open");
+        elements.endModal.classList.remove("open");
+        showStage("snake");
+        renderButterflyItems();
+        updateFieldMessage("Motýľ čaká na premenu.");
+        updateHud();
+        renderBoard();
+        setControlPadEnabled(false);
+      }
+
+      function showStage(stage) {
+        elements.snakeStage.hidden = stage !== "snake";
+        elements.cocoonStage.hidden = stage !== "cocoon";
+        elements.butterflyStage.hidden = stage !== "butterfly";
+      }
+
+      function setControlPadEnabled(enabled) {
+        elements.controlButtons.forEach((button) => {
+          button.disabled = !enabled;
+        });
       }
 
       function updateHud() {
-        const phase = PHASES[game.phase];
-        elements.playerDisplay.textContent = game.playerName || "Pripravený";
-        elements.scoreDisplay.textContent = String(game.score);
-        elements.heartsDisplay.textContent = "💚".repeat(game.hearts) + "🤍".repeat(Math.max(0, STARTING_HEARTS - game.hearts));
-        elements.timerDisplay.textContent = `${game.timeLeft} s`;
-        elements.phaseDisplay.textContent = `${phase.icon} ${phase.label}`;
-        elements.promptDisplay.textContent = phase.prompt;
+        elements.playerDisplay.textContent = state.playerName || "Pripravený";
+        elements.scoreDisplay.textContent = String(state.score);
+        elements.phaseDisplay.textContent = phaseLabel();
+        elements.statusDisplay.textContent = state.statusText;
+        elements.promptDisplay.textContent = state.promptText;
 
-        let current = 0;
-        let total = 1;
-        let label = "";
-
-        if (game.phase === "caterpillar") {
-          current = game.growth;
-          total = CATERPILLAR_GOAL;
-          label = `${phase.progress}: ${current} / ${total}`;
-        } else if (game.phase === "butterfly") {
-          current = game.nectar;
-          total = BUTTERFLY_GOAL;
-          label = `${phase.progress}: ${current} / ${total}`;
-        } else {
-          current = 1;
-          total = 1;
-          label = "Premena prebieha";
+        if (state.phase === "butterfly") {
+          const percent = Math.round((state.flowersCollected / TARGET_FLOWERS) * 100);
+          elements.goalDisplay.textContent = `${state.flowersCollected} / ${TARGET_FLOWERS}`;
+          elements.progressLabel.textContent = "Nazbieraj kvety pre motýľa";
+          elements.progressValue.textContent = `${percent}%`;
+          elements.progressFill.style.width = `${percent}%`;
+          elements.worldTitle.textContent = "Lúka pre motýľa";
+          elements.worldSubtitle.textContent = "Veď motýľa kurzorom alebo ťuknutím po lúke.";
+          return;
         }
 
-        const percent = Math.max(0, Math.min(100, Math.round((current / total) * 100)));
-        elements.progressLabel.textContent = label;
+        if (state.phase === "cocoon" || state.phase === "question-cocoon" || state.phase === "question-butterfly") {
+          const percent = 100;
+          elements.goalDisplay.textContent = `${state.snake.length} / ${TARGET_LENGTH}`;
+          elements.progressLabel.textContent = "Húsenica dorástla";
+          elements.progressValue.textContent = `${percent}%`;
+          elements.progressFill.style.width = `${percent}%`;
+          elements.worldTitle.textContent = "Premena v kukle";
+          elements.worldSubtitle.textContent = "Odpoveď správne, aby hra pokračovala.";
+          return;
+        }
+
+        const percent = Math.round((state.snake.length / TARGET_LENGTH) * 100);
+        elements.goalDisplay.textContent = `${state.snake.length} / ${TARGET_LENGTH}`;
+        elements.progressLabel.textContent = "Dorásť na 10 článkov";
         elements.progressValue.textContent = `${percent}%`;
         elements.progressFill.style.width = `${percent}%`;
+        elements.worldTitle.textContent = "Lúka pre húsenicu";
+        elements.worldSubtitle.textContent = "Použi šípky alebo tlačidlá smeru.";
+      }
+
+      function phaseLabel() {
+        if (state.phase === "butterfly") {
+          return "🦋 Motýľ";
+        }
+
+        if (state.phase === "cocoon" || state.phase === "question-butterfly") {
+          return "🟤 Kukla";
+        }
+
+        if (state.phase === "question-cocoon") {
+          return "❓ Otázka";
+        }
+
+        return "🐛 Húsenica";
+      }
+
+      function renderBoard() {
+        boardCells.forEach((cell) => {
+          cell.className = "cell";
+          cell.textContent = "";
+        });
+
+        if (state.leaf) {
+          const leafCell = boardCells[getCellIndex(state.leaf.x, state.leaf.y)];
+          leafCell.classList.add("cell--leaf");
+          leafCell.textContent = "🍃";
+        }
+
+        state.dangers.forEach((danger) => {
+          const dangerCell = boardCells[getCellIndex(danger.x, danger.y)];
+          dangerCell.classList.add("cell--danger");
+          dangerCell.textContent = danger.emoji;
+        });
+
+        state.snake.forEach((segment, index) => {
+          const snakeCell = boardCells[getCellIndex(segment.x, segment.y)];
+          snakeCell.classList.add(index === 0 ? "cell--head" : "cell--body");
+          snakeCell.textContent = index === 0 ? "🙂" : "";
+        });
+      }
+
+      function allOccupiedCells() {
+        const occupied = new Set();
+
+        state.snake.forEach((segment) => {
+          occupied.add(`${segment.x},${segment.y}`);
+        });
+
+        state.dangers.forEach((danger) => {
+          occupied.add(`${danger.x},${danger.y}`);
+        });
+
+        if (state.leaf) {
+          occupied.add(`${state.leaf.x},${state.leaf.y}`);
+        }
+
+        return occupied;
+      }
+
+      function randomFreeCell(extraBlocked) {
+        const blocked = extraBlocked || new Set();
+        const occupied = allOccupiedCells();
+        const free = [];
+
+        for (let y = 0; y < GRID_ROWS; y += 1) {
+          for (let x = 0; x < GRID_COLS; x += 1) {
+            const key = `${x},${y}`;
+            if (!occupied.has(key) && !blocked.has(key)) {
+              free.push({ x, y });
+            }
+          }
+        }
+
+        if (!free.length) {
+          return null;
+        }
+
+        return free[Math.floor(Math.random() * free.length)];
+      }
+
+      function placeLeafAndDangers() {
+        state.leaf = null;
+        state.dangers = [];
+
+        const leafCell = randomFreeCell();
+        if (!leafCell) {
+          return;
+        }
+
+        state.leaf = leafCell;
+        const blocked = new Set([`${leafCell.x},${leafCell.y}`]);
+        const dangerCount = 4;
+
+        for (let index = 0; index < dangerCount; index += 1) {
+          const cell = randomFreeCell(blocked);
+          if (!cell) {
+            break;
+          }
+
+          blocked.add(`${cell.x},${cell.y}`);
+          state.dangers.push({
+            x: cell.x,
+            y: cell.y,
+            emoji: randomItem(SNAKE_DANGERS)
+          });
+        }
       }
 
       function startGame() {
         const enteredName = (elements.playerName.value || "").trim();
-        game.playerName = enteredName || "Malý objaviteľ";
-        safeSave(STORAGE_NAME, game.playerName);
-        game.lastScoreId = null;
+        state.playerName = enteredName || "Malý objaviteľ";
+        state.lastScoreId = null;
+        safeSave(STORAGE_NAME, state.playerName);
 
-        resetGameState();
-        game.running = true;
-        closeModal();
+        resetState();
+        state.phase = "caterpillar";
+        state.statusText = "Húsenica sa rozbehla";
+        state.promptText = "Zbieraj listy. Ak trafíš kameň, pavučinu, hubu, stenu alebo seba, hra končí.";
+        placeLeafAndDangers();
+        renderBoard();
         updateHud();
-        populateInitialItems();
-        startTimers();
+        setControlPadEnabled(true);
+        startSnakeLoop();
       }
 
-      function startTimers() {
-        window.clearInterval(game.spawnTimer);
-        window.clearInterval(game.tickTimer);
+      function startSnakeLoop() {
+        window.clearInterval(state.snakeTimer);
+        state.snakeTimer = window.setInterval(stepSnake, SNAKE_SPEED_MS);
+      }
 
-        game.spawnTimer = window.setInterval(() => {
-          if (!game.running) {
+      function setDirection(directionName) {
+        if (state.phase !== "caterpillar") {
+          return;
+        }
+
+        const map = {
+          up: { x: 0, y: -1 },
+          down: { x: 0, y: 1 },
+          left: { x: -1, y: 0 },
+          right: { x: 1, y: 0 }
+        };
+
+        const next = map[directionName];
+        if (!next) {
+          return;
+        }
+
+        if (state.direction.x + next.x === 0 && state.direction.y + next.y === 0) {
+          return;
+        }
+
+        state.nextDirection = next;
+      }
+
+      function stepSnake() {
+        if (state.phase !== "caterpillar") {
+          return;
+        }
+
+        state.direction = state.nextDirection;
+        const head = state.snake[0];
+        const newHead = {
+          x: head.x + state.direction.x,
+          y: head.y + state.direction.y
+        };
+
+        if (newHead.x < 0 || newHead.x >= GRID_COLS || newHead.y < 0 || newHead.y >= GRID_ROWS) {
+          endGame("Húsenica narazila", "Húsenica vyšla mimo lúky.", "Narazila do okraja");
+          return;
+        }
+
+        if (state.snake.some((segment) => sameCell(segment, newHead))) {
+          endGame("Húsenica sa zamotala", "Snake húsenica narazila do seba.", "Narazila do seba");
+          return;
+        }
+
+        if (state.dangers.some((danger) => sameCell(danger, newHead))) {
+          endGame("Au, to bolelo", "Húsenica trafila niečo nebezpečné.", "Trafila prekážku");
+          return;
+        }
+
+        state.snake.unshift(newHead);
+
+        if (sameCell(newHead, state.leaf)) {
+          state.score += 12;
+          state.statusText = "Mňam, ďalší list";
+          state.promptText = "Pokračuj, kým húsenica nedorastie na 10 článkov.";
+
+          if (state.snake.length >= TARGET_LENGTH) {
+            renderBoard();
+            updateHud();
+            openQuiz("cocoon");
             return;
           }
 
-          if (game.items.length < 8) {
-            spawnItem();
-          }
-        }, game.phase === "butterfly" ? 980 : 850);
-
-        game.tickTimer = window.setInterval(() => {
-          if (!game.running) {
-            return;
-          }
-
-          game.timeLeft -= 1;
-          updateHud();
-
-          if (game.timeLeft <= 0) {
-            endGame("Čas vypršal", "Skús ešte raz nazbierať viac dobrôt.", "Čas vypršal");
-          }
-        }, 1000);
-      }
-
-      function populateInitialItems() {
-        game.items = [];
-        renderItems();
-
-        for (let index = 0; index < 5; index += 1) {
-          spawnItem();
+          placeLeafAndDangers();
+        } else {
+          state.snake.pop();
         }
+
+        renderBoard();
+        updateHud();
       }
 
-      function randomBetween(min, max) {
-        return Math.random() * (max - min) + min;
-      }
+      function openQuiz(kind) {
+        clearLoops();
+        setControlPadEnabled(false);
+        state.phase = kind === "cocoon" ? "question-cocoon" : "question-butterfly";
+        state.statusText = "Otázka rozhodne o premene";
+        state.promptText = "Vyber správnu odpoveď.";
+        updateHud();
 
-      function choosePoolItem() {
-        const pool = ITEM_POOLS[game.phase === "butterfly" ? "butterfly" : "caterpillar"];
-        const choice = pool[Math.floor(Math.random() * pool.length)];
-        return { ...choice };
-      }
+        const question = { ...randomItem(QUESTIONS[kind]), kind };
+        state.currentQuestion = question;
+        elements.quizTitle.textContent = question.title;
+        elements.quizText.textContent = question.text;
+        elements.quizOptions.innerHTML = "";
 
-      function spawnItem() {
-        const item = choosePoolItem();
-        item.id = game.nextId;
-        game.nextId += 1;
-        item.x = randomBetween(8, 92);
-        item.y = randomBetween(18, 74);
-        item.delay = randomBetween(0, 1.7);
-
-        game.items.push(item);
-        renderItems();
-
-        window.setTimeout(() => {
-          removeItem(item.id);
-        }, 5600);
-      }
-
-      function removeItem(id) {
-        const lengthBefore = game.items.length;
-        game.items = game.items.filter((item) => item.id !== id);
-
-        if (game.items.length !== lengthBefore) {
-          renderItems();
-        }
-      }
-
-      function renderItems() {
-        elements.itemsLayer.innerHTML = "";
-
-        game.items.forEach((item) => {
+        question.options.forEach((option, index) => {
           const button = document.createElement("button");
-          button.className = `item ${item.css}`;
+          button.className = "quiz-button";
           button.type = "button";
-          button.style.left = `${item.x}%`;
-          button.style.top = `${item.y}%`;
-          button.style.animationDelay = `${item.delay}s`;
-          button.setAttribute("aria-label", item.good ? item.label : "Pozor");
-          button.addEventListener("click", () => handleItemClick(item.id));
+          button.textContent = option;
+          button.addEventListener("click", () => answerQuiz(index));
+          elements.quizOptions.appendChild(button);
+        });
 
-          const emoji = document.createElement("span");
-          emoji.className = "item__emoji";
-          emoji.textContent = item.emoji;
+        elements.quizModal.classList.add("open");
+      }
 
-          const label = document.createElement("span");
-          label.className = "item__label";
-          label.textContent = item.label;
+      function answerQuiz(choiceIndex) {
+        if (!state.currentQuestion) {
+          return;
+        }
 
-          button.append(emoji, label);
-          elements.itemsLayer.appendChild(button);
+        const question = state.currentQuestion;
+        const correct = choiceIndex === question.correct;
+        elements.quizModal.classList.remove("open");
+        state.currentQuestion = null;
+
+        if (!correct) {
+          endGame("Nesprávna odpoveď", "Premena sa nepodarila, lebo odpoveď nebola správna.", "Nesprávna odpoveď");
+          return;
+        }
+
+        if (question.kind === "cocoon") {
+          startCocoonPhase();
+          return;
+        }
+
+        startButterflyPhase();
+      }
+
+      function startCocoonPhase() {
+        state.phase = "cocoon";
+        state.score += 20;
+        state.statusText = "Húsenica sa zakuklila";
+        state.promptText = "Kukla čaká na druhú otázku.";
+        showStage("cocoon");
+        updateHud();
+
+        state.cocoonTimer = window.setTimeout(() => {
+          openQuiz("butterfly");
+        }, 1800);
+      }
+
+      function startButterflyPhase() {
+        state.phase = "butterfly";
+        state.score += 20;
+        state.flowersCollected = 0;
+        state.statusText = "Motýľ poletuje";
+        state.promptText = "Veď motýľa kurzorom na kvety. Kameňom, listom a pavučine sa vyhni.";
+        state.butterflyItems = [];
+        renderButterflyItems();
+        showStage("butterfly");
+        updateHud();
+        updateFieldMessage("Veď motýľa na kvety.");
+        setControlPadEnabled(false);
+        setupButterflyStartPosition();
+        spawnInitialButterflyItems();
+        startButterflyLoops();
+      }
+
+      function setupButterflyStartPosition() {
+        const rect = elements.butterflyField.getBoundingClientRect();
+        const x = rect.width * 0.25;
+        const y = rect.height * 0.55;
+        state.butterflyPosition = { x, y };
+        state.butterflyTarget = { x, y };
+        placeButterfly();
+      }
+
+      function placeButterfly() {
+        elements.butterfly.style.left = `${state.butterflyPosition.x}px`;
+        elements.butterfly.style.top = `${state.butterflyPosition.y}px`;
+      }
+
+      function updateFieldMessage(text) {
+        elements.fieldMessage.textContent = text;
+      }
+
+      function spawnInitialButterflyItems() {
+        for (let index = 0; index < 6; index += 1) {
+          spawnButterflyItem(index < 3);
+        }
+      }
+
+      function startButterflyLoops() {
+        window.clearInterval(state.butterflySpawnTimer);
+        state.butterflySpawnTimer = window.setInterval(() => {
+          if (state.phase === "butterfly" && state.butterflyItems.length < 8) {
+            spawnButterflyItem(false);
+          }
+        }, 1100);
+
+        animateButterfly();
+      }
+
+      function spawnButterflyItem(forceFlower) {
+        const rect = elements.butterflyField.getBoundingClientRect();
+        if (!rect.width || !rect.height) {
+          return;
+        }
+
+        let attempts = 0;
+        let candidate = null;
+
+        while (attempts < 30) {
+          attempts += 1;
+          const x = clamp(Math.random() * (rect.width - 120) + 60, 50, rect.width - 50);
+          const y = clamp(Math.random() * (rect.height - 150) + 90, 70, rect.height - 40);
+
+          const tooCloseToButterfly = Math.hypot(x - state.butterflyPosition.x, y - state.butterflyPosition.y) < 120;
+          const overlaps = state.butterflyItems.some((item) => Math.hypot(x - item.x, y - item.y) < 80);
+
+          if (!tooCloseToButterfly && !overlaps) {
+            candidate = { x, y };
+            break;
+          }
+        }
+
+        if (!candidate) {
+          return;
+        }
+
+        const isFlower = forceFlower || Math.random() < 0.62;
+        const item = {
+          id: `${Date.now()}-${Math.random().toString(16).slice(2, 7)}`,
+          type: isFlower ? "flower" : "danger",
+          emoji: isFlower ? randomItem(BUTTERFLY_FLOWERS) : randomItem(BUTTERFLY_DANGERS),
+          x: candidate.x,
+          y: candidate.y
+        };
+
+        state.butterflyItems.push(item);
+        renderButterflyItems();
+
+        const timerId = window.setTimeout(() => {
+          removeButterflyItem(item.id);
+        }, isFlower ? 7000 : 8200);
+
+        state.butterflyItemTimers.push(timerId);
+      }
+
+      function renderButterflyItems() {
+        elements.butterflyItems.innerHTML = "";
+
+        state.butterflyItems.forEach((item) => {
+          const div = document.createElement("div");
+          div.className = `butterfly-item butterfly-item--${item.type === "flower" ? "flower" : "danger"}`;
+          div.style.left = `${item.x}px`;
+          div.style.top = `${item.y}px`;
+          div.textContent = item.emoji;
+          elements.butterflyItems.appendChild(div);
         });
       }
 
-      function moveCreature(x, y) {
-        game.targetX = x;
-        game.targetY = y;
-        elements.creature.style.left = `${x}%`;
-        elements.creature.style.top = `${y}%`;
+      function removeButterflyItem(id) {
+        const before = state.butterflyItems.length;
+        state.butterflyItems = state.butterflyItems.filter((item) => item.id !== id);
+
+        if (state.butterflyItems.length !== before) {
+          renderButterflyItems();
+        }
       }
 
-      function flashCreature(className) {
-        elements.creature.classList.remove("good", "hurt");
-        void elements.creature.offsetWidth;
-        elements.creature.classList.add(className);
-        window.setTimeout(() => {
-          elements.creature.classList.remove(className);
-        }, 420);
-      }
-
-      function showFeedback(text, x, y, good) {
-        const pop = document.createElement("div");
-        pop.className = `feedback ${good ? "good" : "bad"}`;
-        pop.textContent = text;
-        pop.style.left = `${x}%`;
-        pop.style.top = `${y}%`;
-        elements.feedbackLayer.appendChild(pop);
-
-        window.setTimeout(() => {
-          pop.remove();
-        }, 880);
-      }
-
-      function handleItemClick(id) {
-        if (!game.running) {
+      function animateButterfly() {
+        if (state.phase !== "butterfly") {
           return;
         }
 
-        const item = game.items.find((candidate) => candidate.id === id);
-        if (!item) {
+        state.butterflyPosition.x += (state.butterflyTarget.x - state.butterflyPosition.x) * 0.14;
+        state.butterflyPosition.y += (state.butterflyTarget.y - state.butterflyPosition.y) * 0.14;
+        placeButterfly();
+        checkButterflyCollisions();
+        state.butterflyFrame = window.requestAnimationFrame(animateButterfly);
+      }
+
+      function checkButterflyCollisions() {
+        if (state.phase !== "butterfly") {
           return;
         }
 
-        moveCreature(item.x, item.y + (game.phase === "butterfly" ? -3 : 2));
-        removeItem(id);
+        const hit = state.butterflyItems.find((item) => Math.hypot(state.butterflyPosition.x - item.x, state.butterflyPosition.y - item.y) < 44);
 
-        if (item.good) {
-          if (game.phase === "caterpillar") {
-            game.score += 12;
-            game.growth += 1;
-            elements.creature.style.setProperty("--grow-scale", `${1 + game.growth * 0.06}`);
-            showFeedback("Mňam list!", item.x, item.y, true);
-          } else if (game.phase === "butterfly") {
-            game.score += 15;
-            game.nectar += 1;
-            showFeedback("Sladký nektár!", item.x, item.y, true);
-          }
-
-          flashCreature("good");
-        } else {
-          game.hearts = Math.max(0, game.hearts - 1);
-          game.score = Math.max(0, game.score - 6);
-          showFeedback(game.phase === "caterpillar" ? "Au! Húsenica papá iba listy." : "Au! Motýľ potrebuje kvety.", item.x, item.y, false);
-          flashCreature("hurt");
+        if (!hit) {
+          return;
         }
 
+        removeButterflyItem(hit.id);
+
+        if (hit.type === "danger") {
+          endGame("Motýľ sa zranil", "Motýľ narazil na niečo, čomu sa mal vyhnúť.", "Motýľ trafil prekážku");
+          return;
+        }
+
+        state.score += 10;
+        state.flowersCollected += 1;
+        state.statusText = "Motýľ našiel kvet";
+        state.promptText = "Pokračuj. Zbieraj kvety a vyhýbaj sa ostatným veciam.";
+        updateFieldMessage("Kvietok nazbieraný.");
         updateHud();
 
-        if (game.hearts <= 0) {
-          endGame("Pozor na zlé kliknutia", "Tvoja húsenica potrebuje bezpečné jedlo.", "Došli srdiečka");
-          return;
-        }
-
-        if (game.phase === "caterpillar" && game.growth >= CATERPILLAR_GOAL) {
-          beginTransformation();
-          return;
-        }
-
-        if (game.phase === "butterfly" && game.nectar >= BUTTERFLY_GOAL) {
-          game.score += 30;
+        if (state.flowersCollected >= TARGET_FLOWERS) {
+          state.score += 30;
           updateHud();
-          endGame("Motýľ oslavuje", "Premena sa podarila a záhrada je plná nektáru.", "Premena dokončená");
+          endGame("Motýľ vyhral", "Motýľ nazbieral dosť kvetov a lúka oslavuje.", "Premena dokončená");
+          return;
+        }
+
+        if (state.butterflyItems.length < 6) {
+          spawnButterflyItem(true);
         }
       }
 
-      function beginTransformation() {
-        game.running = false;
-        clearTimers();
-        game.items = [];
-        renderItems();
-        elements.creature.dataset.phase = "cocoon";
-        elements.transitionLayer.classList.add("show");
-        elements.transitionLayer.innerHTML = '<div class="transition-bubble"><strong>Zakuklenie</strong><span>Húsenica sa mení na motýľa.</span></div>';
-        game.phase = "cocoon";
-        game.score += 20;
-        updateHud();
+      function handleButterflyPointer(event) {
+        if (state.phase !== "butterfly") {
+          return;
+        }
 
-        game.transitionTimer = window.setTimeout(() => {
-          game.phase = "butterfly";
-          game.running = true;
-          elements.creature.dataset.phase = "butterfly";
-          moveCreature(20, 56);
-          elements.transitionLayer.innerHTML = '<div class="transition-bubble"><strong>Poletuj!</strong><span>Teraz klikaj iba na kvety.</span></div>';
-          updateHud();
-          populateInitialItems();
-          startTimers();
+        const rect = elements.butterflyField.getBoundingClientRect();
+        const clientX = event.clientX;
+        const clientY = event.clientY;
 
-          game.transitionTimer = window.setTimeout(() => {
-            elements.transitionLayer.classList.remove("show");
-            elements.transitionLayer.innerHTML = "";
-          }, 1500);
-        }, 2200);
+        state.butterflyTarget.x = clamp(clientX - rect.left, 36, rect.width - 36);
+        state.butterflyTarget.y = clamp(clientY - rect.top, 56, rect.height - 28);
       }
 
       function endGame(title, text, resultLabel) {
-        if (!game.phase) {
+        if (state.ended) {
           return;
         }
 
-        game.running = false;
-        clearTimers();
-        elements.itemsLayer.innerHTML = "";
-        game.items = [];
-        saveScore(game.playerName || "Malý objaviteľ", game.score, resultLabel);
+        state.ended = true;
+        clearLoops();
+        setControlPadEnabled(false);
+        elements.quizModal.classList.remove("open");
+
+        saveScore(state.playerName || "Malý objaviteľ", state.score, resultLabel);
 
         elements.endTitle.textContent = title;
         elements.endText.textContent = text;
-        elements.endScore.textContent = `${game.score} bodov`;
+        elements.endScore.textContent = `${state.score} bodov`;
         elements.endModal.classList.add("open");
       }
 
-      function closeModal() {
-        elements.endModal.classList.remove("open");
+      function handleKeydown(event) {
+        const keys = {
+          ArrowUp: "up",
+          ArrowDown: "down",
+          ArrowLeft: "left",
+          ArrowRight: "right",
+          w: "up",
+          s: "down",
+          a: "left",
+          d: "right",
+          W: "up",
+          S: "down",
+          A: "left",
+          D: "right"
+        };
+
+        const direction = keys[event.key];
+        if (!direction) {
+          return;
+        }
+
+        event.preventDefault();
+        setDirection(direction);
       }
 
       elements.startForm.addEventListener("submit", (event) => {
@@ -1489,18 +1724,30 @@
         startGame();
       });
 
+      elements.controlButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          setDirection(button.dataset.dir);
+        });
+      });
+
+      elements.butterflyField.addEventListener("pointermove", handleButterflyPointer);
+      elements.butterflyField.addEventListener("pointerdown", handleButterflyPointer);
+
+      document.addEventListener("keydown", handleKeydown);
+
       elements.playAgain.addEventListener("click", () => {
-        closeModal();
+        elements.endModal.classList.remove("open");
         startGame();
       });
 
       elements.closeModal.addEventListener("click", () => {
-        closeModal();
+        elements.endModal.classList.remove("open");
       });
 
+      createBoard();
       loadStoredName();
       renderScores();
-      resetGameState();
+      resetState();
     </script>
   </body>
 </html>
