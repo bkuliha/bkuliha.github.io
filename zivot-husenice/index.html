@@ -1,0 +1,1506 @@
+<!DOCTYPE html>
+<html lang="sk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Život húsenice</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --sky-top: #8fe1ff;
+        --sky-bottom: #f7fbff;
+        --grass: #79d65a;
+        --grass-dark: #389635;
+        --panel: rgba(255, 255, 255, 0.88);
+        --ink: #23411b;
+        --pink: #ff6fae;
+        --yellow: #ffd84d;
+        --leaf: #45b54a;
+        --leaf-dark: #21863c;
+        --danger: #ff7a7a;
+        --shadow: rgba(37, 77, 32, 0.18);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Trebuchet MS", "Comic Sans MS", "Verdana", sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at 15% 18%, rgba(255, 255, 255, 0.9), transparent 13%),
+          radial-gradient(circle at 85% 14%, rgba(255, 255, 255, 0.7), transparent 10%),
+          linear-gradient(180deg, var(--sky-top) 0%, #caf6ff 48%, #f4ffe5 100%);
+      }
+
+      body::before,
+      body::after {
+        content: "";
+        position: fixed;
+        inset: auto;
+        z-index: -1;
+        pointer-events: none;
+      }
+
+      body::before {
+        width: 220px;
+        height: 220px;
+        top: 20px;
+        right: 20px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(255, 238, 124, 0.95) 0%, rgba(255, 214, 74, 0.95) 38%, rgba(255, 214, 74, 0) 68%);
+      }
+
+      body::after {
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 220px;
+        background:
+          radial-gradient(circle at 10% 110%, #8ce66a 0 22%, transparent 23%),
+          radial-gradient(circle at 24% 115%, #80d05f 0 21%, transparent 22%),
+          radial-gradient(circle at 38% 108%, #8ce66a 0 24%, transparent 25%),
+          radial-gradient(circle at 54% 112%, #74cf53 0 22%, transparent 23%),
+          radial-gradient(circle at 72% 110%, #7edc5d 0 24%, transparent 25%),
+          radial-gradient(circle at 88% 114%, #68bc49 0 21%, transparent 22%);
+      }
+
+      .app {
+        width: min(1180px, calc(100% - 24px));
+        margin: 18px auto 28px;
+        display: grid;
+        gap: 18px;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1.2fr) minmax(280px, 360px);
+        gap: 18px;
+      }
+
+      .card {
+        background: var(--panel);
+        border: 3px solid rgba(255, 255, 255, 0.72);
+        border-radius: 28px;
+        box-shadow: 0 18px 40px var(--shadow);
+        backdrop-filter: blur(10px);
+      }
+
+      .intro {
+        padding: 28px;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .intro::after {
+        content: "";
+        position: absolute;
+        right: -10px;
+        bottom: -14px;
+        width: 170px;
+        height: 170px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0));
+      }
+
+      h1,
+      h2,
+      p {
+        margin: 0;
+      }
+
+      .kicker {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 14px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.74);
+        font-size: 0.95rem;
+        font-weight: 700;
+      }
+
+      .intro h1 {
+        margin-top: 12px;
+        font-size: clamp(2.2rem, 4vw, 4rem);
+        line-height: 0.95;
+        color: #1f7a22;
+        text-shadow: 0 3px 0 rgba(255, 255, 255, 0.6);
+      }
+
+      .intro p {
+        margin-top: 14px;
+        max-width: 56ch;
+        font-size: 1.08rem;
+        line-height: 1.5;
+      }
+
+      .steps {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 18px;
+      }
+
+      .step {
+        padding: 12px 16px;
+        border-radius: 20px;
+        font-weight: 700;
+        background: rgba(255, 255, 255, 0.76);
+        box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.55);
+      }
+
+      .step strong {
+        display: block;
+        font-size: 1.05rem;
+      }
+
+      .setup,
+      .scores {
+        padding: 22px;
+      }
+
+      .setup h2,
+      .scores h2 {
+        font-size: 1.45rem;
+        margin-bottom: 12px;
+      }
+
+      .setup p,
+      .scores p {
+        line-height: 1.45;
+      }
+
+      .setup form {
+        margin-top: 14px;
+        display: grid;
+        gap: 12px;
+      }
+
+      label {
+        font-weight: 700;
+      }
+
+      input[type="text"] {
+        width: 100%;
+        border: 3px solid rgba(70, 144, 63, 0.25);
+        border-radius: 18px;
+        padding: 14px 16px;
+        font: inherit;
+        font-size: 1.08rem;
+        background: rgba(255, 255, 255, 0.96);
+      }
+
+      input[type="text"]:focus {
+        outline: none;
+        border-color: rgba(51, 166, 56, 0.8);
+        box-shadow: 0 0 0 4px rgba(140, 224, 102, 0.25);
+      }
+
+      .button {
+        border: 0;
+        border-radius: 999px;
+        padding: 14px 20px;
+        font: inherit;
+        font-weight: 800;
+        font-size: 1.05rem;
+        cursor: pointer;
+        color: #fff;
+        background: linear-gradient(180deg, #ff8ec0, #ff5a94);
+        box-shadow: 0 10px 18px rgba(255, 90, 148, 0.28);
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+      }
+
+      .button:hover,
+      .button:focus-visible {
+        transform: translateY(-2px) scale(1.01);
+        box-shadow: 0 14px 24px rgba(255, 90, 148, 0.32);
+      }
+
+      .button.secondary {
+        background: linear-gradient(180deg, #72ca53, #3ba240);
+        box-shadow: 0 10px 18px rgba(59, 162, 64, 0.25);
+      }
+
+      .tiny-note {
+        font-size: 0.95rem;
+        color: rgba(35, 65, 27, 0.78);
+      }
+
+      .dashboard {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .info-box {
+        padding: 16px 18px;
+        text-align: center;
+      }
+
+      .info-box span {
+        display: block;
+        font-size: 0.9rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: rgba(35, 65, 27, 0.72);
+      }
+
+      .info-box strong {
+        display: block;
+        margin-top: 6px;
+        font-size: clamp(1.15rem, 2.4vw, 1.8rem);
+      }
+
+      .phase-badge {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 14px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.72);
+      }
+
+      .progress-card {
+        grid-column: span 2;
+        padding: 16px 20px;
+      }
+
+      .progress-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        font-weight: 700;
+      }
+
+      .progress-track {
+        margin-top: 12px;
+        height: 18px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.65);
+        overflow: hidden;
+      }
+
+      .progress-fill {
+        width: 0;
+        height: 100%;
+        border-radius: inherit;
+        background: linear-gradient(90deg, #7bd83e, #f7dd57, #ff96bf);
+        transition: width 0.3s ease;
+      }
+
+      .prompt {
+        padding: 0 4px;
+        font-size: 1.1rem;
+        font-weight: 800;
+        text-align: center;
+      }
+
+      .world-card {
+        padding: 14px;
+      }
+
+      .world {
+        position: relative;
+        min-height: 560px;
+        overflow: hidden;
+        border-radius: 28px;
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.38), rgba(255, 255, 255, 0) 18%),
+          linear-gradient(180deg, #a7ebff 0%, #d9fbff 35%, #d5f6b0 35%, #67c84f 100%);
+        box-shadow: inset 0 -18px 40px rgba(31, 119, 40, 0.18);
+      }
+
+      .world::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          radial-gradient(circle at 17% 16%, rgba(255, 255, 255, 0.92) 0 5%, transparent 5.2%),
+          radial-gradient(circle at 21% 15%, rgba(255, 255, 255, 0.9) 0 6%, transparent 6.2%),
+          radial-gradient(circle at 25% 16%, rgba(255, 255, 255, 0.88) 0 5%, transparent 5.2%),
+          radial-gradient(circle at 76% 18%, rgba(255, 255, 255, 0.94) 0 6%, transparent 6.2%),
+          radial-gradient(circle at 81% 17%, rgba(255, 255, 255, 0.86) 0 5%, transparent 5.2%),
+          radial-gradient(circle at 85% 18%, rgba(255, 255, 255, 0.82) 0 6%, transparent 6.2%);
+        opacity: 0.95;
+        pointer-events: none;
+      }
+
+      .world::after {
+        content: "";
+        position: absolute;
+        inset: auto 0 0;
+        height: 130px;
+        background:
+          radial-gradient(circle at 8% 100%, #5fb848 0 28%, transparent 29%),
+          radial-gradient(circle at 22% 110%, #70cb52 0 29%, transparent 30%),
+          radial-gradient(circle at 40% 102%, #61c94a 0 30%, transparent 31%),
+          radial-gradient(circle at 60% 107%, #57ba43 0 29%, transparent 30%),
+          radial-gradient(circle at 79% 102%, #70cf57 0 28%, transparent 29%),
+          radial-gradient(circle at 94% 112%, #53a83e 0 28%, transparent 29%);
+        pointer-events: none;
+      }
+
+      .decor,
+      .items-layer,
+      .feedback-layer,
+      .transition-layer {
+        position: absolute;
+        inset: 0;
+      }
+
+      .decor-flower {
+        position: absolute;
+        font-size: clamp(2rem, 4vw, 3rem);
+        filter: drop-shadow(0 8px 6px rgba(41, 107, 29, 0.18));
+        animation: sway 3.2s ease-in-out infinite;
+      }
+
+      .decor-flower:nth-child(2n) {
+        animation-duration: 4.4s;
+      }
+
+      .item {
+        position: absolute;
+        width: 84px;
+        height: 84px;
+        border: 0;
+        border-radius: 24px;
+        display: grid;
+        place-items: center;
+        gap: 4px;
+        color: #1f3d19;
+        font: inherit;
+        font-weight: 800;
+        cursor: pointer;
+        transform: translate(-50%, -50%);
+        transition: transform 0.15s ease, box-shadow 0.2s ease, opacity 0.18s ease;
+        box-shadow: 0 12px 22px rgba(42, 94, 35, 0.18);
+        animation: bob 2.6s ease-in-out infinite;
+      }
+
+      .item:hover,
+      .item:focus-visible {
+        transform: translate(-50%, -54%) scale(1.06);
+      }
+
+      .item__emoji {
+        font-size: 2rem;
+        line-height: 1;
+      }
+
+      .item__label {
+        font-size: 0.82rem;
+      }
+
+      .item--leaf {
+        background: linear-gradient(180deg, #b0f693, #68cf61);
+      }
+
+      .item--flower {
+        background: linear-gradient(180deg, #ffd1e6, #ff9cc4);
+      }
+
+      .item--danger {
+        background: linear-gradient(180deg, #ffe7a6, #ffb86a);
+      }
+
+      .creature {
+        position: absolute;
+        left: 18%;
+        top: 76%;
+        width: 150px;
+        height: 110px;
+        transform: translate(-50%, -50%);
+        transition: left 0.65s ease, top 0.65s ease, transform 0.18s ease;
+        z-index: 2;
+        --grow-scale: 1;
+      }
+
+      .creature.hurt {
+        animation: wobble 0.4s ease;
+      }
+
+      .creature.good {
+        animation: hop 0.35s ease;
+      }
+
+      .creature__caterpillar,
+      .creature__butterfly,
+      .creature__cocoon {
+        position: absolute;
+        inset: 0;
+        display: none;
+      }
+
+      .creature[data-phase="caterpillar"] .creature__caterpillar,
+      .creature[data-phase="butterfly"] .creature__butterfly,
+      .creature[data-phase="cocoon"] .creature__cocoon {
+        display: block;
+      }
+
+      .creature__caterpillar {
+        transform: scale(var(--grow-scale));
+        transform-origin: bottom center;
+      }
+
+      .segment {
+        position: absolute;
+        bottom: 18px;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: linear-gradient(180deg, #89ec53, #3dba3f);
+        box-shadow: inset 0 -4px 0 rgba(21, 107, 39, 0.22);
+      }
+
+      .segment.s1 {
+        left: 10px;
+      }
+
+      .segment.s2 {
+        left: 34px;
+        bottom: 24px;
+      }
+
+      .segment.s3 {
+        left: 60px;
+      }
+
+      .segment.s4 {
+        left: 86px;
+        bottom: 25px;
+      }
+
+      .segment.head {
+        left: 112px;
+        bottom: 22px;
+        width: 38px;
+        height: 38px;
+        background: linear-gradient(180deg, #7ad64d, #289a38);
+      }
+
+      .eye {
+        position: absolute;
+        top: 11px;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #143114;
+      }
+
+      .eye.left {
+        left: 9px;
+      }
+
+      .eye.right {
+        right: 9px;
+      }
+
+      .smile {
+        position: absolute;
+        left: 50%;
+        bottom: 8px;
+        width: 14px;
+        height: 8px;
+        margin-left: -7px;
+        border-bottom: 3px solid #143114;
+        border-radius: 0 0 16px 16px;
+      }
+
+      .antenna {
+        position: absolute;
+        top: -10px;
+        width: 4px;
+        height: 18px;
+        background: #2d7f37;
+        border-radius: 999px;
+      }
+
+      .antenna.left {
+        left: 12px;
+        transform: rotate(-28deg);
+      }
+
+      .antenna.right {
+        right: 12px;
+        transform: rotate(28deg);
+      }
+
+      .creature__cocoon {
+        inset: 10px auto auto 50%;
+        width: 58px;
+        height: 88px;
+        margin: 0;
+        transform: translateX(-50%);
+        border-radius: 40px 40px 44px 44px;
+        background: linear-gradient(180deg, #d3b572, #a8712c);
+        box-shadow:
+          inset 0 -8px 0 rgba(111, 67, 18, 0.2),
+          0 10px 16px rgba(88, 57, 18, 0.18);
+      }
+
+      .creature__cocoon::before {
+        content: "";
+        position: absolute;
+        top: -18px;
+        left: 50%;
+        width: 4px;
+        height: 22px;
+        margin-left: -2px;
+        background: #5a7d2d;
+      }
+
+      .creature__butterfly .wing {
+        position: absolute;
+        top: 12px;
+        width: 56px;
+        height: 74px;
+        border-radius: 50% 50% 48% 48%;
+        box-shadow: inset 0 -10px 0 rgba(255, 255, 255, 0.16);
+        animation: flap 0.55s ease-in-out infinite alternate;
+      }
+
+      .creature__butterfly .wing.left {
+        left: 18px;
+        background: linear-gradient(180deg, #ff95bd, #ff6faa);
+        transform-origin: right center;
+      }
+
+      .creature__butterfly .wing.right {
+        right: 18px;
+        background: linear-gradient(180deg, #ffd95f, #ff9c48);
+        transform-origin: left center;
+      }
+
+      .creature__butterfly .body {
+        position: absolute;
+        top: 20px;
+        left: 50%;
+        width: 22px;
+        height: 72px;
+        margin-left: -11px;
+        border-radius: 999px;
+        background: linear-gradient(180deg, #4d443b, #2c241f);
+      }
+
+      .creature__butterfly .body::before,
+      .creature__butterfly .body::after {
+        content: "";
+        position: absolute;
+        top: -12px;
+        width: 3px;
+        height: 18px;
+        background: #3a2f26;
+        border-radius: 999px;
+      }
+
+      .creature__butterfly .body::before {
+        left: 6px;
+        transform: rotate(-24deg);
+      }
+
+      .creature__butterfly .body::after {
+        right: 6px;
+        transform: rotate(24deg);
+      }
+
+      .transition-layer {
+        display: grid;
+        place-items: center;
+        background: rgba(255, 255, 255, 0.04);
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.25s ease;
+      }
+
+      .transition-layer.show {
+        opacity: 1;
+      }
+
+      .transition-bubble {
+        padding: 22px 26px;
+        border-radius: 28px;
+        background: rgba(255, 255, 255, 0.9);
+        text-align: center;
+        box-shadow: 0 16px 30px rgba(39, 86, 25, 0.16);
+      }
+
+      .transition-bubble strong {
+        display: block;
+        font-size: clamp(1.3rem, 3vw, 2.2rem);
+      }
+
+      .feedback {
+        position: absolute;
+        transform: translate(-50%, -50%);
+        font-size: 1.4rem;
+        font-weight: 900;
+        pointer-events: none;
+        animation: float-up 0.9s ease forwards;
+      }
+
+      .feedback.good {
+        color: #208539;
+      }
+
+      .feedback.bad {
+        color: #c44949;
+      }
+
+      .scores ol {
+        margin: 14px 0 0;
+        padding: 0;
+        list-style: none;
+        display: grid;
+        gap: 10px;
+      }
+
+      .score-row {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 14px;
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.66);
+      }
+
+      .score-row.active {
+        outline: 3px solid rgba(255, 130, 182, 0.56);
+        background: rgba(255, 239, 247, 0.96);
+      }
+
+      .rank {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        font-weight: 900;
+        color: #fff;
+        background: linear-gradient(180deg, #7fd65e, #3da543);
+      }
+
+      .score-meta strong,
+      .score-points {
+        font-size: 1.05rem;
+      }
+
+      .score-meta span {
+        display: block;
+        margin-top: 2px;
+        color: rgba(35, 65, 27, 0.68);
+        font-size: 0.9rem;
+      }
+
+      .modal {
+        position: fixed;
+        inset: 0;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        background: rgba(25, 52, 19, 0.34);
+        backdrop-filter: blur(5px);
+      }
+
+      .modal.open {
+        display: flex;
+      }
+
+      .modal-card {
+        width: min(500px, 100%);
+        padding: 28px;
+        border-radius: 28px;
+        background: rgba(255, 255, 255, 0.95);
+        text-align: center;
+        box-shadow: 0 20px 50px rgba(21, 54, 12, 0.24);
+      }
+
+      .modal-card h2 {
+        font-size: clamp(1.6rem, 4vw, 2.4rem);
+      }
+
+      .modal-card p {
+        margin-top: 12px;
+        line-height: 1.45;
+      }
+
+      .modal-score {
+        margin: 16px 0;
+        font-size: 2.4rem;
+        font-weight: 900;
+        color: #ff5b93;
+      }
+
+      .button-row {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 18px;
+      }
+
+      @keyframes bob {
+        0%,
+        100% {
+          transform: translate(-50%, -50%);
+        }
+
+        50% {
+          transform: translate(-50%, -56%);
+        }
+      }
+
+      @keyframes sway {
+        0%,
+        100% {
+          transform: rotate(-4deg);
+        }
+
+        50% {
+          transform: rotate(5deg);
+        }
+      }
+
+      @keyframes flap {
+        from {
+          transform: rotate(0deg) scaleY(1);
+        }
+
+        to {
+          transform: rotate(10deg) scaleY(0.94);
+        }
+      }
+
+      @keyframes hop {
+        0%,
+        100% {
+          transform: translate(-50%, -50%);
+        }
+
+        50% {
+          transform: translate(-50%, -58%);
+        }
+      }
+
+      @keyframes wobble {
+        0%,
+        100% {
+          transform: translate(-50%, -50%) rotate(0deg);
+        }
+
+        25% {
+          transform: translate(-50%, -50%) rotate(-5deg);
+        }
+
+        75% {
+          transform: translate(-50%, -50%) rotate(5deg);
+        }
+      }
+
+      @keyframes float-up {
+        from {
+          opacity: 1;
+          transform: translate(-50%, -50%) scale(0.8);
+        }
+
+        to {
+          opacity: 0;
+          transform: translate(-50%, -120%) scale(1.16);
+        }
+      }
+
+      @media (max-width: 920px) {
+        .hero,
+        .dashboard {
+          grid-template-columns: 1fr;
+        }
+
+        .progress-card {
+          grid-column: auto;
+        }
+
+        .world {
+          min-height: 500px;
+        }
+      }
+
+      @media (max-width: 640px) {
+        .app {
+          width: min(100% - 14px, 100%);
+          margin-top: 10px;
+        }
+
+        .intro,
+        .setup,
+        .scores,
+        .modal-card {
+          padding: 20px;
+        }
+
+        .world-card {
+          padding: 8px;
+        }
+
+        .world {
+          min-height: 470px;
+        }
+
+        .item {
+          width: 72px;
+          height: 72px;
+          border-radius: 20px;
+        }
+
+        .item__emoji {
+          font-size: 1.7rem;
+        }
+
+        .item__label {
+          font-size: 0.74rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="app">
+      <section class="hero">
+        <article class="card intro">
+          <div class="kicker">🐛 Farebná klikacia hra pre deti</div>
+          <h1>Život húsenice</h1>
+          <p>
+            Klikaj len na správne dobroty. Húsenica papá listy, potom sa zakuklí a zmení na motýľa.
+            Motýľ už pije iba nektár z kvetov. Na iné veci nesmie sadnúť, lebo by ho to bolelo.
+          </p>
+          <div class="steps">
+            <div class="step"><strong>1. Húsenica</strong> Jedz listy a rast.</div>
+            <div class="step"><strong>2. Kukla</strong> Počkaj na premenu.</div>
+            <div class="step"><strong>3. Motýľ</strong> Pi nektár z kvetov.</div>
+          </div>
+        </article>
+
+        <aside class="card setup">
+          <h2>Začni hru</h2>
+          <p>Zadaj meno hráča. Po skončení sa uloží meno a získané skóre.</p>
+          <form id="start-form">
+            <div>
+              <label for="player-name">Meno hráča</label>
+              <input id="player-name" name="player-name" type="text" maxlength="18" placeholder="Napríklad Ela" autocomplete="name" />
+            </div>
+            <button class="button" type="submit">Spustiť dobrodružstvo</button>
+            <div class="tiny-note">Tip: klikaj iba na to, čo je teraz správne jedlo.</div>
+          </form>
+        </aside>
+      </section>
+
+      <section class="dashboard">
+        <article class="card info-box">
+          <span>Hráč</span>
+          <strong id="player-display">Pripravený</strong>
+        </article>
+        <article class="card info-box">
+          <span>Skóre</span>
+          <strong id="score-display">0</strong>
+        </article>
+        <article class="card info-box">
+          <span>Srdiečka</span>
+          <strong id="hearts-display">💚💚💚💚</strong>
+        </article>
+        <article class="card info-box">
+          <span>Čas</span>
+          <strong id="timer-display">75 s</strong>
+        </article>
+        <article class="card info-box">
+          <span>Fáza</span>
+          <strong class="phase-badge" id="phase-display">🐛 Húsenica</strong>
+        </article>
+        <article class="card progress-card">
+          <div class="progress-head">
+            <span id="progress-label">Najedz sa listov: 0 / 6</span>
+            <strong id="progress-value">0%</strong>
+          </div>
+          <div class="progress-track" aria-hidden="true">
+            <div class="progress-fill" id="progress-fill"></div>
+          </div>
+        </article>
+        <article class="card info-box prompt">
+          <span>Úloha</span>
+          <strong id="prompt-display">Klikni na listy, aby húsenica rástla.</strong>
+        </article>
+      </section>
+
+      <section class="card world-card">
+        <div class="world" id="world">
+          <div class="decor" aria-hidden="true">
+            <div class="decor-flower" style="left: 6%; bottom: 40px;">🌷</div>
+            <div class="decor-flower" style="left: 15%; bottom: 64px;">🌼</div>
+            <div class="decor-flower" style="left: 28%; bottom: 32px;">🌺</div>
+            <div class="decor-flower" style="left: 41%; bottom: 58px;">🌸</div>
+            <div class="decor-flower" style="left: 58%; bottom: 36px;">🌻</div>
+            <div class="decor-flower" style="left: 72%; bottom: 62px;">🌷</div>
+            <div class="decor-flower" style="left: 86%; bottom: 34px;">🌼</div>
+          </div>
+
+          <div class="creature" id="creature" data-phase="caterpillar">
+            <div class="creature__caterpillar">
+              <div class="segment s1"></div>
+              <div class="segment s2"></div>
+              <div class="segment s3"></div>
+              <div class="segment s4"></div>
+              <div class="segment head">
+                <div class="antenna left"></div>
+                <div class="antenna right"></div>
+                <div class="eye left"></div>
+                <div class="eye right"></div>
+                <div class="smile"></div>
+              </div>
+            </div>
+            <div class="creature__cocoon"></div>
+            <div class="creature__butterfly">
+              <div class="wing left"></div>
+              <div class="wing right"></div>
+              <div class="body"></div>
+            </div>
+          </div>
+
+          <div class="items-layer" id="items-layer" aria-live="polite"></div>
+          <div class="feedback-layer" id="feedback-layer" aria-hidden="true"></div>
+          <div class="transition-layer" id="transition-layer" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <aside class="card scores">
+        <h2>Najlepšie skóre</h2>
+        <p>Ukladá sa meno a bodový výsledok priamo v tomto zariadení.</p>
+        <ol id="score-list"></ol>
+      </aside>
+    </main>
+
+    <div class="modal" id="end-modal" role="dialog" aria-modal="true" aria-labelledby="end-title">
+      <div class="modal-card">
+        <h2 id="end-title">Výsledok</h2>
+        <p id="end-text"></p>
+        <div class="modal-score" id="end-score">0 bodov</div>
+        <div class="button-row">
+          <button class="button secondary" id="play-again" type="button">Hrať znova</button>
+          <button class="button" id="close-modal" type="button">Pozrieť tabuľku</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const STORAGE_NAME = "zivot-husenice-player-name";
+      const STORAGE_SCORES = "zivot-husenice-high-scores";
+      const CATERPILLAR_GOAL = 6;
+      const BUTTERFLY_GOAL = 8;
+      const STARTING_HEARTS = 4;
+      const ROUND_TIME = 75;
+
+      const PHASES = {
+        caterpillar: {
+          icon: "🐛",
+          label: "Húsenica",
+          prompt: "Klikni na listy, aby húsenica rástla.",
+          progress: "Najedz sa listov"
+        },
+        cocoon: {
+          icon: "🟤",
+          label: "Kukla",
+          prompt: "Premena prebieha. Húsenica sa mení na motýľa.",
+          progress: "Premena"
+        },
+        butterfly: {
+          icon: "🦋",
+          label: "Motýľ",
+          prompt: "Klikni na kvety, aby motýľ pil nektár.",
+          progress: "Vypi nektár"
+        }
+      };
+
+      const ITEM_POOLS = {
+        caterpillar: [
+          { kind: "leaf", emoji: "🍃", label: "List", good: true, css: "item--leaf" },
+          { kind: "leaf", emoji: "🌿", label: "List", good: true, css: "item--leaf" },
+          { kind: "flower", emoji: "🌸", label: "Nie", good: false, css: "item--flower item--danger" },
+          { kind: "rock", emoji: "🪨", label: "Au", good: false, css: "item--danger" },
+          { kind: "web", emoji: "🕸️", label: "Au", good: false, css: "item--danger" }
+        ],
+        butterfly: [
+          { kind: "flower", emoji: "🌼", label: "Kvet", good: true, css: "item--flower" },
+          { kind: "flower", emoji: "🌺", label: "Kvet", good: true, css: "item--flower" },
+          { kind: "flower", emoji: "🌷", label: "Kvet", good: true, css: "item--flower" },
+          { kind: "leaf", emoji: "🍃", label: "Nie", good: false, css: "item--leaf item--danger" },
+          { kind: "rock", emoji: "🪨", label: "Au", good: false, css: "item--danger" },
+          { kind: "web", emoji: "🕸️", label: "Au", good: false, css: "item--danger" }
+        ]
+      };
+
+      const elements = {
+        startForm: document.getElementById("start-form"),
+        playerName: document.getElementById("player-name"),
+        playerDisplay: document.getElementById("player-display"),
+        scoreDisplay: document.getElementById("score-display"),
+        heartsDisplay: document.getElementById("hearts-display"),
+        timerDisplay: document.getElementById("timer-display"),
+        phaseDisplay: document.getElementById("phase-display"),
+        progressLabel: document.getElementById("progress-label"),
+        progressValue: document.getElementById("progress-value"),
+        progressFill: document.getElementById("progress-fill"),
+        promptDisplay: document.getElementById("prompt-display"),
+        creature: document.getElementById("creature"),
+        itemsLayer: document.getElementById("items-layer"),
+        feedbackLayer: document.getElementById("feedback-layer"),
+        transitionLayer: document.getElementById("transition-layer"),
+        scoreList: document.getElementById("score-list"),
+        endModal: document.getElementById("end-modal"),
+        endTitle: document.getElementById("end-title"),
+        endText: document.getElementById("end-text"),
+        endScore: document.getElementById("end-score"),
+        playAgain: document.getElementById("play-again"),
+        closeModal: document.getElementById("close-modal")
+      };
+
+      const game = {
+        running: false,
+        phase: "caterpillar",
+        playerName: "",
+        score: 0,
+        hearts: STARTING_HEARTS,
+        timeLeft: ROUND_TIME,
+        growth: 0,
+        nectar: 0,
+        items: [],
+        spawnTimer: null,
+        tickTimer: null,
+        transitionTimer: null,
+        nextId: 1,
+        targetX: 18,
+        targetY: 76,
+        lastScoreId: null
+      };
+
+      function safeLoad(key, fallback) {
+        try {
+          const raw = localStorage.getItem(key);
+          return raw ? JSON.parse(raw) : fallback;
+        } catch (error) {
+          return fallback;
+        }
+      }
+
+      function safeSave(key, value) {
+        try {
+          localStorage.setItem(key, JSON.stringify(value));
+        } catch (error) {
+          return;
+        }
+      }
+
+      function loadStoredName() {
+        const saved = safeLoad(STORAGE_NAME, "");
+        if (typeof saved === "string" && saved.trim()) {
+          game.playerName = saved.trim();
+          elements.playerName.value = saved.trim();
+          elements.playerDisplay.textContent = saved.trim();
+        }
+      }
+
+      function loadScores() {
+        const scores = safeLoad(STORAGE_SCORES, []);
+        return Array.isArray(scores) ? scores : [];
+      }
+
+      function saveScore(name, score, result) {
+        const entry = {
+          id: `${Date.now()}-${Math.random().toString(16).slice(2, 7)}`,
+          name,
+          score,
+          result
+        };
+        const updated = [...loadScores(), entry]
+          .sort((a, b) => b.score - a.score)
+          .slice(0, 8);
+
+        safeSave(STORAGE_SCORES, updated);
+        game.lastScoreId = entry.id;
+        renderScores();
+      }
+
+      function renderScores() {
+        const scores = loadScores();
+        elements.scoreList.innerHTML = "";
+
+        if (!scores.length) {
+          const empty = document.createElement("li");
+          empty.className = "score-row";
+          empty.textContent = "Zatiaľ tu nie je žiadne uložené skóre.";
+          elements.scoreList.appendChild(empty);
+          return;
+        }
+
+        scores.forEach((entry, index) => {
+          const row = document.createElement("li");
+          row.className = "score-row";
+
+          if (entry.id === game.lastScoreId) {
+            row.classList.add("active");
+          }
+
+          const rank = document.createElement("div");
+          rank.className = "rank";
+          rank.textContent = String(index + 1);
+
+          const meta = document.createElement("div");
+          meta.className = "score-meta";
+
+          const name = document.createElement("strong");
+          name.textContent = entry.name;
+
+          const result = document.createElement("span");
+          result.textContent = entry.result;
+
+          meta.append(name, result);
+
+          const points = document.createElement("strong");
+          points.className = "score-points";
+          points.textContent = `${entry.score} b`;
+
+          row.append(rank, meta, points);
+          elements.scoreList.appendChild(row);
+        });
+      }
+
+      function resetGameState() {
+        clearTimers();
+        game.running = false;
+        game.phase = "caterpillar";
+        game.score = 0;
+        game.hearts = STARTING_HEARTS;
+        game.timeLeft = ROUND_TIME;
+        game.growth = 0;
+        game.nectar = 0;
+        game.items = [];
+        game.nextId = 1;
+        game.targetX = 18;
+        game.targetY = 76;
+        elements.itemsLayer.innerHTML = "";
+        elements.feedbackLayer.innerHTML = "";
+        elements.transitionLayer.innerHTML = "";
+        elements.transitionLayer.classList.remove("show");
+        elements.creature.dataset.phase = "caterpillar";
+        elements.creature.style.left = `${game.targetX}%`;
+        elements.creature.style.top = `${game.targetY}%`;
+        elements.creature.style.setProperty("--grow-scale", "1");
+        updateHud();
+      }
+
+      function clearTimers() {
+        window.clearInterval(game.spawnTimer);
+        window.clearInterval(game.tickTimer);
+        window.clearTimeout(game.transitionTimer);
+      }
+
+      function updateHud() {
+        const phase = PHASES[game.phase];
+        elements.playerDisplay.textContent = game.playerName || "Pripravený";
+        elements.scoreDisplay.textContent = String(game.score);
+        elements.heartsDisplay.textContent = "💚".repeat(game.hearts) + "🤍".repeat(Math.max(0, STARTING_HEARTS - game.hearts));
+        elements.timerDisplay.textContent = `${game.timeLeft} s`;
+        elements.phaseDisplay.textContent = `${phase.icon} ${phase.label}`;
+        elements.promptDisplay.textContent = phase.prompt;
+
+        let current = 0;
+        let total = 1;
+        let label = "";
+
+        if (game.phase === "caterpillar") {
+          current = game.growth;
+          total = CATERPILLAR_GOAL;
+          label = `${phase.progress}: ${current} / ${total}`;
+        } else if (game.phase === "butterfly") {
+          current = game.nectar;
+          total = BUTTERFLY_GOAL;
+          label = `${phase.progress}: ${current} / ${total}`;
+        } else {
+          current = 1;
+          total = 1;
+          label = "Premena prebieha";
+        }
+
+        const percent = Math.max(0, Math.min(100, Math.round((current / total) * 100)));
+        elements.progressLabel.textContent = label;
+        elements.progressValue.textContent = `${percent}%`;
+        elements.progressFill.style.width = `${percent}%`;
+      }
+
+      function startGame() {
+        const enteredName = (elements.playerName.value || "").trim();
+        game.playerName = enteredName || "Malý objaviteľ";
+        safeSave(STORAGE_NAME, game.playerName);
+        game.lastScoreId = null;
+
+        resetGameState();
+        game.running = true;
+        closeModal();
+        updateHud();
+        populateInitialItems();
+        startTimers();
+      }
+
+      function startTimers() {
+        window.clearInterval(game.spawnTimer);
+        window.clearInterval(game.tickTimer);
+
+        game.spawnTimer = window.setInterval(() => {
+          if (!game.running) {
+            return;
+          }
+
+          if (game.items.length < 8) {
+            spawnItem();
+          }
+        }, game.phase === "butterfly" ? 980 : 850);
+
+        game.tickTimer = window.setInterval(() => {
+          if (!game.running) {
+            return;
+          }
+
+          game.timeLeft -= 1;
+          updateHud();
+
+          if (game.timeLeft <= 0) {
+            endGame("Čas vypršal", "Skús ešte raz nazbierať viac dobrôt.", "Čas vypršal");
+          }
+        }, 1000);
+      }
+
+      function populateInitialItems() {
+        game.items = [];
+        renderItems();
+
+        for (let index = 0; index < 5; index += 1) {
+          spawnItem();
+        }
+      }
+
+      function randomBetween(min, max) {
+        return Math.random() * (max - min) + min;
+      }
+
+      function choosePoolItem() {
+        const pool = ITEM_POOLS[game.phase === "butterfly" ? "butterfly" : "caterpillar"];
+        const choice = pool[Math.floor(Math.random() * pool.length)];
+        return { ...choice };
+      }
+
+      function spawnItem() {
+        const item = choosePoolItem();
+        item.id = game.nextId;
+        game.nextId += 1;
+        item.x = randomBetween(8, 92);
+        item.y = randomBetween(18, 74);
+        item.delay = randomBetween(0, 1.7);
+
+        game.items.push(item);
+        renderItems();
+
+        window.setTimeout(() => {
+          removeItem(item.id);
+        }, 5600);
+      }
+
+      function removeItem(id) {
+        const lengthBefore = game.items.length;
+        game.items = game.items.filter((item) => item.id !== id);
+
+        if (game.items.length !== lengthBefore) {
+          renderItems();
+        }
+      }
+
+      function renderItems() {
+        elements.itemsLayer.innerHTML = "";
+
+        game.items.forEach((item) => {
+          const button = document.createElement("button");
+          button.className = `item ${item.css}`;
+          button.type = "button";
+          button.style.left = `${item.x}%`;
+          button.style.top = `${item.y}%`;
+          button.style.animationDelay = `${item.delay}s`;
+          button.setAttribute("aria-label", item.good ? item.label : "Pozor");
+          button.addEventListener("click", () => handleItemClick(item.id));
+
+          const emoji = document.createElement("span");
+          emoji.className = "item__emoji";
+          emoji.textContent = item.emoji;
+
+          const label = document.createElement("span");
+          label.className = "item__label";
+          label.textContent = item.label;
+
+          button.append(emoji, label);
+          elements.itemsLayer.appendChild(button);
+        });
+      }
+
+      function moveCreature(x, y) {
+        game.targetX = x;
+        game.targetY = y;
+        elements.creature.style.left = `${x}%`;
+        elements.creature.style.top = `${y}%`;
+      }
+
+      function flashCreature(className) {
+        elements.creature.classList.remove("good", "hurt");
+        void elements.creature.offsetWidth;
+        elements.creature.classList.add(className);
+        window.setTimeout(() => {
+          elements.creature.classList.remove(className);
+        }, 420);
+      }
+
+      function showFeedback(text, x, y, good) {
+        const pop = document.createElement("div");
+        pop.className = `feedback ${good ? "good" : "bad"}`;
+        pop.textContent = text;
+        pop.style.left = `${x}%`;
+        pop.style.top = `${y}%`;
+        elements.feedbackLayer.appendChild(pop);
+
+        window.setTimeout(() => {
+          pop.remove();
+        }, 880);
+      }
+
+      function handleItemClick(id) {
+        if (!game.running) {
+          return;
+        }
+
+        const item = game.items.find((candidate) => candidate.id === id);
+        if (!item) {
+          return;
+        }
+
+        moveCreature(item.x, item.y + (game.phase === "butterfly" ? -3 : 2));
+        removeItem(id);
+
+        if (item.good) {
+          if (game.phase === "caterpillar") {
+            game.score += 12;
+            game.growth += 1;
+            elements.creature.style.setProperty("--grow-scale", `${1 + game.growth * 0.06}`);
+            showFeedback("Mňam list!", item.x, item.y, true);
+          } else if (game.phase === "butterfly") {
+            game.score += 15;
+            game.nectar += 1;
+            showFeedback("Sladký nektár!", item.x, item.y, true);
+          }
+
+          flashCreature("good");
+        } else {
+          game.hearts = Math.max(0, game.hearts - 1);
+          game.score = Math.max(0, game.score - 6);
+          showFeedback(game.phase === "caterpillar" ? "Au! Húsenica papá iba listy." : "Au! Motýľ potrebuje kvety.", item.x, item.y, false);
+          flashCreature("hurt");
+        }
+
+        updateHud();
+
+        if (game.hearts <= 0) {
+          endGame("Pozor na zlé kliknutia", "Tvoja húsenica potrebuje bezpečné jedlo.", "Došli srdiečka");
+          return;
+        }
+
+        if (game.phase === "caterpillar" && game.growth >= CATERPILLAR_GOAL) {
+          beginTransformation();
+          return;
+        }
+
+        if (game.phase === "butterfly" && game.nectar >= BUTTERFLY_GOAL) {
+          game.score += 30;
+          updateHud();
+          endGame("Motýľ oslavuje", "Premena sa podarila a záhrada je plná nektáru.", "Premena dokončená");
+        }
+      }
+
+      function beginTransformation() {
+        game.running = false;
+        clearTimers();
+        game.items = [];
+        renderItems();
+        elements.creature.dataset.phase = "cocoon";
+        elements.transitionLayer.classList.add("show");
+        elements.transitionLayer.innerHTML = '<div class="transition-bubble"><strong>Zakuklenie</strong><span>Húsenica sa mení na motýľa.</span></div>';
+        game.phase = "cocoon";
+        game.score += 20;
+        updateHud();
+
+        game.transitionTimer = window.setTimeout(() => {
+          game.phase = "butterfly";
+          game.running = true;
+          elements.creature.dataset.phase = "butterfly";
+          moveCreature(20, 56);
+          elements.transitionLayer.innerHTML = '<div class="transition-bubble"><strong>Poletuj!</strong><span>Teraz klikaj iba na kvety.</span></div>';
+          updateHud();
+          populateInitialItems();
+          startTimers();
+
+          game.transitionTimer = window.setTimeout(() => {
+            elements.transitionLayer.classList.remove("show");
+            elements.transitionLayer.innerHTML = "";
+          }, 1500);
+        }, 2200);
+      }
+
+      function endGame(title, text, resultLabel) {
+        if (!game.phase) {
+          return;
+        }
+
+        game.running = false;
+        clearTimers();
+        elements.itemsLayer.innerHTML = "";
+        game.items = [];
+        saveScore(game.playerName || "Malý objaviteľ", game.score, resultLabel);
+
+        elements.endTitle.textContent = title;
+        elements.endText.textContent = text;
+        elements.endScore.textContent = `${game.score} bodov`;
+        elements.endModal.classList.add("open");
+      }
+
+      function closeModal() {
+        elements.endModal.classList.remove("open");
+      }
+
+      elements.startForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        startGame();
+      });
+
+      elements.playAgain.addEventListener("click", () => {
+        closeModal();
+        startGame();
+      });
+
+      elements.closeModal.addEventListener("click", () => {
+        closeModal();
+      });
+
+      loadStoredName();
+      renderScores();
+      resetGameState();
+    </script>
+  </body>
+</html>
