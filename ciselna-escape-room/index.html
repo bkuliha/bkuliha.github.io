@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="sk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kniha o zahadnych cislach</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="game-shell">
+      <aside class="status-panel">
+        <p class="eyebrow">Escape room</p>
+        <h1>Kniha o zahadnych cislach</h1>
+        <p class="status-copy">
+          Timea sa stratila medzi policami starej kniznice. Pomoz jej nazbierat
+          4 cislice, vyhnut sa slepym ulickam a odomknut posledny zamok.
+        </p>
+
+        <section class="panel-block companion-block">
+          <p class="panel-label">Pribeh</p>
+          <strong id="companionName">Skolska kniznica</strong>
+          <p id="companionText" class="muted-text">
+            Stara kniha, listok s odkazom a vetvena cesta cez katalog, mapy,
+            archiv aj tajny pult.
+          </p>
+        </section>
+
+        <section class="panel-block">
+          <div class="panel-head">
+            <p class="panel-label">Kod kniznice</p>
+            <span id="progressBadge" class="progress-badge">0 / 4 cislice</span>
+          </div>
+          <div id="codeBoard" class="code-board" aria-label="Odomknute sifry"></div>
+        </section>
+
+        <section class="panel-block">
+          <p class="panel-label">Najdene cislice</p>
+          <div id="routeLog" class="route-log" aria-live="polite"></div>
+        </section>
+
+        <section class="panel-block spotlight-block">
+          <p class="panel-label">Aktualna stopa</p>
+          <p id="goalText" class="spotlight-text">
+            Otvor knihu a zisti, kam Timea pojde ako prve.
+          </p>
+        </section>
+
+        <button id="restartButton" class="secondary-button" type="button">
+          Zacat odznova
+        </button>
+      </aside>
+
+      <section class="scene-panel">
+        <div class="scene-topline">
+          <span id="sceneBadge" class="scene-badge">Prolog</span>
+          <span id="sceneStep" class="scene-step">Start</span>
+        </div>
+
+        <article class="hero-card">
+          <div class="hero-copy">
+            <h2 id="sceneTitle">Kniha o zahadnych cislach</h2>
+            <p id="sceneLead" class="scene-lead">
+              Vetvena matematicka escape room z kniznice so slepymi ulickami,
+              stopami a 4-cifernym kodom.
+            </p>
+            <div id="sceneTags" class="scene-tags"></div>
+          </div>
+          <div id="sceneArt" class="scene-art art-intro" aria-hidden="true"></div>
+        </article>
+
+        <section id="storyPanel" class="content-card">
+          <div id="storyContent" class="story-content"></div>
+          <div id="choices" class="choice-grid"></div>
+        </section>
+
+        <section id="challengePanel" class="content-card hidden">
+          <div class="challenge-head">
+            <div>
+              <p class="panel-label">Matematicky zamok</p>
+              <h3 id="challengeTitle">Zadanie</h3>
+            </div>
+            <button id="hintButton" class="ghost-button" type="button">
+              Ukaz napovedu
+            </button>
+          </div>
+
+          <div id="challengePrompt" class="challenge-prompt"></div>
+          <div id="challengeVisual" class="challenge-visual" aria-hidden="true"></div>
+
+          <div id="challengeOptions" class="option-grid"></div>
+
+          <div id="inputWrap" class="input-wrap hidden">
+            <label class="sr-only" for="answerInput">Odpoved</label>
+            <input
+              id="answerInput"
+              class="answer-input"
+              type="text"
+              inputmode="numeric"
+              autocomplete="off"
+              maxlength="4"
+              placeholder="Zadaj odpoved"
+            />
+            <button id="submitAnswerButton" class="primary-button" type="button">
+              Potvrdit
+            </button>
+          </div>
+
+          <p id="feedbackText" class="feedback-text" aria-live="polite"></p>
+          <div id="hintText" class="hint-box hidden"></div>
+        </section>
+      </section>
+    </main>
+
+    <script src="./game.js"></script>
+  </body>
+</html>
