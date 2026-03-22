@@ -26,6 +26,12 @@
         box-sizing: border-box;
       }
 
+      html,
+      body {
+        height: 100%;
+        overflow: hidden;
+      }
+
       body {
         margin: 0;
         min-height: 100vh;
@@ -56,9 +62,11 @@
 
       .app {
         width: min(1180px, calc(100% - 24px));
-        margin: 18px auto 28px;
+        height: calc(100vh - 20px);
+        margin: 10px auto;
         display: grid;
-        gap: 18px;
+        grid-template-rows: auto 1fr;
+        gap: 12px;
       }
 
       .card {
@@ -72,10 +80,13 @@
       .screen {
         display: none;
         padding: 26px;
+        height: 100%;
+        overflow: hidden;
       }
 
       .screen.active {
-        display: block;
+        display: grid;
+        align-content: start;
       }
 
       h1,
@@ -86,9 +97,47 @@
       }
 
       .center-screen {
-        min-height: 68vh;
+        min-height: 0;
         display: grid;
         place-items: center;
+      }
+
+      .screen-nav {
+        display: none;
+        padding: 12px;
+      }
+
+      .screen-nav.visible {
+        display: block;
+      }
+
+      .nav-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .nav-button {
+        min-height: 48px;
+        padding: 10px 14px;
+        border-radius: 16px;
+        border: 2px solid rgba(255, 255, 255, 0.12);
+        background: rgba(255, 255, 255, 0.08);
+        color: var(--text);
+        cursor: pointer;
+        font: inherit;
+        font-weight: 900;
+        touch-action: manipulation;
+      }
+
+      .nav-button.active {
+        background: rgba(111, 232, 208, 0.16);
+        border-color: rgba(111, 232, 208, 0.52);
+      }
+
+      .nav-button:disabled {
+        opacity: 0.42;
+        cursor: not-allowed;
       }
 
       .welcome-box {
@@ -398,7 +447,7 @@
       canvas#build-canvas {
         display: block;
         width: 100%;
-        min-height: 540px;
+        min-height: 430px;
         border-radius: 24px;
         border: 3px solid rgba(255, 255, 255, 0.12);
         background: #ffffff;
@@ -427,12 +476,14 @@
         display: grid;
         grid-template-columns: minmax(0, 1fr) minmax(280px, 340px);
         gap: 16px;
+        min-height: 0;
       }
 
       .launch-layout {
         display: grid;
         grid-template-columns: minmax(0, 1fr) minmax(280px, 340px);
         gap: 16px;
+        min-height: 0;
       }
 
       .launch-card {
@@ -531,7 +582,11 @@
       }
 
       .scores {
-        padding: 22px;
+        margin-top: 16px;
+        padding: 16px;
+        border-radius: 22px;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.08);
       }
 
       .score-list {
@@ -597,7 +652,8 @@
       @media (max-width: 720px) {
         .app {
           width: min(100%, calc(100% - 12px));
-          margin: 10px auto 18px;
+          height: calc(100vh - 12px);
+          margin: 6px auto;
         }
 
         .screen,
@@ -612,7 +668,7 @@
         }
 
         canvas#build-canvas {
-          min-height: 430px;
+          min-height: 320px;
         }
 
         .arrow {
@@ -623,6 +679,15 @@
   </head>
   <body>
     <main class="app">
+      <nav class="card screen-nav" id="screen-nav" aria-label="Prepínanie obrazoviek">
+        <div class="nav-row">
+          <button class="nav-button" data-screen="welcome" type="button">1. Vstup</button>
+          <button class="nav-button" data-screen="quiz" type="button" disabled>2. Kvíz</button>
+          <button class="nav-button" data-screen="build" type="button" disabled>3. Raketa</button>
+          <button class="nav-button" data-screen="launch" type="button" disabled>4. Štart</button>
+        </div>
+      </nav>
+
       <section class="screen active center-screen" id="screen-welcome">
         <div class="card welcome-box">
           <h1>Vstup do vesmírnej misie</h1>
@@ -779,14 +844,14 @@
               <strong>Pripravené</strong>
               <span>Keď raketa narazí, výsledný čas sa uloží do tabuľky.</span>
             </div>
+
+            <section class="scores">
+              <h3>Tabuľka výsledkov</h3>
+              <p id="scores-note" style="margin-top: 8px;">Čas do kolízie sa ukladá pre aktuálny prehliadač.</p>
+              <ol class="score-list" id="score-list"></ol>
+            </section>
           </aside>
         </div>
-      </section>
-
-      <section class="card scores">
-        <h2>Tabuľka výsledkov</h2>
-        <p id="scores-note">Čas do kolízie sa ukladá pre aktuálny prehliadač.</p>
-        <ol class="score-list" id="score-list"></ol>
       </section>
     </main>
 
@@ -881,11 +946,12 @@
         { id: "large", label: "Hrubá", value: 16 }
       ];
 
-      const STICKERS = ["⭐", "🪐", "☄️", "🌙", "👩‍🚀"];
+      const STICKERS = ["⭐", "🪐", "☄️", "🌙", "👩‍🚀", "🚀", "✨", "🌍", "🛰️", "🌟", "🔭"];
 
       const state = {
         playerName: "",
         screen: "welcome",
+        unlockedScreens: ["welcome"],
         questions: [],
         questionIndex: 0,
         wrongChoices: new Set(),
@@ -926,6 +992,8 @@
         playerName: document.getElementById("player-name"),
         enterMission: document.getElementById("enter-mission"),
         welcomeNote: document.getElementById("welcome-note"),
+        screenNav: document.getElementById("screen-nav"),
+        navButtons: [...document.querySelectorAll(".nav-button")],
         screenWelcome: document.getElementById("screen-welcome"),
         screenQuiz: document.getElementById("screen-quiz"),
         screenBuild: document.getElementById("screen-build"),
@@ -1029,11 +1097,31 @@
       }
 
       function setScreen(screenId) {
+        if (!state.unlockedScreens.includes(screenId)) {
+          return;
+        }
         state.screen = screenId;
         elements.screenWelcome.classList.toggle("active", screenId === "welcome");
         elements.screenQuiz.classList.toggle("active", screenId === "quiz");
         elements.screenBuild.classList.toggle("active", screenId === "build");
         elements.screenLaunch.classList.toggle("active", screenId === "launch");
+        elements.screenNav.classList.toggle("visible", screenId !== "welcome");
+        updateNavButtons();
+      }
+
+      function unlockScreen(screenId) {
+        if (!state.unlockedScreens.includes(screenId)) {
+          state.unlockedScreens.push(screenId);
+        }
+        updateNavButtons();
+      }
+
+      function updateNavButtons() {
+        elements.navButtons.forEach((button) => {
+          const screenId = button.dataset.screen;
+          button.disabled = !state.unlockedScreens.includes(screenId);
+          button.classList.toggle("active", state.screen === screenId);
+        });
       }
 
       function setFeedback(title, note) {
@@ -1112,6 +1200,7 @@
         elements.playerName.value = state.playerName;
         safeSave(STORAGE_NAME_KEY, state.playerName);
 
+        state.unlockedScreens = ["welcome", "quiz"];
         state.questions = chooseQuestionSet();
         state.questionIndex = 0;
         state.wrongChoices = new Set();
@@ -1225,6 +1314,7 @@
       }
 
       function openBuildScreen() {
+        unlockScreen("build");
         setScreen("build");
         renderBuildChecklist();
         drawBuildCanvas();
@@ -1254,7 +1344,12 @@
           button.textContent = entry.label;
           button.addEventListener("click", () => {
             state.build.tool = entry.id;
+            if (entry.id === "sticker") {
+              state.build.role = "body";
+              renderRoleButtons();
+            }
             renderToolButtons();
+            renderBuildChecklist();
           });
           elements.toolRow.appendChild(button);
         });
@@ -1459,6 +1554,10 @@
         });
 
         elements.prepareLaunch.disabled = !allDone;
+        if (state.build.tool === "sticker") {
+          elements.buildNote.textContent = "Nálepky sa pridávajú do časti telo rakety. Klikni na plátno a nálepku potom môžeš presúvať.";
+          return;
+        }
         elements.buildNote.textContent = allDone
           ? "Raketa spĺňa podmienky. Ak si spokojný, klikni na „Pripraviť na štart“."
           : "Na štart musí byť v kresbe aspoň jeden ťah pre špic, telo a motor.";
@@ -1508,10 +1607,11 @@
           const object = {
             id: nextId(),
             type: "sticker",
+            role: "body",
             text: state.build.sticker,
             x: point.x,
             y: point.y,
-            size: 46
+            size: 54
           };
           state.build.objects.push(object);
           state.build.draggingId = object.id;
@@ -1598,6 +1698,7 @@
         }
 
         state.rocketImage = await createRocketImage();
+        unlockScreen("launch");
         setScreen("launch");
         resetFlightScene();
         setFlightResult("Pripravené", "Spusti odpočítavanie a sleduj, ako dlho raketa vydrží bez kolízie.");
@@ -1944,6 +2045,7 @@
         renderScores();
         resetBuildState();
         resetFlightScene();
+        updateNavButtons();
 
         elements.enterMission.addEventListener("click", startMission);
         elements.welcomeForm.addEventListener("submit", (event) => {
@@ -1963,6 +2065,10 @@
 
         attachArrowControl(elements.moveLeft, -1);
         attachArrowControl(elements.moveRight, 1);
+
+        elements.navButtons.forEach((button) => {
+          button.addEventListener("click", () => setScreen(button.dataset.screen));
+        });
 
         window.addEventListener("keydown", handleKeyDown);
         window.addEventListener("keyup", handleKeyUp);
