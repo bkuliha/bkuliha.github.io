@@ -7,30 +7,23 @@
     <style>
       :root {
         color-scheme: light;
-        --bg-top: #04142d;
-        --bg-bottom: #160b2e;
-        --panel: rgba(10, 20, 46, 0.84);
-        --panel-strong: rgba(12, 24, 58, 0.92);
-        --line: rgba(154, 190, 255, 0.2);
-        --text: #f5f8ff;
-        --muted: rgba(232, 240, 255, 0.76);
-        --accent: #ff8a3d;
-        --accent-strong: #ff5f2e;
-        --accent-soft: rgba(255, 138, 61, 0.18);
-        --secondary: #5ee4c8;
-        --secondary-soft: rgba(94, 228, 200, 0.18);
-        --warning: #ffd05b;
-        --danger: #ff6f6f;
-        --success: #7eed89;
+        --bg-top: #07142e;
+        --bg-bottom: #140922;
+        --card: rgba(10, 22, 48, 0.86);
+        --line: rgba(255, 255, 255, 0.1);
+        --text: #f4f7ff;
+        --muted: rgba(244, 247, 255, 0.75);
+        --accent: #ff8c3a;
+        --accent-strong: #ff612e;
+        --mint: #6fe8d0;
+        --mint-soft: rgba(111, 232, 208, 0.18);
+        --warn: #ffd363;
+        --danger: #ff7d7d;
         --shadow: rgba(0, 0, 0, 0.28);
       }
 
       * {
         box-sizing: border-box;
-      }
-
-      html {
-        scroll-behavior: smooth;
       }
 
       body {
@@ -39,115 +32,50 @@
         font-family: "Trebuchet MS", "Comic Sans MS", "Verdana", sans-serif;
         color: var(--text);
         background:
-          radial-gradient(circle at 12% 18%, rgba(127, 196, 255, 0.28), transparent 18%),
-          radial-gradient(circle at 82% 12%, rgba(255, 154, 94, 0.2), transparent 18%),
-          radial-gradient(circle at 70% 72%, rgba(152, 117, 255, 0.2), transparent 24%),
-          linear-gradient(180deg, var(--bg-top) 0%, #091f42 35%, var(--bg-bottom) 100%);
-      }
-
-      body::before,
-      body::after {
-        content: "";
-        position: fixed;
-        inset: auto;
-        z-index: -1;
-        border-radius: 50%;
-        filter: blur(10px);
-        opacity: 0.9;
-        pointer-events: none;
+          radial-gradient(circle at 15% 18%, rgba(126, 194, 255, 0.22), transparent 16%),
+          radial-gradient(circle at 84% 10%, rgba(255, 164, 93, 0.2), transparent 16%),
+          linear-gradient(180deg, var(--bg-top) 0%, #0a1c3d 36%, var(--bg-bottom) 100%);
       }
 
       body::before {
-        top: 44px;
-        right: 28px;
-        width: 220px;
-        height: 220px;
-        background: radial-gradient(circle, rgba(255, 211, 104, 0.95), rgba(255, 211, 104, 0));
-      }
-
-      body::after {
-        bottom: 30px;
-        left: -24px;
-        width: 260px;
-        height: 260px;
-        background: radial-gradient(circle, rgba(63, 162, 255, 0.35), rgba(63, 162, 255, 0));
-      }
-
-      .stars {
+        content: "";
         position: fixed;
         inset: 0;
-        z-index: -2;
         pointer-events: none;
         background-image:
           radial-gradient(circle at 8% 14%, rgba(255, 255, 255, 0.82) 0 1.4px, transparent 1.6px),
-          radial-gradient(circle at 16% 60%, rgba(255, 255, 255, 0.75) 0 1px, transparent 1.2px),
-          radial-gradient(circle at 24% 28%, rgba(255, 255, 255, 0.7) 0 1.2px, transparent 1.4px),
-          radial-gradient(circle at 36% 20%, rgba(255, 255, 255, 0.8) 0 1.4px, transparent 1.6px),
-          radial-gradient(circle at 48% 14%, rgba(255, 255, 255, 0.68) 0 0.9px, transparent 1.1px),
-          radial-gradient(circle at 56% 40%, rgba(255, 255, 255, 0.75) 0 1px, transparent 1.2px),
-          radial-gradient(circle at 68% 18%, rgba(255, 255, 255, 0.78) 0 1.1px, transparent 1.3px),
-          radial-gradient(circle at 74% 66%, rgba(255, 255, 255, 0.7) 0 1.2px, transparent 1.4px),
-          radial-gradient(circle at 84% 30%, rgba(255, 255, 255, 0.84) 0 1.4px, transparent 1.6px),
-          radial-gradient(circle at 92% 56%, rgba(255, 255, 255, 0.72) 0 1.1px, transparent 1.3px);
+          radial-gradient(circle at 18% 66%, rgba(255, 255, 255, 0.7) 0 1.1px, transparent 1.3px),
+          radial-gradient(circle at 34% 20%, rgba(255, 255, 255, 0.8) 0 1.2px, transparent 1.4px),
+          radial-gradient(circle at 45% 54%, rgba(255, 255, 255, 0.7) 0 1px, transparent 1.2px),
+          radial-gradient(circle at 63% 18%, rgba(255, 255, 255, 0.82) 0 1.4px, transparent 1.6px),
+          radial-gradient(circle at 74% 62%, rgba(255, 255, 255, 0.72) 0 1.2px, transparent 1.4px),
+          radial-gradient(circle at 88% 28%, rgba(255, 255, 255, 0.8) 0 1.3px, transparent 1.5px);
+        opacity: 0.9;
+        z-index: -1;
       }
 
       .app {
-        width: min(1360px, calc(100% - 24px));
-        margin: 18px auto 30px;
+        width: min(1180px, calc(100% - 24px));
+        margin: 18px auto 28px;
         display: grid;
         gap: 18px;
       }
 
       .card {
-        position: relative;
-        overflow: hidden;
-        background: var(--panel);
-        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: var(--card);
+        border: 1px solid var(--line);
         border-radius: 28px;
-        box-shadow: 0 24px 60px var(--shadow);
-        backdrop-filter: blur(12px);
+        box-shadow: 0 22px 54px var(--shadow);
+        backdrop-filter: blur(10px);
       }
 
-      .hero {
-        padding: 28px;
-        display: grid;
-        gap: 20px;
-        background:
-          linear-gradient(135deg, rgba(7, 23, 57, 0.92), rgba(16, 36, 79, 0.84)),
-          linear-gradient(90deg, rgba(255, 138, 61, 0.12), rgba(94, 228, 200, 0.12));
+      .screen {
+        display: none;
+        padding: 26px;
       }
 
-      .hero::after {
-        content: "";
-        position: absolute;
-        right: -70px;
-        top: -60px;
-        width: 240px;
-        height: 240px;
-        border-radius: 50%;
-        background: radial-gradient(circle, rgba(255, 138, 61, 0.26), rgba(255, 138, 61, 0));
-        pointer-events: none;
-      }
-
-      .hero-grid {
-        display: grid;
-        grid-template-columns: minmax(0, 1.25fr) minmax(300px, 440px);
-        gap: 20px;
-        align-items: start;
-      }
-
-      .kicker {
-        display: inline-flex;
-        width: fit-content;
-        align-items: center;
-        gap: 10px;
-        padding: 10px 16px;
-        border-radius: 999px;
-        background: rgba(255, 255, 255, 0.1);
-        color: var(--warning);
-        font-size: 0.98rem;
-        font-weight: 900;
-        letter-spacing: 0.02em;
+      .screen.active {
+        display: block;
       }
 
       h1,
@@ -157,109 +85,60 @@
         margin: 0;
       }
 
-      .hero h1 {
-        margin-top: 14px;
-        font-size: clamp(2.5rem, 5vw, 4.9rem);
-        line-height: 0.92;
-        max-width: 10ch;
+      .center-screen {
+        min-height: 68vh;
+        display: grid;
+        place-items: center;
       }
 
-      .hero p {
-        margin-top: 14px;
-        line-height: 1.58;
-        color: var(--muted);
-        font-size: 1.08rem;
-        max-width: 62ch;
+      .welcome-box {
+        width: min(680px, 100%);
+        padding: 34px;
+        text-align: center;
+        background:
+          radial-gradient(circle at top, rgba(255, 255, 255, 0.08), transparent 28%),
+          linear-gradient(180deg, rgba(9, 21, 45, 0.9), rgba(12, 28, 63, 0.86));
       }
 
-      .hero-pills,
-      .tip-list {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
+      .welcome-box h1 {
+        font-size: clamp(2.3rem, 5vw, 4.6rem);
+        line-height: 0.95;
       }
 
-      .hero-pills span,
-      .tip {
-        padding: 12px 14px;
-        border-radius: 18px;
-        font-weight: 800;
-        background: rgba(255, 255, 255, 0.09);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-      }
-
-      .tip-card {
-        padding: 22px;
-        background: rgba(7, 16, 38, 0.55);
-        border-radius: 24px;
-        border: 1px solid rgba(255, 255, 255, 0.06);
-      }
-
-      .tip-card h2 {
-        font-size: 1.36rem;
-      }
-
-      .tip-card p {
-        margin-top: 10px;
-        font-size: 1rem;
-      }
-
-      .tip-list {
+      .welcome-box p {
         margin-top: 16px;
-        display: grid;
-        gap: 10px;
-      }
-
-      .top-grid {
-        display: grid;
-        grid-template-columns: minmax(280px, 380px) minmax(0, 1fr);
-        gap: 18px;
-      }
-
-      .pilot-card,
-      .score-card,
-      .mission-card {
-        padding: 24px;
-      }
-
-      .pilot-card {
-        display: grid;
-        gap: 14px;
-        align-content: start;
-      }
-
-      .pilot-card p,
-      .score-card p,
-      .mission-card p {
         color: var(--muted);
-        line-height: 1.5;
+        line-height: 1.55;
+        font-size: 1.08rem;
       }
 
       .field {
+        margin-top: 24px;
         display: grid;
-        gap: 8px;
+        gap: 10px;
+        text-align: left;
       }
 
       label {
-        font-weight: 900;
         font-size: 1.02rem;
+        font-weight: 900;
       }
 
       input[type="text"] {
         width: 100%;
-        padding: 16px 18px;
-        border-radius: 18px;
+        padding: 17px 18px;
         border: 3px solid rgba(255, 255, 255, 0.1);
-        background: rgba(255, 255, 255, 0.96);
-        color: #162235;
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.98);
+        color: #13213a;
         font: inherit;
-        font-size: 1.06rem;
+        font-size: 1.08rem;
       }
 
       input[type="text"]:focus {
         outline: none;
-        border-color: rgba(94, 228, 200, 0.78);
-        box-shadow: 0 0 0 5px rgba(94, 228, 200, 0.16);
+        border-color: rgba(111, 232, 208, 0.74);
+        box-shadow: 0 0 0 5px rgba(111, 232, 208, 0.16);
       }
 
       .button-row {
@@ -277,73 +156,382 @@
         border: 0;
         border-radius: 999px;
         padding: 14px 22px;
+        cursor: pointer;
         font: inherit;
         font-size: 1.04rem;
         font-weight: 900;
         color: #fff;
-        cursor: pointer;
         background: linear-gradient(180deg, var(--accent), var(--accent-strong));
-        box-shadow: 0 14px 24px rgba(255, 95, 46, 0.25);
+        box-shadow: 0 14px 24px rgba(255, 97, 46, 0.24);
         transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
         touch-action: manipulation;
       }
 
       .button:hover,
       .button:focus-visible {
-        transform: translateY(-2px) scale(1.01);
-        box-shadow: 0 18px 26px rgba(255, 95, 46, 0.32);
+        transform: translateY(-2px);
+        box-shadow: 0 18px 28px rgba(255, 97, 46, 0.3);
       }
 
       .button.secondary {
-        background: linear-gradient(180deg, #53dfc1, #19baa6);
-        box-shadow: 0 14px 24px rgba(25, 186, 166, 0.24);
+        background: linear-gradient(180deg, #63e3cc, #17b7a4);
+        box-shadow: 0 14px 24px rgba(23, 183, 164, 0.22);
       }
 
       .button.ghost {
         background: rgba(255, 255, 255, 0.08);
-        box-shadow: none;
         border: 2px solid rgba(255, 255, 255, 0.12);
-      }
-
-      .button.warn {
-        background: linear-gradient(180deg, #ffc85f, #ff9d2f);
-        box-shadow: 0 14px 24px rgba(255, 157, 47, 0.24);
+        box-shadow: none;
       }
 
       .button:disabled {
-        opacity: 0.46;
-        cursor: not-allowed;
-        transform: none;
+        opacity: 0.45;
         box-shadow: none;
+        transform: none;
+        cursor: not-allowed;
       }
 
-      .pilot-note,
-      .status-box,
-      .score-empty,
-      .question-feedback,
-      .build-note,
-      .result-box {
+      .status {
+        margin-top: 16px;
         padding: 14px 16px;
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        color: var(--muted);
+      }
+
+      .topline {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 20px;
+      }
+
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 14px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.08);
+        font-weight: 900;
+      }
+
+      .quiz-shell {
+        display: grid;
+        gap: 18px;
+      }
+
+      .quiz-question {
+        font-size: clamp(1.7rem, 3vw, 2.5rem);
+        line-height: 1.18;
+      }
+
+      .choices {
+        display: grid;
+        gap: 12px;
+        margin-top: 18px;
+      }
+
+      .choice {
+        width: 100%;
+        min-height: 82px;
+        padding: 18px 20px;
+        border-radius: 22px;
+        border: 3px solid rgba(255, 255, 255, 0.08);
+        background: rgba(255, 255, 255, 0.98);
+        color: #13213a;
+        text-align: left;
+        font: inherit;
+        font-size: 1.14rem;
+        font-weight: 900;
+        cursor: pointer;
+        transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+        touch-action: manipulation;
+      }
+
+      .choice:hover,
+      .choice:focus-visible {
+        transform: translateY(-2px);
+        border-color: rgba(255, 140, 58, 0.58);
+        box-shadow: 0 18px 24px rgba(0, 0, 0, 0.16);
+      }
+
+      .choice.correct {
+        border-color: rgba(76, 195, 114, 0.78);
+        background: linear-gradient(180deg, #ecfff1, #dfffe7);
+      }
+
+      .choice.wrong {
+        border-color: rgba(255, 125, 125, 0.74);
+        background: linear-gradient(180deg, #fff2f2, #ffe5e5);
+      }
+
+      .choice:disabled {
+        cursor: not-allowed;
+      }
+
+      .feedback {
+        margin-top: 16px;
+        min-height: 78px;
+        padding: 16px;
         border-radius: 18px;
         background: rgba(255, 255, 255, 0.08);
         border: 1px solid rgba(255, 255, 255, 0.08);
       }
 
-      .status-box strong,
-      .result-box strong {
+      .feedback strong,
+      .feedback span {
         display: block;
-        font-size: 1.06rem;
       }
 
-      .status-box span,
-      .result-box span {
-        display: block;
+      .feedback span {
         margin-top: 6px;
         color: var(--muted);
       }
 
-      .score-card h2 {
-        font-size: 1.5rem;
+      .progress-strip {
+        display: flex;
+        gap: 12px;
+        margin-top: 18px;
+      }
+
+      .progress-dot {
+        flex: 1;
+        height: 18px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.1);
+        overflow: hidden;
+      }
+
+      .progress-dot.active {
+        background: linear-gradient(90deg, #ffe18b, #ff8c3a);
+      }
+
+      .build-shell {
+        display: grid;
+        gap: 16px;
+      }
+
+      .build-tools,
+      .build-meta,
+      .score-card,
+      .launch-side {
+        padding: 20px;
+        border-radius: 24px;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .tool-grid {
+        display: grid;
+        gap: 14px;
+      }
+
+      .tool-group {
+        display: grid;
+        gap: 10px;
+      }
+
+      .tool-group h3 {
+        font-size: 1.04rem;
+      }
+
+      .tool-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .chip {
+        min-height: 52px;
+        padding: 10px 14px;
+        border-radius: 18px;
+        border: 2px solid rgba(255, 255, 255, 0.12);
+        background: rgba(255, 255, 255, 0.08);
+        color: var(--text);
+        cursor: pointer;
+        font: inherit;
+        font-weight: 900;
+        transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+        touch-action: manipulation;
+      }
+
+      .chip:hover,
+      .chip:focus-visible {
+        transform: translateY(-2px);
+        border-color: rgba(111, 232, 208, 0.46);
+      }
+
+      .chip.selected {
+        background: var(--mint-soft);
+        border-color: rgba(111, 232, 208, 0.54);
+      }
+
+      .chip.sticker {
+        min-width: 60px;
+        font-size: 1.4rem;
+      }
+
+      .chip.color {
+        min-width: 66px;
+      }
+
+      .color-swatch {
+        width: 20px;
+        height: 20px;
+        display: inline-block;
+        border-radius: 50%;
+        margin-right: 8px;
+        vertical-align: middle;
+        box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.18);
+      }
+
+      .canvas-wrap {
+        padding: 18px;
+        border-radius: 24px;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      canvas#build-canvas {
+        display: block;
+        width: 100%;
+        min-height: 540px;
+        border-radius: 24px;
+        border: 3px solid rgba(255, 255, 255, 0.12);
+        background: #ffffff;
+        touch-action: none;
+      }
+
+      .checklist {
+        display: grid;
+        gap: 10px;
+      }
+
+      .check-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 12px 14px;
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      .check-row.done {
+        background: rgba(111, 232, 208, 0.16);
+      }
+
+      .build-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(280px, 340px);
+        gap: 16px;
+      }
+
+      .launch-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(280px, 340px);
+        gap: 16px;
+      }
+
+      .launch-card {
+        padding: 20px;
+      }
+
+      .launch-screen {
+        position: relative;
+        margin-top: 16px;
+        border-radius: 28px;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: linear-gradient(180deg, #060d22 0%, #02060f 100%);
+      }
+
+      canvas#flight-canvas {
+        display: block;
+        width: 100%;
+        aspect-ratio: 23 / 32;
+        touch-action: none;
+      }
+
+      .countdown {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        background: rgba(5, 12, 29, 0.34);
+        font-size: clamp(3rem, 8vw, 5.2rem);
+        font-weight: 900;
+        text-shadow: 0 12px 28px rgba(0, 0, 0, 0.34);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.18s ease;
+      }
+
+      .countdown.visible {
+        opacity: 1;
+      }
+
+      .arrow-pad {
+        margin-top: 16px;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .arrow {
+        min-height: 92px;
+        border-radius: 22px;
+        border: 2px solid rgba(255, 255, 255, 0.12);
+        background: rgba(255, 255, 255, 0.08);
+        color: var(--text);
+        cursor: pointer;
+        font: inherit;
+        font-size: clamp(1.2rem, 2vw, 1.8rem);
+        font-weight: 900;
+        touch-action: manipulation;
+      }
+
+      .arrow.active {
+        background: rgba(255, 140, 58, 0.18);
+        border-color: rgba(255, 140, 58, 0.48);
+      }
+
+      .flight-stats {
+        display: grid;
+        gap: 10px;
+      }
+
+      .stat {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 12px 14px;
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      .result {
+        margin-top: 14px;
+        min-height: 108px;
+        padding: 14px 16px;
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      .result strong,
+      .result span {
+        display: block;
+      }
+
+      .result span {
+        margin-top: 6px;
+        color: var(--muted);
+      }
+
+      .scores {
+        padding: 22px;
       }
 
       .score-list {
@@ -357,1079 +545,248 @@
       .score-row {
         display: grid;
         grid-template-columns: auto minmax(0, 1fr) auto;
+        gap: 12px;
         align-items: center;
-        gap: 14px;
         padding: 14px 16px;
         border-radius: 18px;
         background: rgba(255, 255, 255, 0.08);
-        border: 1px solid rgba(255, 255, 255, 0.06);
       }
 
-      .score-rank {
+      .rank {
         width: 38px;
         height: 38px;
         display: grid;
         place-items: center;
         border-radius: 50%;
-        background: rgba(94, 228, 200, 0.16);
-        color: var(--secondary);
+        background: rgba(111, 232, 208, 0.16);
+        color: var(--mint);
         font-weight: 900;
       }
 
-      .score-main strong,
-      .score-main span,
+      .score-meta strong,
+      .score-meta span,
       .score-time {
         display: block;
       }
 
-      .score-main span {
+      .score-meta span {
         margin-top: 3px;
         color: var(--muted);
-        font-size: 0.93rem;
+        font-size: 0.92rem;
       }
 
       .score-time {
-        font-size: 1.04rem;
-        font-weight: 900;
-        color: var(--warning);
-      }
-
-      .dashboard {
-        display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 14px;
-      }
-
-      .info-box {
-        padding: 18px 20px;
-        text-align: center;
-      }
-
-      .info-box span {
-        display: block;
-        font-size: 0.86rem;
-        font-weight: 900;
-        text-transform: uppercase;
-        letter-spacing: 0.06em;
-        color: var(--muted);
-      }
-
-      .info-box strong {
-        display: block;
-        margin-top: 8px;
-        font-size: clamp(1.1rem, 2.6vw, 1.8rem);
-      }
-
-      .mission-card {
-        display: grid;
-        gap: 20px;
-      }
-
-      .mission-head {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        gap: 18px;
-      }
-
-      .mission-steps {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 12px;
-      }
-
-      .mission-step {
-        min-width: 180px;
-        padding: 12px 14px;
-        border-radius: 18px;
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        background: rgba(255, 255, 255, 0.05);
-      }
-
-      .mission-step small,
-      .mission-step strong {
-        display: block;
-      }
-
-      .mission-step small {
-        color: var(--muted);
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
+        color: var(--warn);
         font-weight: 900;
       }
 
-      .mission-step strong {
-        margin-top: 4px;
-        font-size: 1.04rem;
-      }
-
-      .mission-step.active {
-        background: rgba(94, 228, 200, 0.14);
-        border-color: rgba(94, 228, 200, 0.34);
-      }
-
-      .mission-step.done {
-        background: rgba(126, 237, 137, 0.14);
-        border-color: rgba(126, 237, 137, 0.38);
-      }
-
-      .stage {
-        display: none;
-      }
-
-      .stage.active {
-        display: block;
-      }
-
-      .quiz-layout,
-      .build-layout,
-      .launch-layout {
-        display: grid;
-        gap: 18px;
-      }
-
-      .quiz-layout {
-        grid-template-columns: minmax(0, 1.1fr) minmax(280px, 360px);
-      }
-
-      .quiz-card,
-      .fuel-card,
-      .builder-card,
-      .preview-card,
-      .studio-card,
-      .launch-card,
-      .control-card {
-        padding: 22px;
-        border-radius: 24px;
-        background: rgba(255, 255, 255, 0.06);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-      }
-
-      .question-card {
-        display: grid;
-        gap: 18px;
-      }
-
-      .question-top {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 14px;
-      }
-
-      .badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 9px 14px;
-        border-radius: 999px;
-        background: rgba(255, 255, 255, 0.08);
-        font-weight: 900;
-      }
-
-      .question-text {
-        font-size: clamp(1.5rem, 2.8vw, 2.25rem);
-        line-height: 1.15;
-      }
-
-      .choices {
-        display: grid;
-        gap: 12px;
-      }
-
-      .choice {
-        width: 100%;
-        min-height: 82px;
-        padding: 18px 20px;
-        border-radius: 22px;
-        border: 3px solid rgba(255, 255, 255, 0.08);
-        background: rgba(255, 255, 255, 0.96);
-        color: #15223a;
-        text-align: left;
-        font: inherit;
-        font-size: 1.14rem;
-        font-weight: 900;
-        cursor: pointer;
-        transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
-        touch-action: manipulation;
-      }
-
-      .choice:hover,
-      .choice:focus-visible {
-        transform: translateY(-2px);
-        border-color: rgba(255, 138, 61, 0.55);
-        box-shadow: 0 18px 24px rgba(0, 0, 0, 0.16);
-      }
-
-      .choice:disabled {
-        cursor: not-allowed;
-        transform: none;
-        box-shadow: none;
-      }
-
-      .choice.wrong {
-        border-color: rgba(255, 111, 111, 0.72);
-        background: linear-gradient(180deg, #fff2f2, #ffe4e4);
-      }
-
-      .choice.correct {
-        border-color: rgba(68, 192, 106, 0.78);
-        background: linear-gradient(180deg, #ebfff0, #ddffe7);
-      }
-
-      .question-feedback {
-        min-height: 80px;
-      }
-
-      .question-feedback strong {
-        display: block;
-        font-size: 1.06rem;
-      }
-
-      .question-feedback span {
-        display: block;
-        margin-top: 6px;
-        color: var(--muted);
-      }
-
-      .fuel-track {
-        margin-top: 18px;
-        display: grid;
-        gap: 12px;
-      }
-
-      .fuel-cells {
-        display: grid;
-        gap: 12px;
-      }
-
-      .fuel-cell {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
+      .empty {
         padding: 14px 16px;
         border-radius: 18px;
-        background: rgba(255, 255, 255, 0.06);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-      }
-
-      .fuel-cell.active {
-        background: rgba(255, 138, 61, 0.16);
-        border-color: rgba(255, 138, 61, 0.36);
-      }
-
-      .fuel-dot {
-        width: 20px;
-        height: 20px;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.16);
-        box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.08);
-      }
-
-      .fuel-cell.active .fuel-dot {
-        background: radial-gradient(circle, #ffe48d 0%, #ff8a3d 70%);
-        box-shadow: 0 0 18px rgba(255, 138, 61, 0.55);
-      }
-
-      .question-list {
-        margin: 0;
-        padding-left: 20px;
-        color: var(--muted);
-        line-height: 1.6;
-      }
-
-      .build-layout {
-        grid-template-columns: minmax(0, 1.1fr) minmax(300px, 420px);
-      }
-
-      .builder-card {
-        display: grid;
-        gap: 16px;
-      }
-
-      .part-list {
-        display: grid;
-        gap: 14px;
-      }
-
-      .part-card {
-        padding: 18px;
-        border-radius: 22px;
-        background: rgba(255, 255, 255, 0.06);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-      }
-
-      .part-head {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        gap: 12px;
-      }
-
-      .part-head p {
-        margin-top: 6px;
-      }
-
-      .part-options,
-      .color-row,
-      .brush-row {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-      }
-
-      .part-options {
-        margin-top: 14px;
-      }
-
-      .part-button,
-      .color-button,
-      .brush-button,
-      .control-button {
-        min-height: 54px;
-        border-radius: 18px;
-        border: 2px solid rgba(255, 255, 255, 0.1);
         background: rgba(255, 255, 255, 0.08);
-        color: var(--text);
-        font: inherit;
-        font-weight: 900;
-        cursor: pointer;
-        transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
-        touch-action: manipulation;
-      }
-
-      .part-button {
-        padding: 12px 14px;
-      }
-
-      .part-button:hover,
-      .part-button:focus-visible,
-      .color-button:hover,
-      .color-button:focus-visible,
-      .brush-button:hover,
-      .brush-button:focus-visible,
-      .control-button:hover,
-      .control-button:focus-visible {
-        transform: translateY(-2px);
-        border-color: rgba(94, 228, 200, 0.44);
-      }
-
-      .part-button.selected,
-      .color-button.selected,
-      .brush-button.selected {
-        background: rgba(94, 228, 200, 0.16);
-        border-color: rgba(94, 228, 200, 0.5);
-      }
-
-      .part-status {
-        padding: 8px 12px;
-        border-radius: 999px;
-        background: rgba(255, 255, 255, 0.08);
-        font-size: 0.92rem;
-        font-weight: 900;
-      }
-
-      .part-status.ready {
-        background: rgba(126, 237, 137, 0.16);
-        color: var(--success);
-      }
-
-      .preview-card {
-        display: grid;
-        gap: 18px;
-        align-content: start;
-      }
-
-      .rocket-preview-shell {
-        display: grid;
-        place-items: center;
-        min-height: 520px;
-        padding: 24px 16px;
-        border-radius: 24px;
-        background:
-          radial-gradient(circle at top, rgba(255, 255, 255, 0.12), transparent 28%),
-          linear-gradient(180deg, rgba(7, 17, 39, 0.92), rgba(4, 8, 22, 0.96));
-        border: 1px solid rgba(255, 255, 255, 0.08);
-      }
-
-      .rocket-preview {
-        position: relative;
-        display: grid;
-        justify-items: center;
-        gap: 10px;
-      }
-
-      .rocket-slot {
-        position: relative;
-        width: 170px;
-        display: grid;
-        place-items: center;
-        overflow: hidden;
-        border: 2px dashed rgba(255, 255, 255, 0.18);
-        background: rgba(255, 255, 255, 0.04);
-      }
-
-      .rocket-slot.empty::after {
-        content: attr(data-label);
-        position: absolute;
-        color: rgba(255, 255, 255, 0.58);
-        font-weight: 900;
-        letter-spacing: 0.03em;
-      }
-
-      .rocket-slot.nose {
-        height: 130px;
-        clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
-      }
-
-      .rocket-slot.body {
-        height: 240px;
-        border-radius: 34px;
-      }
-
-      .rocket-slot.engine {
-        height: 150px;
-        border-radius: 24px 24px 34px 34px;
-      }
-
-      .segment-skin,
-      .drawn-art {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-      }
-
-      .segment-skin {
-        background:
-          linear-gradient(180deg, var(--segment-main), var(--segment-accent)),
-          linear-gradient(90deg, rgba(255, 255, 255, 0.18), transparent 50%);
-      }
-
-      .rocket-slot.body .segment-skin::before,
-      .rocket-slot.engine .segment-skin::before,
-      .rocket-slot.nose .segment-skin::before {
-        content: "";
-        position: absolute;
-        inset: auto;
-      }
-
-      .rocket-slot.nose .segment-skin::before {
-        width: 28px;
-        height: 28px;
-        left: calc(50% - 14px);
-        bottom: 26px;
-        border-radius: 50%;
-        background: radial-gradient(circle, #fff 0%, var(--segment-window) 58%, #113054 60%, #0f1e34 100%);
-      }
-
-      .rocket-slot.body .segment-skin::before {
-        left: 26px;
-        right: 26px;
-        top: 84px;
-        height: 14px;
-        border-radius: 999px;
-        background: rgba(255, 255, 255, 0.24);
-        box-shadow:
-          0 -46px 0 rgba(255, 255, 255, 0.16),
-          0 46px 0 rgba(255, 255, 255, 0.16);
-      }
-
-      .rocket-slot.engine .segment-skin::before {
-        left: 20px;
-        right: 20px;
-        bottom: 20px;
-        height: 46px;
-        border-radius: 16px;
-        background: linear-gradient(180deg, #33425f, #141d33);
-      }
-
-      .rocket-slot.engine .engine-fin,
-      .rocket-slot.engine .engine-fin::before,
-      .rocket-slot.engine .engine-fin::after {
-        position: absolute;
-        content: "";
-      }
-
-      .rocket-slot.engine .engine-fin {
-        left: 24px;
-        right: 24px;
-        bottom: 10px;
-        height: 0;
-      }
-
-      .rocket-slot.engine .engine-fin::before,
-      .rocket-slot.engine .engine-fin::after {
-        width: 34px;
-        height: 52px;
-        bottom: 18px;
-        background: linear-gradient(180deg, var(--segment-main), var(--segment-accent));
-      }
-
-      .rocket-slot.engine .engine-fin::before {
-        left: -8px;
-        clip-path: polygon(0% 100%, 100% 10%, 100% 100%);
-      }
-
-      .rocket-slot.engine .engine-fin::after {
-        right: -8px;
-        clip-path: polygon(0% 10%, 100% 100%, 0% 100%);
-      }
-
-      .drawn-art {
-        object-fit: cover;
-      }
-
-      .segment-caption {
-        position: absolute;
-        left: 12px;
-        bottom: 10px;
-        padding: 6px 10px;
-        border-radius: 999px;
-        background: rgba(5, 10, 22, 0.58);
-        font-size: 0.85rem;
-        font-weight: 900;
-      }
-
-      .checklist {
-        display: grid;
-        gap: 10px;
-      }
-
-      .check-row {
-        display: flex;
-        justify-content: space-between;
-        gap: 12px;
-        padding: 12px 14px;
-        border-radius: 18px;
-        background: rgba(255, 255, 255, 0.06);
-      }
-
-      .check-row strong {
-        font-size: 1rem;
-      }
-
-      .check-row span {
         color: var(--muted);
       }
 
-      .build-note {
-        color: var(--muted);
-      }
-
-      .studio-card {
-        display: grid;
-        gap: 16px;
-      }
-
-      .studio-card.hidden {
-        display: none;
-      }
-
-      .studio-head {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 12px;
-      }
-
-      .studio-tools {
-        display: grid;
-        gap: 12px;
-      }
-
-      .color-button,
-      .brush-button {
-        padding: 10px 14px;
-      }
-
-      .color-button {
-        min-width: 74px;
-      }
-
-      .color-chip {
-        width: 22px;
-        height: 22px;
-        border-radius: 50%;
-        display: inline-block;
-        margin-right: 8px;
-        vertical-align: middle;
-        box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.18);
-      }
-
-      canvas#draw-canvas {
-        width: 100%;
-        min-height: 280px;
-        border-radius: 22px;
-        border: 3px solid rgba(255, 255, 255, 0.12);
-        background:
-          radial-gradient(circle at 20% 22%, rgba(255, 255, 255, 0.16), transparent 10%),
-          radial-gradient(circle at 82% 28%, rgba(255, 255, 255, 0.16), transparent 10%),
-          linear-gradient(180deg, #10234e, #08162f);
-        touch-action: none;
-      }
-
-      .launch-layout {
-        grid-template-columns: minmax(0, 1fr) minmax(300px, 360px);
-        align-items: start;
-      }
-
-      .launch-card {
-        display: grid;
-        gap: 16px;
-      }
-
-      .launch-screen {
-        position: relative;
-        border-radius: 28px;
-        overflow: hidden;
-        background:
-          radial-gradient(circle at top, rgba(255, 255, 255, 0.09), transparent 26%),
-          linear-gradient(180deg, #060d22 0%, #02060f 100%);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-      }
-
-      canvas#launch-canvas {
-        display: block;
-        width: 100%;
-        aspect-ratio: 23 / 32;
-        touch-action: none;
-      }
-
-      .countdown-overlay {
-        position: absolute;
-        inset: 0;
-        display: grid;
-        place-items: center;
-        background: rgba(6, 13, 34, 0.38);
-        color: #fff;
-        font-size: clamp(2.8rem, 8vw, 5rem);
-        font-weight: 900;
-        text-shadow: 0 10px 24px rgba(0, 0, 0, 0.34);
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.2s ease;
-      }
-
-      .countdown-overlay.visible {
-        opacity: 1;
-      }
-
-      .control-pad {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 14px;
-      }
-
-      .control-button {
-        min-height: 92px;
-        padding: 16px;
-        font-size: clamp(1.2rem, 2vw, 1.8rem);
-      }
-
-      .control-button.active {
-        background: rgba(255, 138, 61, 0.18);
-        border-color: rgba(255, 138, 61, 0.46);
-      }
-
-      .launch-meter {
-        display: grid;
-        gap: 10px;
-      }
-
-      .meter-row {
-        display: flex;
-        justify-content: space-between;
-        gap: 12px;
-        padding: 12px 14px;
-        border-radius: 18px;
-        background: rgba(255, 255, 255, 0.06);
-      }
-
-      .result-box {
-        min-height: 120px;
-      }
-
-      .tiny {
-        font-size: 0.92rem;
-        color: var(--muted);
-      }
-
-      .hidden {
-        display: none !important;
-      }
-
-      @media (max-width: 1120px) {
-        .hero-grid,
-        .top-grid,
-        .quiz-layout,
+      @media (max-width: 940px) {
         .build-layout,
         .launch-layout {
           grid-template-columns: 1fr;
         }
-
-        .dashboard {
-          grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
       }
 
-      @media (max-width: 760px) {
+      @media (max-width: 720px) {
         .app {
-          width: min(100%, calc(100% - 14px));
-          margin: 10px auto 20px;
+          width: min(100%, calc(100% - 12px));
+          margin: 10px auto 18px;
         }
 
-        .hero,
-        .pilot-card,
-        .score-card,
-        .mission-card {
+        .screen,
+        .welcome-box,
+        .scores {
           padding: 18px;
         }
 
-        .dashboard {
-          grid-template-columns: 1fr;
-        }
-
-        .mission-head,
-        .question-top,
-        .part-head,
-        .studio-head {
+        .topline {
           flex-direction: column;
           align-items: flex-start;
         }
 
-        .rocket-preview-shell {
+        canvas#build-canvas {
           min-height: 430px;
         }
 
-        .rocket-slot {
-          width: 150px;
-        }
-
-        .rocket-slot.body {
-          height: 210px;
-        }
-
-        .rocket-slot.engine {
-          height: 130px;
-        }
-
-        .choice {
-          min-height: 74px;
-          font-size: 1.04rem;
-        }
-
-        .control-button {
+        .arrow {
           min-height: 78px;
         }
       }
     </style>
   </head>
   <body>
-    <div class="stars" aria-hidden="true"></div>
-
     <main class="app">
-      <header class="card hero">
-        <div class="hero-grid">
-          <section>
-            <div class="kicker">Misia pre dotykovú tabuľu</div>
-            <h1>Misia: Vesmírny štart</h1>
-            <p>
-              Žiaci najprv získajú palivo správnymi odpoveďami, potom raketu poskladajú zo špičky, tela a motora
-              alebo si diely sami nakreslia. Až potom sa odomkne štart a let medzi asteroidmi.
-            </p>
-            <div class="hero-pills" aria-label="Hlavné kroky hry">
-              <span>1. Kvíz o vesmíre</span>
-              <span>2. Stavba rakety</span>
-              <span>3. Odpočítavanie a štart</span>
-              <span>4. Let a vyhýbanie sa prekážkam</span>
-            </div>
-          </section>
+      <section class="screen active center-screen" id="screen-welcome">
+        <div class="card welcome-box">
+          <h1>Vstup do vesmírnej misie</h1>
+          <p>
+            Napíš svoje meno, vstúp do misie, odpovedz na tri otázky, nakresli vlastnú raketu a potom odštartuj do
+            vesmíru.
+          </p>
 
-          <aside class="tip-card">
-            <h2>Ako hru použiť v triede</h2>
+          <form id="welcome-form" class="field">
+            <label for="player-name">Meno žiaka alebo tímu</label>
+            <input id="player-name" name="player-name" type="text" maxlength="24" placeholder="Napríklad Tím Mars" autocomplete="name" />
+          </form>
+
+          <div class="button-row" style="margin-top: 18px; justify-content: center;">
+            <button class="button" id="enter-mission" type="button">Vstúpiť</button>
+          </div>
+
+          <div class="status" id="welcome-note">Po vstupe sa spustí krátky kvíz, či si pripravený na vesmírnu misiu.</div>
+        </div>
+      </section>
+
+      <section class="screen card" id="screen-quiz">
+        <div class="topline">
+          <div>
+            <h2>Kvíz pripravenosti</h2>
+            <p id="quiz-subtitle">Pilot odpovedá na 3 otázky pred štartom.</p>
+          </div>
+          <div class="pill" id="quiz-progress">Otázka 1 z 3</div>
+        </div>
+
+        <div class="quiz-shell">
+          <div class="pill" id="quiz-topic">Téma</div>
+          <div class="quiz-question" id="quiz-question">Otázka sa načíta po vstupe do misie.</div>
+          <div class="choices" id="quiz-choices"></div>
+          <div class="feedback" id="quiz-feedback">
+            <strong>Pripravený?</strong>
+            <span>Vyber správnu odpoveď a pokračuj ďalej.</span>
+          </div>
+          <div class="progress-strip" id="quiz-strip"></div>
+        </div>
+      </section>
+
+      <section class="screen card" id="screen-build">
+        <div class="topline">
+          <div>
+            <h2>Nakresli svoju raketu</h2>
             <p>
-              Môžete rozdeliť deti do tímov alebo vybrať jedného pilota, ktorý bude klikať na tabuľu podľa pokynov
-              ostatných spolužiakov.
+              Čistý kanvas je tvoj. Nakresli špic, telo a motor. Môžeš pridávať emotikon nálepky, presúvať objekty a
+              gumou ich mazať.
             </p>
-            <div class="tip-list">
-              <div class="tip">Kvíz overí, čo si deti pamätajú z prezentácie.</div>
-              <div class="tip">Pri stavbe rakety musia osadiť všetky tri časti, inak štart zostane zamknutý.</div>
-              <div class="tip">Počas odpočítavania môže celá trieda nahlas rátať: 3, 2, 1, štart.</div>
-              <div class="tip">Raketa sa vo finále ovláda veľkými šípkami na obrazovke aj klávesnicou.</div>
+          </div>
+          <div class="pill" id="build-player">Pilot</div>
+        </div>
+
+        <div class="build-layout">
+          <div class="build-shell">
+            <div class="build-tools">
+              <div class="tool-grid">
+                <div class="tool-group">
+                  <h3>Časť rakety</h3>
+                  <div class="tool-row" id="role-row"></div>
+                </div>
+
+                <div class="tool-group">
+                  <h3>Nástroj</h3>
+                  <div class="tool-row" id="tool-row"></div>
+                </div>
+
+                <div class="tool-group">
+                  <h3>Farba</h3>
+                  <div class="tool-row" id="color-row"></div>
+                </div>
+
+                <div class="tool-group">
+                  <h3>Hrúbka čiary</h3>
+                  <div class="tool-row" id="size-row"></div>
+                </div>
+
+                <div class="tool-group">
+                  <h3>Nálepky</h3>
+                  <div class="tool-row" id="sticker-row"></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="canvas-wrap">
+              <canvas id="build-canvas" width="920" height="560" aria-label="Kreslenie rakety"></canvas>
+            </div>
+
+            <div class="button-row">
+              <button class="button ghost" id="clear-canvas" type="button">Vymazať celé plátno</button>
+              <button class="button secondary" id="prepare-launch" type="button" disabled>Pripraviť na štart</button>
+            </div>
+          </div>
+
+          <aside class="build-meta">
+            <h3>Podmienky rakety</h3>
+            <p>Na štart musí byť v kresbe aspoň jeden ťah pre špic, telo a motor.</p>
+
+            <div class="checklist" id="build-checklist" style="margin-top: 16px;"></div>
+
+            <div class="status" id="build-note">
+              Tip: pri nástroji „Presun“ môžeš chytiť nakreslený tvar alebo nálepku a presunúť ju na nové miesto.
             </div>
           </aside>
         </div>
-      </header>
-
-      <section class="top-grid">
-        <section class="card pilot-card">
-          <h2>Pilot misie</h2>
-          <p>Zadajte meno pilota alebo tímu. Nová misia vždy vyberie tri náhodné otázky z pripraveného balíka.</p>
-
-          <form id="pilot-form" class="field">
-            <label for="pilot-name">Meno pilota</label>
-            <input id="pilot-name" name="pilot-name" type="text" maxlength="22" placeholder="Napríklad Tím Orion" autocomplete="name" />
-          </form>
-
-          <div class="button-row">
-            <button class="button" id="start-mission" type="button">Spustiť novú misiu</button>
-            <button class="button ghost" id="shuffle-questions" type="button">Nová sada otázok</button>
-          </div>
-
-          <div class="status-box">
-            <strong id="mission-status">Čaká sa na štart misie</strong>
-            <span id="mission-status-note">Najprv sa spustí kvíz. Palivo získate za tri správne odpovede.</span>
-          </div>
-
-          <div class="pilot-note">
-            Po ukončení letu sa uloží meno pilota a čas, ako dlho raketa vydržala vo vesmíre.
-          </div>
-        </section>
-
-        <aside class="card score-card">
-          <h2>Tabuľka pilotov</h2>
-          <p>Výsledky sa ukladajú priamo v tomto prehliadači. Čím dlhšie raketa letí bez nárazu, tým vyššie skóre.</p>
-          <ol class="score-list" id="score-list"></ol>
-        </aside>
       </section>
 
-      <section class="dashboard">
-        <article class="card info-box">
-          <span>Pilot</span>
-          <strong id="pilot-display">Pripravený</strong>
-        </article>
-        <article class="card info-box">
-          <span>Palivo</span>
-          <strong id="fuel-display">0 / 3</strong>
-        </article>
-        <article class="card info-box">
-          <span>Diely rakety</span>
-          <strong id="parts-display">0 / 3</strong>
-        </article>
-        <article class="card info-box">
-          <span>Posledný let</span>
-          <strong id="time-display">0.0 s</strong>
-        </article>
-      </section>
-
-      <section class="card mission-card">
-        <div class="mission-head">
+      <section class="screen card" id="screen-launch">
+        <div class="topline">
           <div>
-            <h2>Riadiace centrum</h2>
-            <p>Dokončite všetky tri kroky. Štart sa odomkne len vtedy, keď máte plnú nádrž a všetky namontované diely.</p>
+            <h2>Štart rakety</h2>
+            <p>Po odpočítavaní posúvaj raketu doľava a doprava, aby nenarazila do vesmírnych telies.</p>
           </div>
-          <div class="mission-steps" aria-label="Postup misie">
-            <div class="mission-step" id="step-quiz">
-              <small>Krok 1</small>
-              <strong>Získaj palivo</strong>
-            </div>
-            <div class="mission-step" id="step-build">
-              <small>Krok 2</small>
-              <strong>Poskladaj raketu</strong>
-            </div>
-            <div class="mission-step" id="step-launch">
-              <small>Krok 3</small>
-              <strong>Odštartuj</strong>
-            </div>
-          </div>
+          <div class="pill" id="launch-player">Pilot</div>
         </div>
 
-        <section class="stage active" id="stage-quiz" aria-labelledby="quiz-title">
-          <div class="quiz-layout">
-            <div class="quiz-card question-card">
-              <div class="question-top">
-                <div>
-                  <div class="badge" id="quiz-progress">Otázka 1 z 3</div>
-                  <h3 id="quiz-title" class="question-text">Stlačte „Spustiť novú misiu“ a načítajú sa tri otázky.</h3>
-                </div>
-                <div class="badge" id="question-topic">Kvíz</div>
-              </div>
-
-              <div class="choices" id="choice-list"></div>
-
-              <div class="question-feedback" id="question-feedback">
-                <strong>Palivo ešte čaká</strong>
-                <span>Vyberte správnu odpoveď. Pri nesprávnej voľbe môžete skúsiť inú možnosť.</span>
-              </div>
-            </div>
-
-            <aside class="fuel-card">
-              <h3>Palivové nádrže</h3>
-              <p>Každá správna odpoveď naplní jednu nádrž. Keď sú plné tri, raketa môže do montážnej haly.</p>
-
-              <div class="fuel-track">
-                <div class="fuel-cells" id="fuel-cells"></div>
-              </div>
-
-              <div class="build-note">
-                V každej novej hre sa vyberú tri iné otázky z tém: palivo, mušky, Lajka, šimpanz, Gagarin, Mesiac a Mars.
-              </div>
-            </aside>
-          </div>
-        </section>
-
-        <section class="stage" id="stage-build" aria-labelledby="build-title">
-          <div class="build-layout">
-            <div class="builder-card">
-              <div>
-                <h3 id="build-title">Montáž rakety</h3>
-                <p>Pre každý diel vyberte prefabrikát alebo stlačte možnosť nakresliť vlastný návrh. Bez špičky, tela a motora štart nezačne.</p>
-              </div>
-
-              <div class="part-list">
-                <article class="part-card">
-                  <div class="part-head">
-                    <div>
-                      <h3>Špička</h3>
-                      <p>Určuje tvar rakety pri lete nahor.</p>
-                    </div>
-                    <div class="part-status" id="status-nose">Chýba diel</div>
-                  </div>
-                  <div class="part-options" id="options-nose"></div>
-                </article>
-
-                <article class="part-card">
-                  <div class="part-head">
-                    <div>
-                      <h3>Telo</h3>
-                      <p>Do tela sa zmestí posádka a prístroje.</p>
-                    </div>
-                    <div class="part-status" id="status-body">Chýba diel</div>
-                  </div>
-                  <div class="part-options" id="options-body"></div>
-                </article>
-
-                <article class="part-card">
-                  <div class="part-head">
-                    <div>
-                      <h3>Motor</h3>
-                      <p>Motor poženie raketu dopredu a vytvorí plameň pri štarte.</p>
-                    </div>
-                    <div class="part-status" id="status-engine">Chýba diel</div>
-                  </div>
-                  <div class="part-options" id="options-engine"></div>
-                </article>
-              </div>
-
-              <div class="build-note" id="build-note">
-                Raketa je ešte v dielni. Doplňte všetky tri časti a potom ju presuňte na odpaľovaciu rampu.
-              </div>
-            </div>
-
-            <aside class="preview-card">
-              <div>
-                <h3>Ukážka rakety</h3>
-                <p>Sledujte, ako sa raketa skladá. Na štart musí mať všetky diely a plné palivo.</p>
-              </div>
-
-              <div class="rocket-preview-shell">
-                <div class="rocket-preview" aria-label="Náhľad rakety">
-                  <div class="rocket-slot nose empty" id="preview-nose" data-label="Špička"></div>
-                  <div class="rocket-slot body empty" id="preview-body" data-label="Telo"></div>
-                  <div class="rocket-slot engine empty" id="preview-engine" data-label="Motor"></div>
-                </div>
-              </div>
-
-              <div class="checklist">
-                <div class="check-row">
-                  <strong>Palivo pripravené</strong>
-                  <span id="check-fuel">0 / 3</span>
-                </div>
-                <div class="check-row">
-                  <strong>Namontované diely</strong>
-                  <span id="check-parts">0 / 3</span>
-                </div>
-              </div>
-
-              <button class="button secondary" id="go-launch" type="button" disabled>Presunúť na odpaľovaciu rampu</button>
-            </aside>
-          </div>
-
-          <section class="studio-card hidden" id="studio-card">
-            <div class="studio-head">
-              <div>
-                <h3 id="studio-title">Kresliaci ateliér</h3>
-                <p id="studio-note">Nakreslite vlastný diel prstom alebo perom a potom ho uložte.</p>
-              </div>
-              <div class="button-row">
-                <button class="button ghost" id="clear-drawing" type="button">Vymazať</button>
-                <button class="button warn" id="close-studio" type="button">Zavrieť</button>
-              </div>
-            </div>
-
-            <div class="studio-tools">
-              <div>
-                <h3>Farba</h3>
-                <div class="color-row" id="color-row"></div>
-              </div>
-              <div>
-                <h3>Hrúbka čiary</h3>
-                <div class="brush-row" id="brush-row"></div>
-              </div>
-            </div>
-
-            <canvas id="draw-canvas" width="640" height="320" aria-label="Kresliaca plocha"></canvas>
-
+        <div class="launch-layout">
+          <section class="launch-card">
             <div class="button-row">
-              <button class="button secondary" id="save-drawing" type="button">Uložiť diel do rakety</button>
+              <button class="button" id="start-flight" type="button">Spustiť odpočítavanie</button>
+              <button class="button ghost" id="retry-flight" type="button">Skúsiť znova</button>
+            </div>
+
+            <div class="launch-screen">
+              <canvas id="flight-canvas" width="460" height="640" aria-label="Let rakety"></canvas>
+              <div class="countdown" id="countdown">3</div>
+            </div>
+
+            <div class="arrow-pad">
+              <button class="arrow" id="move-left" type="button">⬅ Vľavo</button>
+              <button class="arrow" id="move-right" type="button">Vpravo ➜</button>
             </div>
           </section>
-        </section>
 
-        <section class="stage" id="stage-launch" aria-labelledby="launch-title">
-          <div class="launch-layout">
-            <div class="launch-card">
-              <div>
-                <h3 id="launch-title">Odpaľovacia rampa</h3>
-                <p>Stlačte štart, spustí sa odpočítavanie a potom raketu posúvajte doľava a doprava tak, aby sa vyhla asteroidom a planétam.</p>
+          <aside class="launch-side">
+            <h3>Údaje letu</h3>
+            <div class="flight-stats" style="margin-top: 16px;">
+              <div class="stat">
+                <strong>Pilot</strong>
+                <span id="flight-pilot">Pilot</span>
               </div>
-
-              <div class="launch-screen">
-                <canvas id="launch-canvas" width="460" height="640" aria-label="Let rakety"></canvas>
-                <div class="countdown-overlay" id="countdown-overlay">3</div>
+              <div class="stat">
+                <strong>Čas letu</strong>
+                <span id="flight-time">0.0 s</span>
               </div>
-
-              <div class="control-pad" aria-label="Ovládanie rakety">
-                <button class="control-button" id="move-left" type="button">⬅ Vľavo</button>
-                <button class="control-button" id="move-right" type="button">Vpravo ➜</button>
-              </div>
-
-              <div class="button-row">
-                <button class="button" id="launch-button" type="button">Spustiť odpočítavanie</button>
-                <button class="button ghost" id="retry-flight" type="button">Skúsiť let znova</button>
+              <div class="stat">
+                <strong>Stav</strong>
+                <span id="flight-state">Čaká na štart</span>
               </div>
             </div>
 
-            <aside class="control-card">
-              <h3>Letové údaje</h3>
-              <p>Čas sa zapisuje od okamihu štartu. Lepší výsledok znamená dlhší bezpečný let.</p>
+            <div class="result" id="flight-result">
+              <strong>Pripravené</strong>
+              <span>Keď raketa narazí, výsledný čas sa uloží do tabuľky.</span>
+            </div>
+          </aside>
+        </div>
+      </section>
 
-              <div class="launch-meter">
-                <div class="meter-row">
-                  <strong>Pilot</strong>
-                  <span id="launch-pilot">Pripravený</span>
-                </div>
-                <div class="meter-row">
-                  <strong>Čas letu</strong>
-                  <span id="launch-time">0.0 s</span>
-                </div>
-                <div class="meter-row">
-                  <strong>Stav rakety</strong>
-                  <span id="launch-state">Čaká na odpočítavanie</span>
-                </div>
-              </div>
-
-              <div class="result-box" id="result-box">
-                <strong>Finálne hlásenie</strong>
-                <span>Keď raketa narazí, uloží sa výsledok pilota a môžete skúsiť novú misiu alebo nový let.</span>
-              </div>
-
-              <p class="tiny">Ovládanie funguje cez veľké tlačidlá na obrazovke aj šípkami na klávesnici.</p>
-            </aside>
-          </div>
-        </section>
+      <section class="card scores">
+        <h2>Tabuľka výsledkov</h2>
+        <p id="scores-note">Čas do kolízie sa ukladá pre aktuálny prehliadač.</p>
+        <ol class="score-list" id="score-list"></ol>
       </section>
     </main>
 
@@ -1445,7 +802,7 @@
           question: "Čo potrebuje raketa, aby sa pohla?",
           options: ["Palivo", "Perie", "Papuču"],
           answer: 0,
-          fact: "Presne tak. Raketa potrebuje palivo, inak sa zo Zeme neodlepi."
+          fact: "Správne. Raketa sa bez paliva nepohne."
         },
         {
           id: "flies",
@@ -1453,23 +810,23 @@
           question: "Aké boli prvé živé tvory, ktoré sa dostali do vesmíru?",
           options: ["Mušky", "Psy", "Ryby"],
           answer: 0,
-          fact: "Správne. Medzi prvé živé tvory vo vesmíre patrili mušky."
+          fact: "Áno. Medzi prvé živé tvory vo vesmíre patrili mušky."
         },
         {
           id: "laika",
           topic: "Obežná dráha",
           question: "Ktoré zviera bolo prvé na obežnej dráhe okolo Zeme?",
-          options: ["Lajka", "Mačka Félix", "Korytnačka"],
+          options: ["Lajka", "Mačka", "Korytnačka"],
           answer: 0,
-          fact: "Áno. Prvým zvieraťom na obežnej dráhe bola fenka Lajka."
+          fact: "Správne. Prvým zvieraťom na obežnej dráhe bola Lajka."
         },
         {
           id: "chimp",
           topic: "Pracujúci tvor",
-          question: "Ktorý tvor pracoval vo vesmíre skôr, než tam leteli ľudia?",
+          question: "Ktorý tvor pracoval vo vesmíre ešte pred ľuďmi?",
           options: ["Šimpanz", "Tučniak", "Králik"],
           answer: 0,
-          fact: "Výborne. Do pokusov vo vesmíre bol zapojený aj šimpanz."
+          fact: "Výborne. Do vesmírnych pokusov bol zapojený aj šimpanz."
         },
         {
           id: "gagarin",
@@ -1489,146 +846,125 @@
         },
         {
           id: "mars",
-          topic: "Budúce cesty",
+          topic: "Budúcnosť",
           question: "Kam plánujú ľudia letieť v budúcnosti?",
-          options: ["Na Mars", "Do stredu Slnka", "Na kométu Halley"],
+          options: ["Na Mars", "Do stredu Slnka", "Na kométu"],
           answer: 0,
-          fact: "Presne. Veľkým cieľom budúcich letov je Mars."
+          fact: "Presne. Veľkým cieľom ďalších letov je Mars."
         }
       ];
 
-      const PART_LIBRARY = {
-        nose: [
-          { id: "comet", name: "Kométová špička", primary: "#ffb45e", accent: "#ff6c4e", window: "#8fe8ff" },
-          { id: "aurora", name: "Polárna špička", primary: "#7df0cf", accent: "#19bba6", window: "#d9fffd" }
-        ],
-        body: [
-          { id: "orbit", name: "Orbitálne telo", primary: "#7ec4ff", accent: "#325ac8", window: "#dff7ff" },
-          { id: "solar", name: "Solárne telo", primary: "#ffd479", accent: "#ff8a3d", window: "#fff9d1" }
-        ],
-        engine: [
-          { id: "thunder", name: "Búrkový motor", primary: "#8c9bff", accent: "#4d54d6", window: "#f2f3ff" },
-          { id: "nova", name: "Nova motor", primary: "#ff8f91", accent: "#ff5d6c", window: "#ffe6eb" }
-        ]
-      };
-
-      const DRAW_COLORS = [
-        { id: "orange", label: "Oranžová", value: "#ff9d45" },
-        { id: "mint", label: "Mätová", value: "#68f2d1" },
-        { id: "blue", label: "Modrá", value: "#7bc5ff" },
-        { id: "pink", label: "Ružová", value: "#ff91cf" },
-        { id: "white", label: "Biela", value: "#ffffff" }
+      const ROLE_OPTIONS = [
+        { id: "nose", label: "Špic" },
+        { id: "body", label: "Telo" },
+        { id: "engine", label: "Motor" }
       ];
 
-      const BRUSHES = [
-        { id: "medium", label: "Stredná", size: 8 },
-        { id: "bold", label: "Hrubá", size: 15 },
-        { id: "giant", label: "Veľká", size: 24 }
+      const TOOL_OPTIONS = [
+        { id: "draw", label: "Kresliť" },
+        { id: "move", label: "Presun" },
+        { id: "erase", label: "Guma" },
+        { id: "sticker", label: "Nálepka" }
       ];
+
+      const COLOR_OPTIONS = [
+        { id: "orange", label: "Oranžová", value: "#ff8c3a" },
+        { id: "blue", label: "Modrá", value: "#4fa3ff" },
+        { id: "mint", label: "Mätová", value: "#2dcdb2" },
+        { id: "red", label: "Červená", value: "#ff5b67" },
+        { id: "black", label: "Čierna", value: "#1f2a3d" }
+      ];
+
+      const SIZE_OPTIONS = [
+        { id: "small", label: "Tenká", value: 6 },
+        { id: "medium", label: "Stredná", value: 10 },
+        { id: "large", label: "Hrubá", value: 16 }
+      ];
+
+      const STICKERS = ["⭐", "🪐", "☄️", "🌙", "👩‍🚀"];
 
       const state = {
         playerName: "",
-        stage: "quiz",
-        fuel: 0,
-        currentQuestionIndex: 0,
+        screen: "welcome",
         questions: [],
+        questionIndex: 0,
         wrongChoices: new Set(),
-        answeringLocked: false,
-        parts: {
-          nose: null,
-          body: null,
-          engine: null
+        answerLocked: false,
+        build: {
+          objects: [],
+          role: "nose",
+          tool: "draw",
+          color: COLOR_OPTIONS[0].value,
+          size: SIZE_OPTIONS[1].value,
+          sticker: STICKERS[0],
+          drawingId: null,
+          draggingId: null,
+          dragLastX: 0,
+          dragLastY: 0,
+          selectedId: null
         },
-        activeDrawPart: null,
-        drawColor: DRAW_COLORS[0].value,
-        brushSize: BRUSHES[1].size,
-        drawDirty: false,
+        rocketImage: null,
         flight: {
           running: false,
           countdown: false,
-          finished: false,
-          animationFrame: 0,
+          frameId: 0,
           countdownTimers: [],
           rocketX: 230,
+          rocketY: 492,
           moveDir: 0,
           elapsedMs: 0,
           lastFrame: 0,
           startTime: 0,
-          spawnCooldown: 0,
+          spawnCooldown: 0.8,
           obstacles: [],
-          stars: [],
-          assets: {}
-        },
-        lastFlightMs: 0
+          stars: []
+        }
       };
 
       const elements = {
-        pilotForm: document.getElementById("pilot-form"),
-        pilotName: document.getElementById("pilot-name"),
-        pilotDisplay: document.getElementById("pilot-display"),
-        fuelDisplay: document.getElementById("fuel-display"),
-        partsDisplay: document.getElementById("parts-display"),
-        timeDisplay: document.getElementById("time-display"),
-        missionStatus: document.getElementById("mission-status"),
-        missionStatusNote: document.getElementById("mission-status-note"),
-        scoreList: document.getElementById("score-list"),
+        welcomeForm: document.getElementById("welcome-form"),
+        playerName: document.getElementById("player-name"),
+        enterMission: document.getElementById("enter-mission"),
+        welcomeNote: document.getElementById("welcome-note"),
+        screenWelcome: document.getElementById("screen-welcome"),
+        screenQuiz: document.getElementById("screen-quiz"),
+        screenBuild: document.getElementById("screen-build"),
+        screenLaunch: document.getElementById("screen-launch"),
+        quizSubtitle: document.getElementById("quiz-subtitle"),
         quizProgress: document.getElementById("quiz-progress"),
-        quizTitle: document.getElementById("quiz-title"),
-        questionTopic: document.getElementById("question-topic"),
-        choiceList: document.getElementById("choice-list"),
-        questionFeedback: document.getElementById("question-feedback"),
-        fuelCells: document.getElementById("fuel-cells"),
-        buildNote: document.getElementById("build-note"),
-        goLaunch: document.getElementById("go-launch"),
-        checkFuel: document.getElementById("check-fuel"),
-        checkParts: document.getElementById("check-parts"),
-        previewNose: document.getElementById("preview-nose"),
-        previewBody: document.getElementById("preview-body"),
-        previewEngine: document.getElementById("preview-engine"),
-        statusNose: document.getElementById("status-nose"),
-        statusBody: document.getElementById("status-body"),
-        statusEngine: document.getElementById("status-engine"),
-        optionsNose: document.getElementById("options-nose"),
-        optionsBody: document.getElementById("options-body"),
-        optionsEngine: document.getElementById("options-engine"),
-        studioCard: document.getElementById("studio-card"),
-        studioTitle: document.getElementById("studio-title"),
-        studioNote: document.getElementById("studio-note"),
+        quizTopic: document.getElementById("quiz-topic"),
+        quizQuestion: document.getElementById("quiz-question"),
+        quizChoices: document.getElementById("quiz-choices"),
+        quizFeedback: document.getElementById("quiz-feedback"),
+        quizStrip: document.getElementById("quiz-strip"),
+        buildPlayer: document.getElementById("build-player"),
+        roleRow: document.getElementById("role-row"),
+        toolRow: document.getElementById("tool-row"),
         colorRow: document.getElementById("color-row"),
-        brushRow: document.getElementById("brush-row"),
-        drawCanvas: document.getElementById("draw-canvas"),
-        startMission: document.getElementById("start-mission"),
-        shuffleQuestions: document.getElementById("shuffle-questions"),
-        saveDrawing: document.getElementById("save-drawing"),
-        clearDrawing: document.getElementById("clear-drawing"),
-        closeStudio: document.getElementById("close-studio"),
-        stageQuiz: document.getElementById("stage-quiz"),
-        stageBuild: document.getElementById("stage-build"),
-        stageLaunch: document.getElementById("stage-launch"),
-        stepQuiz: document.getElementById("step-quiz"),
-        stepBuild: document.getElementById("step-build"),
-        stepLaunch: document.getElementById("step-launch"),
-        launchPilot: document.getElementById("launch-pilot"),
-        launchTime: document.getElementById("launch-time"),
-        launchState: document.getElementById("launch-state"),
-        launchButton: document.getElementById("launch-button"),
+        sizeRow: document.getElementById("size-row"),
+        stickerRow: document.getElementById("sticker-row"),
+        buildCanvas: document.getElementById("build-canvas"),
+        clearCanvas: document.getElementById("clear-canvas"),
+        prepareLaunch: document.getElementById("prepare-launch"),
+        buildChecklist: document.getElementById("build-checklist"),
+        buildNote: document.getElementById("build-note"),
+        launchPlayer: document.getElementById("launch-player"),
+        flightCanvas: document.getElementById("flight-canvas"),
+        countdown: document.getElementById("countdown"),
+        startFlight: document.getElementById("start-flight"),
         retryFlight: document.getElementById("retry-flight"),
-        resultBox: document.getElementById("result-box"),
-        launchCanvas: document.getElementById("launch-canvas"),
-        countdownOverlay: document.getElementById("countdown-overlay"),
         moveLeft: document.getElementById("move-left"),
-        moveRight: document.getElementById("move-right")
+        moveRight: document.getElementById("move-right"),
+        flightPilot: document.getElementById("flight-pilot"),
+        flightTime: document.getElementById("flight-time"),
+        flightState: document.getElementById("flight-state"),
+        flightResult: document.getElementById("flight-result"),
+        scoresNote: document.getElementById("scores-note"),
+        scoreList: document.getElementById("score-list")
       };
 
-      const drawing = {
-        ctx: elements.drawCanvas.getContext("2d"),
-        pointerActive: false,
-        lastX: 0,
-        lastY: 0
-      };
-
-      const flightCanvas = elements.launchCanvas;
-      const flightCtx = flightCanvas.getContext("2d");
+      const buildCtx = elements.buildCanvas.getContext("2d");
+      const flightCtx = elements.flightCanvas.getContext("2d");
 
       function safeLoad(key, fallback) {
         try {
@@ -1643,12 +979,8 @@
         try {
           window.localStorage.setItem(key, JSON.stringify(value));
         } catch (error) {
-          // Ignored on purpose. The game still works without storage.
+          // Ignore storage failures.
         }
-      }
-
-      function formatTime(ms) {
-        return `${(ms / 1000).toFixed(1)} s`;
       }
 
       function shuffle(list) {
@@ -1661,12 +993,12 @@
       }
 
       function prepareQuestion(question) {
-        const wrapped = question.options.map((label, index) => ({ label, correct: index === question.answer }));
-        const shuffledOptions = shuffle(wrapped);
+        const options = question.options.map((label, index) => ({ label, correct: index === question.answer }));
+        const shuffled = shuffle(options);
         return {
           ...question,
-          options: shuffledOptions.map((item) => item.label),
-          answer: shuffledOptions.findIndex((item) => item.correct)
+          options: shuffled.map((item) => item.label),
+          answer: shuffled.findIndex((item) => item.correct)
         };
       }
 
@@ -1677,8 +1009,8 @@
 
         while (attempts < 12) {
           selected = shuffle(QUESTION_BANK).slice(0, 3);
-          const selectedIds = [...selected].map((item) => item.id).sort();
-          if (selectedIds.join("|") !== [...previous].sort().join("|")) {
+          const ids = selected.map((item) => item.id).sort();
+          if (ids.join("|") !== [...previous].sort().join("|")) {
             break;
           }
           attempts += 1;
@@ -1692,81 +1024,34 @@
         return selected.map((item) => prepareQuestion(item));
       }
 
-      function getPartsCount() {
-        return Object.values(state.parts).filter(Boolean).length;
+      function formatTime(ms) {
+        return `${(ms / 1000).toFixed(1)} s`;
       }
 
-      function getPartStatusLabel(partKey) {
-        const part = state.parts[partKey];
-        if (!part) {
-          return "Chýba diel";
-        }
-        return part.mode === "draw" ? "Nakreslené" : "Namontované";
+      function setScreen(screenId) {
+        state.screen = screenId;
+        elements.screenWelcome.classList.toggle("active", screenId === "welcome");
+        elements.screenQuiz.classList.toggle("active", screenId === "quiz");
+        elements.screenBuild.classList.toggle("active", screenId === "build");
+        elements.screenLaunch.classList.toggle("active", screenId === "launch");
       }
 
-      function getPartSelectionToken(partKey) {
-        const part = state.parts[partKey];
-        if (!part) {
-          return "";
-        }
-        return part.mode === "draw" ? "draw" : part.id;
-      }
-
-      function getPalette(partKey) {
-        const part = state.parts[partKey];
-        if (!part || part.mode === "draw") {
-          return { primary: "#44506d", accent: "#21293f", window: "#d5ecff" };
-        }
-        return PART_LIBRARY[partKey].find((item) => item.id === part.id) || PART_LIBRARY[partKey][0];
-      }
-
-      function updateDashboard() {
-        elements.pilotDisplay.textContent = state.playerName || "Pripravený";
-        elements.launchPilot.textContent = state.playerName || "Pripravený";
-        elements.fuelDisplay.textContent = `${state.fuel} / 3`;
-        elements.partsDisplay.textContent = `${getPartsCount()} / 3`;
-        elements.timeDisplay.textContent = formatTime(state.lastFlightMs);
-        elements.launchTime.textContent = formatTime(state.flight.elapsedMs);
-        elements.checkFuel.textContent = `${state.fuel} / 3`;
-        elements.checkParts.textContent = `${getPartsCount()} / 3`;
-      }
-
-      function setMissionStatus(title, note) {
-        elements.missionStatus.textContent = title;
-        elements.missionStatusNote.textContent = note;
-      }
-
-      function setResultBox(title, note) {
-        elements.resultBox.innerHTML = "";
+      function setFeedback(title, note) {
+        elements.quizFeedback.innerHTML = "";
         const strong = document.createElement("strong");
         strong.textContent = title;
         const span = document.createElement("span");
         span.textContent = note;
-        elements.resultBox.append(strong, span);
+        elements.quizFeedback.append(strong, span);
       }
 
-      function setStage(nextStage) {
-        state.stage = nextStage;
-        elements.stageQuiz.classList.toggle("active", nextStage === "quiz");
-        elements.stageBuild.classList.toggle("active", nextStage === "build");
-        elements.stageLaunch.classList.toggle("active", nextStage === "launch");
-
-        elements.stepQuiz.className = "mission-step";
-        elements.stepBuild.className = "mission-step";
-        elements.stepLaunch.className = "mission-step";
-
-        if (nextStage === "quiz") {
-          elements.stepQuiz.classList.add("active");
-        }
-        if (nextStage === "build") {
-          elements.stepQuiz.classList.add("done");
-          elements.stepBuild.classList.add("active");
-        }
-        if (nextStage === "launch") {
-          elements.stepQuiz.classList.add("done");
-          elements.stepBuild.classList.add("done");
-          elements.stepLaunch.classList.add("active");
-        }
+      function setFlightResult(title, note) {
+        elements.flightResult.innerHTML = "";
+        const strong = document.createElement("strong");
+        strong.textContent = title;
+        const span = document.createElement("span");
+        span.textContent = note;
+        elements.flightResult.append(strong, span);
       }
 
       function renderScores() {
@@ -1774,10 +1059,10 @@
         elements.scoreList.innerHTML = "";
 
         if (!scores.length) {
-          const row = document.createElement("li");
-          row.className = "score-empty";
-          row.textContent = "Zatiaľ ešte nie je uložený žiadny let.";
-          elements.scoreList.appendChild(row);
+          const item = document.createElement("li");
+          item.className = "empty";
+          item.textContent = "Zatiaľ tu nie je uložený žiadny let.";
+          elements.scoreList.appendChild(item);
           return;
         }
 
@@ -1786,117 +1071,88 @@
           row.className = "score-row";
 
           const rank = document.createElement("div");
-          rank.className = "score-rank";
+          rank.className = "rank";
           rank.textContent = String(index + 1);
 
-          const main = document.createElement("div");
-          main.className = "score-main";
+          const meta = document.createElement("div");
+          meta.className = "score-meta";
 
           const strong = document.createElement("strong");
           strong.textContent = entry.name;
 
-          const meta = document.createElement("span");
-          meta.textContent = entry.date;
+          const span = document.createElement("span");
+          span.textContent = entry.date;
 
-          main.append(strong, meta);
+          meta.append(strong, span);
 
           const time = document.createElement("div");
           time.className = "score-time";
           time.textContent = formatTime(entry.timeMs);
 
-          row.append(rank, main, time);
+          row.append(rank, meta, time);
           elements.scoreList.appendChild(row);
         });
       }
 
       function saveScore(timeMs) {
         const scores = safeLoad(STORAGE_SCORES_KEY, []);
-        const entry = {
+        scores.push({
           name: state.playerName || "Pilot",
           timeMs,
           date: new Date().toLocaleString("sk-SK", { dateStyle: "short", timeStyle: "short" })
-        };
-
-        scores.push(entry);
+        });
         scores.sort((a, b) => b.timeMs - a.timeMs);
         safeSave(STORAGE_SCORES_KEY, scores.slice(0, 8));
         renderScores();
       }
 
-      function startMission(options = {}) {
-        const requestedName = (elements.pilotName.value || "").trim();
-        state.playerName = requestedName || safeLoad(STORAGE_NAME_KEY, "") || "Pilot hviezd";
-        elements.pilotName.value = state.playerName;
+      function startMission() {
+        const enteredName = (elements.playerName.value || "").trim();
+        state.playerName = enteredName || safeLoad(STORAGE_NAME_KEY, "") || "Pilot hviezd";
+        elements.playerName.value = state.playerName;
         safeSave(STORAGE_NAME_KEY, state.playerName);
 
-        state.fuel = 0;
         state.questions = chooseQuestionSet();
-        state.currentQuestionIndex = 0;
+        state.questionIndex = 0;
         state.wrongChoices = new Set();
-        state.answeringLocked = false;
-        state.parts = { nose: null, body: null, engine: null };
-        state.activeDrawPart = null;
-        state.drawDirty = false;
-        state.lastFlightMs = options.keepLastFlight ? state.lastFlightMs : 0;
-
+        state.answerLocked = false;
+        resetBuildState();
         stopFlight();
         resetFlightScene();
-        closeStudio();
-        setStage("quiz");
-        setMissionStatus("Palivo sa práve tankuje", "Odpovedzte na tri otázky. Každá správna odpoveď pridá jednu nádrž paliva.");
-        elements.launchState.textContent = "Čaká na odpočítavanie";
-        setResultBox("Finálne hlásenie", "Keď raketa narazí, uloží sa výsledok pilota a môžete skúsiť novú misiu alebo nový let.");
-        renderFuelCells();
+
+        elements.quizSubtitle.textContent = `${state.playerName} odpovedá na 3 otázky pred štartom.`;
+        elements.buildPlayer.textContent = state.playerName;
+        elements.launchPlayer.textContent = state.playerName;
+        elements.flightPilot.textContent = state.playerName;
+        elements.scoresNote.textContent = `Čas do kolízie sa ukladá pre aktuálny prehliadač. Pilot: ${state.playerName}.`;
+        setScreen("quiz");
+        renderQuizProgress();
         renderQuestion();
-        renderBuildOptions();
-        updateBuildStatus();
-        updatePreview();
-        updateDashboard();
       }
 
-      function renderFuelCells() {
-        elements.fuelCells.innerHTML = "";
+      function renderQuizProgress() {
+        elements.quizStrip.innerHTML = "";
         for (let index = 0; index < 3; index += 1) {
-          const cell = document.createElement("div");
-          cell.className = `fuel-cell${index < state.fuel ? " active" : ""}`;
-
-          const label = document.createElement("strong");
-          label.textContent = `Nádrž ${index + 1}`;
-
-          const dot = document.createElement("span");
-          dot.className = "fuel-dot";
-
-          cell.append(label, dot);
-          elements.fuelCells.appendChild(cell);
+          const dot = document.createElement("div");
+          dot.className = `progress-dot${index < state.questionIndex ? " active" : ""}`;
+          elements.quizStrip.appendChild(dot);
         }
       }
 
       function renderQuestion() {
-        if (!state.questions.length) {
-          setStage("quiz");
-          elements.quizProgress.textContent = "Otázky čakajú";
-          elements.quizTitle.textContent = "Stlačte „Spustiť novú misiu“ a načítajú sa tri náhodné otázky.";
-          elements.questionTopic.textContent = "Kvíz";
-          elements.choiceList.innerHTML = "";
-          elements.questionFeedback.innerHTML = "<strong>Palivo ešte čaká</strong><span>Keď sa misia spustí, budete postupne odpovedať na tri otázky.</span>";
-          return;
-        }
-
-        const question = state.questions[state.currentQuestionIndex];
-
+        const question = state.questions[state.questionIndex];
         if (!question) {
-          setStage("build");
-          setMissionStatus("Palivo je plné", "Výborne. Teraz treba poskladať raketu a pripraviť ju na štart.");
-          updateBuildStatus();
+          openBuildScreen();
           return;
         }
 
-        elements.quizProgress.textContent = `Otázka ${state.currentQuestionIndex + 1} z 3`;
-        elements.quizTitle.textContent = question.question;
-        elements.questionTopic.textContent = question.topic;
-        elements.choiceList.innerHTML = "";
-        if (!state.wrongChoices.size && !state.answeringLocked) {
-          elements.questionFeedback.innerHTML = "<strong>Vyberte správnu odpoveď.</strong><span>Za správnu odpoveď získate ďalšiu nádrž paliva.</span>";
+        elements.quizProgress.textContent = `Otázka ${state.questionIndex + 1} z 3`;
+        elements.quizTopic.textContent = question.topic;
+        elements.quizQuestion.textContent = question.question;
+        elements.quizChoices.innerHTML = "";
+
+        if (!state.wrongChoices.size && !state.answerLocked) {
+          setFeedback("Pripravený?", "Vyber správnu odpoveď a pokračuj ďalej.");
         }
 
         question.options.forEach((option, index) => {
@@ -1904,364 +1160,489 @@
           button.type = "button";
           button.className = "choice";
           button.textContent = option;
-
           if (state.wrongChoices.has(index)) {
             button.classList.add("wrong");
           }
-
-          button.disabled = state.answeringLocked || state.wrongChoices.has(index);
+          button.disabled = state.answerLocked || state.wrongChoices.has(index);
           button.addEventListener("click", () => answerQuestion(index));
-          elements.choiceList.appendChild(button);
+          elements.quizChoices.appendChild(button);
         });
       }
 
       function answerQuestion(index) {
-        if (state.answeringLocked) {
+        if (state.answerLocked) {
           return;
         }
 
-        const question = state.questions[state.currentQuestionIndex];
+        const question = state.questions[state.questionIndex];
         if (!question) {
           return;
         }
 
         if (index === question.answer) {
-          state.answeringLocked = true;
-          state.fuel += 1;
-          renderFuelCells();
-          updateDashboard();
-
-          const choices = [...elements.choiceList.querySelectorAll(".choice")];
-          choices.forEach((button, choiceIndex) => {
+          state.answerLocked = true;
+          const buttons = [...elements.quizChoices.querySelectorAll(".choice")];
+          buttons.forEach((button, buttonIndex) => {
             button.disabled = true;
-            if (choiceIndex === index) {
+            if (buttonIndex === index) {
               button.classList.add("correct");
             }
           });
-
-          elements.questionFeedback.innerHTML = `<strong>Správne, nádrž je plná.</strong><span>${question.fact}</span>`;
-
+          setFeedback("Správne.", question.fact);
           window.setTimeout(() => {
-            state.currentQuestionIndex += 1;
+            state.questionIndex += 1;
             state.wrongChoices = new Set();
-            state.answeringLocked = false;
+            state.answerLocked = false;
+            renderQuizProgress();
             renderQuestion();
-          }, 1050);
+          }, 950);
           return;
         }
 
         state.wrongChoices.add(index);
-        elements.questionFeedback.innerHTML = "<strong>Skúste inú možnosť.</strong><span>Táto odpoveď palivo nepridá. Vyberte ďalšiu možnosť.</span>";
+        setFeedback("Skús ešte raz.", "Táto odpoveď nie je správna. Vyber inú možnosť.");
         renderQuestion();
       }
 
-      function renderBuildOptions() {
-        renderPartOptions("nose", elements.optionsNose);
-        renderPartOptions("body", elements.optionsBody);
-        renderPartOptions("engine", elements.optionsEngine);
+      function resetBuildState() {
+        state.build.objects = [];
+        state.build.role = "nose";
+        state.build.tool = "draw";
+        state.build.color = COLOR_OPTIONS[0].value;
+        state.build.size = SIZE_OPTIONS[1].value;
+        state.build.sticker = STICKERS[0];
+        state.build.drawingId = null;
+        state.build.draggingId = null;
+        state.build.selectedId = null;
+        state.rocketImage = null;
+        renderRoleButtons();
+        renderToolButtons();
+        renderColorButtons();
+        renderSizeButtons();
+        renderStickerButtons();
+        renderBuildChecklist();
+        drawBuildCanvas();
       }
 
-      function renderPartOptions(partKey, container) {
-        container.innerHTML = "";
-        const selectedToken = getPartSelectionToken(partKey);
+      function openBuildScreen() {
+        setScreen("build");
+        renderBuildChecklist();
+        drawBuildCanvas();
+      }
 
-        PART_LIBRARY[partKey].forEach((item) => {
+      function renderRoleButtons() {
+        elements.roleRow.innerHTML = "";
+        ROLE_OPTIONS.forEach((entry) => {
           const button = document.createElement("button");
           button.type = "button";
-          button.className = `part-button${selectedToken === item.id ? " selected" : ""}`;
-          button.textContent = item.name;
-          button.addEventListener("click", () => selectPresetPart(partKey, item.id));
-          container.appendChild(button);
+          button.className = `chip${state.build.role === entry.id ? " selected" : ""}`;
+          button.textContent = entry.label;
+          button.addEventListener("click", () => {
+            state.build.role = entry.id;
+            renderRoleButtons();
+          });
+          elements.roleRow.appendChild(button);
         });
-
-        const drawButton = document.createElement("button");
-        drawButton.type = "button";
-        drawButton.className = `part-button${selectedToken === "draw" ? " selected" : ""}`;
-        drawButton.textContent = "Nakresliť vlastný diel";
-        drawButton.addEventListener("click", () => openStudio(partKey));
-        container.appendChild(drawButton);
       }
 
-      function selectPresetPart(partKey, partId) {
-        state.parts[partKey] = { mode: "preset", id: partId };
-        closeStudio();
-        renderBuildOptions();
-        updateBuildStatus();
-        updatePreview();
-        updateDashboard();
-      }
-
-      function updatePartStatusElement(element, partKey) {
-        const ready = Boolean(state.parts[partKey]);
-        element.textContent = getPartStatusLabel(partKey);
-        element.classList.toggle("ready", ready);
-      }
-
-      function updateBuildStatus() {
-        updatePartStatusElement(elements.statusNose, "nose");
-        updatePartStatusElement(elements.statusBody, "body");
-        updatePartStatusElement(elements.statusEngine, "engine");
-
-        const readyToLaunch = state.fuel === 3 && getPartsCount() === 3;
-        elements.goLaunch.disabled = !readyToLaunch;
-        elements.buildNote.textContent = readyToLaunch
-          ? "Raketa je kompletná. Presuňte ju na odpaľovaciu rampu a pripravte odpočítavanie."
-          : "Raketa je ešte v dielni. Doplňte všetky tri časti a potom ju presuňte na odpaľovaciu rampu.";
-      }
-
-      function updatePreviewSegment(element, partKey, label) {
-        const part = state.parts[partKey];
-        element.classList.toggle("empty", !part);
-        element.innerHTML = "";
-
-        if (!part) {
-          return;
-        }
-
-        if (part.mode === "draw") {
-          const skin = document.createElement("div");
-          skin.className = "segment-skin";
-          skin.style.setProperty("--segment-main", "#24406d");
-          skin.style.setProperty("--segment-accent", "#15223d");
-          skin.style.setProperty("--segment-window", "#dff7ff");
-
-          const image = document.createElement("img");
-          image.className = "drawn-art";
-          image.src = part.dataUrl;
-          image.alt = `Nakreslený diel ${label}`;
-
-          const caption = document.createElement("div");
-          caption.className = "segment-caption";
-          caption.textContent = `${label} • kresba`;
-
-          element.append(skin, image, caption);
-          if (partKey === "engine") {
-            const fin = document.createElement("div");
-            fin.className = "engine-fin";
-            element.appendChild(fin);
-          }
-          return;
-        }
-
-        const palette = getPalette(partKey);
-        const skin = document.createElement("div");
-        skin.className = "segment-skin";
-        skin.style.setProperty("--segment-main", palette.primary);
-        skin.style.setProperty("--segment-accent", palette.accent);
-        skin.style.setProperty("--segment-window", palette.window);
-
-        const caption = document.createElement("div");
-        caption.className = "segment-caption";
-        caption.textContent = `${label} • ${PART_LIBRARY[partKey].find((item) => item.id === part.id).name}`;
-
-        element.append(skin, caption);
-        if (partKey === "engine") {
-          const fin = document.createElement("div");
-          fin.className = "engine-fin";
-          element.appendChild(fin);
-        }
-      }
-
-      function updatePreview() {
-        updatePreviewSegment(elements.previewNose, "nose", "Špička");
-        updatePreviewSegment(elements.previewBody, "body", "Telo");
-        updatePreviewSegment(elements.previewEngine, "engine", "Motor");
+      function renderToolButtons() {
+        elements.toolRow.innerHTML = "";
+        TOOL_OPTIONS.forEach((entry) => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = `chip${state.build.tool === entry.id ? " selected" : ""}`;
+          button.textContent = entry.label;
+          button.addEventListener("click", () => {
+            state.build.tool = entry.id;
+            renderToolButtons();
+          });
+          elements.toolRow.appendChild(button);
+        });
       }
 
       function renderColorButtons() {
         elements.colorRow.innerHTML = "";
-        DRAW_COLORS.forEach((entry) => {
+        COLOR_OPTIONS.forEach((entry) => {
           const button = document.createElement("button");
           button.type = "button";
-          button.className = `color-button${state.drawColor === entry.value ? " selected" : ""}`;
-          button.innerHTML = `<span class="color-chip" style="background:${entry.value}"></span>${entry.label}`;
+          button.className = `chip color${state.build.color === entry.value ? " selected" : ""}`;
+          button.innerHTML = `<span class="color-swatch" style="background:${entry.value}"></span>${entry.label}`;
           button.addEventListener("click", () => {
-            state.drawColor = entry.value;
+            state.build.color = entry.value;
             renderColorButtons();
           });
           elements.colorRow.appendChild(button);
         });
       }
 
-      function renderBrushButtons() {
-        elements.brushRow.innerHTML = "";
-        BRUSHES.forEach((entry) => {
+      function renderSizeButtons() {
+        elements.sizeRow.innerHTML = "";
+        SIZE_OPTIONS.forEach((entry) => {
           const button = document.createElement("button");
           button.type = "button";
-          button.className = `brush-button${state.brushSize === entry.size ? " selected" : ""}`;
-          button.textContent = `${entry.label} čiara`;
+          button.className = `chip${state.build.size === entry.value ? " selected" : ""}`;
+          button.textContent = entry.label;
           button.addEventListener("click", () => {
-            state.brushSize = entry.size;
-            renderBrushButtons();
+            state.build.size = entry.value;
+            renderSizeButtons();
           });
-          elements.brushRow.appendChild(button);
+          elements.sizeRow.appendChild(button);
         });
       }
 
-      function paintStudioBackground() {
-        drawing.ctx.clearRect(0, 0, elements.drawCanvas.width, elements.drawCanvas.height);
+      function renderStickerButtons() {
+        elements.stickerRow.innerHTML = "";
+        STICKERS.forEach((sticker) => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = `chip sticker${state.build.sticker === sticker ? " selected" : ""}`;
+          button.textContent = sticker;
+          button.addEventListener("click", () => {
+            state.build.sticker = sticker;
+            renderStickerButtons();
+          });
+          elements.stickerRow.appendChild(button);
+        });
       }
 
-      function clearStudioCanvas() {
-        paintStudioBackground();
-        state.drawDirty = false;
-      }
-
-      function openStudio(partKey) {
-        state.activeDrawPart = partKey;
-        elements.studioCard.classList.remove("hidden");
-        elements.studioTitle.textContent = `Kreslenie dielu: ${partKey === "nose" ? "Špička" : partKey === "body" ? "Telo" : "Motor"}`;
-        elements.studioNote.textContent = "Nakreslite vlastný diel prstom alebo perom a potom ho uložte.";
-        renderBuildOptions();
-        renderColorButtons();
-        renderBrushButtons();
-        clearStudioCanvas();
-
-        const existing = state.parts[partKey];
-        if (existing && existing.mode === "draw" && existing.dataUrl) {
-          const image = new Image();
-          image.onload = () => {
-            paintStudioBackground();
-            drawing.ctx.drawImage(image, 0, 0, elements.drawCanvas.width, elements.drawCanvas.height);
-            state.drawDirty = true;
-          };
-          image.src = existing.dataUrl;
-        }
-      }
-
-      function closeStudio() {
-        state.activeDrawPart = null;
-        elements.studioCard.classList.add("hidden");
-        renderBuildOptions();
-      }
-
-      function getCanvasPoint(event) {
-        const rect = elements.drawCanvas.getBoundingClientRect();
-        const scaleX = elements.drawCanvas.width / rect.width;
-        const scaleY = elements.drawCanvas.height / rect.height;
+      function getCanvasPoint(canvas, event) {
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
         return {
           x: (event.clientX - rect.left) * scaleX,
           y: (event.clientY - rect.top) * scaleY
         };
       }
 
-      function beginStroke(event) {
-        if (!state.activeDrawPart) {
-          return;
-        }
-        event.preventDefault();
-        const point = getCanvasPoint(event);
-        drawing.pointerActive = true;
-        drawing.lastX = point.x;
-        drawing.lastY = point.y;
+      function nextId() {
+        return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
       }
 
-      function moveStroke(event) {
-        if (!drawing.pointerActive || !state.activeDrawPart) {
-          return;
-        }
-        event.preventDefault();
-        const point = getCanvasPoint(event);
-        drawing.ctx.save();
-        drawing.ctx.strokeStyle = state.drawColor;
-        drawing.ctx.lineWidth = state.brushSize;
-        drawing.ctx.lineCap = "round";
-        drawing.ctx.lineJoin = "round";
-        drawing.ctx.beginPath();
-        drawing.ctx.moveTo(drawing.lastX, drawing.lastY);
-        drawing.ctx.lineTo(point.x, point.y);
-        drawing.ctx.stroke();
-        drawing.ctx.restore();
-        drawing.lastX = point.x;
-        drawing.lastY = point.y;
-        state.drawDirty = true;
-      }
-
-      function endStroke() {
-        drawing.pointerActive = false;
-      }
-
-      function saveDrawingToPart() {
-        if (!state.activeDrawPart) {
-          return;
+      function getObjectBounds(object) {
+        if (object.type === "sticker") {
+          const width = object.size * 0.72;
+          return {
+            x: object.x - width / 2,
+            y: object.y - object.size * 0.86,
+            width,
+            height: object.size
+          };
         }
 
-        if (!state.drawDirty) {
-          elements.studioNote.textContent = "Nakreslite aspoň pár čiar, aby sa diel dal uložiť.";
-          return;
-        }
-
-        state.parts[state.activeDrawPart] = {
-          mode: "draw",
-          dataUrl: elements.drawCanvas.toDataURL("image/png")
+        const xs = object.points.map((point) => point.x);
+        const ys = object.points.map((point) => point.y);
+        const minX = Math.min(...xs) - object.size;
+        const maxX = Math.max(...xs) + object.size;
+        const minY = Math.min(...ys) - object.size;
+        const maxY = Math.max(...ys) + object.size;
+        return {
+          x: minX,
+          y: minY,
+          width: maxX - minX,
+          height: maxY - minY
         };
-
-        elements.studioNote.textContent = "Diel je uložený v rakete.";
-        updateBuildStatus();
-        updatePreview();
-        updateDashboard();
-        renderBuildOptions();
       }
 
-      function goToLaunchPad() {
-        if (!(state.fuel === 3 && getPartsCount() === 3)) {
+      function pointSegmentDistance(px, py, ax, ay, bx, by) {
+        const dx = bx - ax;
+        const dy = by - ay;
+        if (dx === 0 && dy === 0) {
+          return Math.hypot(px - ax, py - ay);
+        }
+        const t = ((px - ax) * dx + (py - ay) * dy) / (dx * dx + dy * dy);
+        const clamped = Math.max(0, Math.min(1, t));
+        const cx = ax + clamped * dx;
+        const cy = ay + clamped * dy;
+        return Math.hypot(px - cx, py - cy);
+      }
+
+      function hitTest(point) {
+        for (let index = state.build.objects.length - 1; index >= 0; index -= 1) {
+          const object = state.build.objects[index];
+          const bounds = getObjectBounds(object);
+          const inBounds =
+            point.x >= bounds.x &&
+            point.x <= bounds.x + bounds.width &&
+            point.y >= bounds.y &&
+            point.y <= bounds.y + bounds.height;
+
+          if (!inBounds) {
+            continue;
+          }
+
+          if (object.type === "sticker") {
+            return object;
+          }
+
+          for (let i = 1; i < object.points.length; i += 1) {
+            const a = object.points[i - 1];
+            const b = object.points[i];
+            if (pointSegmentDistance(point.x, point.y, a.x, a.y, b.x, b.y) <= object.size + 6) {
+              return object;
+            }
+          }
+
+          if (object.points.length === 1 && Math.hypot(point.x - object.points[0].x, point.y - object.points[0].y) <= object.size + 6) {
+            return object;
+          }
+        }
+
+        return null;
+      }
+
+      function drawBuildCanvas() {
+        buildCtx.clearRect(0, 0, elements.buildCanvas.width, elements.buildCanvas.height);
+
+        state.build.objects.forEach((object) => {
+          if (object.type === "path") {
+            buildCtx.save();
+            buildCtx.strokeStyle = object.color;
+            buildCtx.lineWidth = object.size;
+            buildCtx.lineCap = "round";
+            buildCtx.lineJoin = "round";
+            buildCtx.beginPath();
+            object.points.forEach((point, index) => {
+              if (index === 0) {
+                buildCtx.moveTo(point.x, point.y);
+              } else {
+                buildCtx.lineTo(point.x, point.y);
+              }
+            });
+            if (object.points.length === 1) {
+              const point = object.points[0];
+              buildCtx.lineTo(point.x + 0.1, point.y + 0.1);
+            }
+            buildCtx.stroke();
+            buildCtx.restore();
+          } else {
+            buildCtx.save();
+            buildCtx.font = `${object.size}px "Segoe UI Emoji", "Apple Color Emoji", sans-serif`;
+            buildCtx.textAlign = "center";
+            buildCtx.textBaseline = "middle";
+            buildCtx.fillText(object.text, object.x, object.y);
+            buildCtx.restore();
+          }
+
+          if (state.build.selectedId === object.id && state.build.tool === "move") {
+            const bounds = getObjectBounds(object);
+            buildCtx.save();
+            buildCtx.strokeStyle = "rgba(20, 88, 198, 0.7)";
+            buildCtx.lineWidth = 2;
+            buildCtx.setLineDash([8, 6]);
+            buildCtx.strokeRect(bounds.x - 4, bounds.y - 4, bounds.width + 8, bounds.height + 8);
+            buildCtx.restore();
+          }
+        });
+      }
+
+      function getRoleStatus(role) {
+        return state.build.objects.some((object) => object.type === "path" && object.role === role);
+      }
+
+      function renderBuildChecklist() {
+        elements.buildChecklist.innerHTML = "";
+        const allDone = ROLE_OPTIONS.every((entry) => getRoleStatus(entry.id));
+
+        ROLE_OPTIONS.forEach((entry) => {
+          const row = document.createElement("div");
+          row.className = `check-row${getRoleStatus(entry.id) ? " done" : ""}`;
+
+          const strong = document.createElement("strong");
+          strong.textContent = entry.label;
+
+          const span = document.createElement("span");
+          span.textContent = getRoleStatus(entry.id) ? "Hotovo" : "Chýba";
+
+          row.append(strong, span);
+          elements.buildChecklist.appendChild(row);
+        });
+
+        elements.prepareLaunch.disabled = !allDone;
+        elements.buildNote.textContent = allDone
+          ? "Raketa spĺňa podmienky. Ak si spokojný, klikni na „Pripraviť na štart“."
+          : "Na štart musí byť v kresbe aspoň jeden ťah pre špic, telo a motor.";
+      }
+
+      function clearCanvas() {
+        state.build.objects = [];
+        state.build.drawingId = null;
+        state.build.draggingId = null;
+        state.build.selectedId = null;
+        renderBuildChecklist();
+        drawBuildCanvas();
+      }
+
+      function moveObject(object, dx, dy) {
+        if (object.type === "sticker") {
+          object.x += dx;
+          object.y += dy;
           return;
         }
 
-        setStage("launch");
-        setMissionStatus("Raketa je na rampe", "Spustite odpočítavanie a potom sa vyhýbajte prekážkam vo vesmíre.");
-        resetFlightScene();
-        updateDashboard();
+        object.points = object.points.map((point) => ({ x: point.x + dx, y: point.y + dy }));
       }
 
-      function createFlightStars() {
+      function onBuildPointerDown(event) {
+        event.preventDefault();
+        const point = getCanvasPoint(elements.buildCanvas, event);
+
+        if (state.build.tool === "draw") {
+          const object = {
+            id: nextId(),
+            type: "path",
+            role: state.build.role,
+            color: state.build.color,
+            size: state.build.size,
+            points: [point]
+          };
+          state.build.objects.push(object);
+          state.build.drawingId = object.id;
+          state.build.selectedId = object.id;
+          drawBuildCanvas();
+          renderBuildChecklist();
+          return;
+        }
+
+        if (state.build.tool === "sticker") {
+          const object = {
+            id: nextId(),
+            type: "sticker",
+            text: state.build.sticker,
+            x: point.x,
+            y: point.y,
+            size: 46
+          };
+          state.build.objects.push(object);
+          state.build.draggingId = object.id;
+          state.build.dragLastX = point.x;
+          state.build.dragLastY = point.y;
+          state.build.selectedId = object.id;
+          drawBuildCanvas();
+          return;
+        }
+
+        const hit = hitTest(point);
+
+        if (state.build.tool === "erase") {
+          if (hit) {
+            state.build.objects = state.build.objects.filter((object) => object.id !== hit.id);
+            state.build.selectedId = null;
+            renderBuildChecklist();
+            drawBuildCanvas();
+          }
+          return;
+        }
+
+        if (state.build.tool === "move") {
+          state.build.selectedId = hit ? hit.id : null;
+          if (hit) {
+            state.build.draggingId = hit.id;
+            state.build.dragLastX = point.x;
+            state.build.dragLastY = point.y;
+          }
+          drawBuildCanvas();
+        }
+      }
+
+      function onBuildPointerMove(event) {
+        if (!state.build.drawingId && !state.build.draggingId) {
+          return;
+        }
+
+        event.preventDefault();
+        const point = getCanvasPoint(elements.buildCanvas, event);
+
+        if (state.build.drawingId) {
+          const object = state.build.objects.find((item) => item.id === state.build.drawingId);
+          if (!object) {
+            return;
+          }
+          object.points.push(point);
+          drawBuildCanvas();
+          return;
+        }
+
+        if (state.build.draggingId) {
+          const object = state.build.objects.find((item) => item.id === state.build.draggingId);
+          if (!object) {
+            return;
+          }
+          const dx = point.x - state.build.dragLastX;
+          const dy = point.y - state.build.dragLastY;
+          state.build.dragLastX = point.x;
+          state.build.dragLastY = point.y;
+          moveObject(object, dx, dy);
+          drawBuildCanvas();
+        }
+      }
+
+      function onBuildPointerUp() {
+        state.build.drawingId = null;
+        state.build.draggingId = null;
+        renderBuildChecklist();
+        drawBuildCanvas();
+      }
+
+      function createRocketImage() {
+        return new Promise((resolve) => {
+          const image = new Image();
+          image.onload = () => resolve(image);
+          image.src = elements.buildCanvas.toDataURL("image/png");
+        });
+      }
+
+      async function prepareLaunch() {
+        if (!ROLE_OPTIONS.every((entry) => getRoleStatus(entry.id))) {
+          return;
+        }
+
+        state.rocketImage = await createRocketImage();
+        setScreen("launch");
+        resetFlightScene();
+        setFlightResult("Pripravené", "Spusti odpočítavanie a sleduj, ako dlho raketa vydrží bez kolízie.");
+      }
+
+      function createStars() {
         const stars = [];
         for (let index = 0; index < 48; index += 1) {
           stars.push({
-            x: Math.random() * flightCanvas.width,
-            y: Math.random() * flightCanvas.height,
-            size: Math.random() * 2.4 + 0.7,
+            x: Math.random() * elements.flightCanvas.width,
+            y: Math.random() * elements.flightCanvas.height,
+            size: Math.random() * 2.2 + 0.7,
             speed: Math.random() * 28 + 18
           });
         }
         return stars;
       }
 
-      function loadFlightAssets() {
-        state.flight.assets = {};
-        ["nose", "body", "engine"].forEach((partKey) => {
-          const part = state.parts[partKey];
-          if (part && part.mode === "draw" && part.dataUrl) {
-            const image = new Image();
-            image.src = part.dataUrl;
-            state.flight.assets[partKey] = image;
-          }
-        });
+      function clamp(value, min, max) {
+        return Math.min(max, Math.max(min, value));
       }
 
       function resetFlightScene() {
         state.flight.running = false;
         state.flight.countdown = false;
-        state.flight.finished = false;
-        state.flight.elapsedMs = 0;
-        state.flight.rocketX = flightCanvas.width / 2;
+        state.flight.rocketX = elements.flightCanvas.width / 2;
+        state.flight.rocketY = elements.flightCanvas.height - 150;
         state.flight.moveDir = 0;
+        state.flight.elapsedMs = 0;
         state.flight.lastFrame = 0;
         state.flight.startTime = 0;
-        state.flight.spawnCooldown = 0.7;
+        state.flight.spawnCooldown = 0.8;
         state.flight.obstacles = [];
-        state.flight.stars = createFlightStars();
-        loadFlightAssets();
-        elements.launchTime.textContent = "0.0 s";
+        state.flight.stars = createStars();
+        elements.flightTime.textContent = "0.0 s";
+        elements.flightState.textContent = "Čaká na štart";
         drawFlightScene();
       }
 
       function stopFlight() {
-        if (state.flight.animationFrame) {
-          window.cancelAnimationFrame(state.flight.animationFrame);
+        if (state.flight.frameId) {
+          window.cancelAnimationFrame(state.flight.frameId);
         }
         state.flight.countdownTimers.forEach((timerId) => window.clearTimeout(timerId));
-        state.flight.animationFrame = 0;
+        state.flight.frameId = 0;
         state.flight.countdownTimers = [];
         state.flight.running = false;
         state.flight.countdown = false;
@@ -2273,188 +1654,43 @@
 
       function spawnObstacle() {
         const type = Math.random() > 0.7 ? "planet" : "asteroid";
-        const radius = type === "planet" ? Math.random() * 20 + 26 : Math.random() * 16 + 22;
+        const radius = type === "planet" ? Math.random() * 18 + 26 : Math.random() * 14 + 22;
         state.flight.obstacles.push({
           type,
-          x: Math.random() * (flightCanvas.width - radius * 2) + radius,
-          y: -radius - 20,
+          x: Math.random() * (elements.flightCanvas.width - radius * 2) + radius,
+          y: -radius - 24,
           radius,
-          speed: Math.random() * 72 + 170 + state.flight.elapsedMs * 0.01,
+          speed: Math.random() * 70 + 170 + state.flight.elapsedMs * 0.01,
           drift: Math.random() * 28 - 14,
           rotation: Math.random() * Math.PI * 2,
           hue: Math.random()
         });
       }
 
-      function clamp(value, min, max) {
-        return Math.min(max, Math.max(min, value));
-      }
-
-      function updateFlight(dt, timestamp) {
-        state.flight.elapsedMs = timestamp - state.flight.startTime;
-        elements.launchTime.textContent = formatTime(state.flight.elapsedMs);
-
-        const moveSpeed = 260;
-        state.flight.rocketX = clamp(state.flight.rocketX + state.flight.moveDir * moveSpeed * dt, 56, flightCanvas.width - 56);
-
-        state.flight.spawnCooldown -= dt;
-        if (state.flight.spawnCooldown <= 0) {
-          spawnObstacle();
-          const delay = Math.max(0.34, 0.92 - state.flight.elapsedMs / 15000);
-          state.flight.spawnCooldown = Math.random() * 0.32 + delay;
-        }
-
-        state.flight.stars.forEach((star) => {
-          star.y += star.speed * dt;
-          if (star.y > flightCanvas.height + 4) {
-            star.y = -4;
-            star.x = Math.random() * flightCanvas.width;
-          }
-        });
-
-        state.flight.obstacles = state.flight.obstacles
-          .map((obstacle) => ({
-            ...obstacle,
-            y: obstacle.y + obstacle.speed * dt,
-            x: obstacle.x + obstacle.drift * dt,
-            rotation: obstacle.rotation + dt * 0.8
-          }))
-          .filter((obstacle) => obstacle.y < flightCanvas.height + obstacle.radius + 30);
-      }
-
-      function collideCircleRect(circle, rect) {
-        const nearestX = clamp(circle.x, rect.x, rect.x + rect.width);
-        const nearestY = clamp(circle.y, rect.y, rect.y + rect.height);
-        const dx = circle.x - nearestX;
-        const dy = circle.y - nearestY;
-        return dx * dx + dy * dy < circle.radius * circle.radius;
-      }
-
-      function detectCollision() {
-        const rect = {
-          x: state.flight.rocketX - 34,
-          y: flightCanvas.height - 252,
-          width: 68,
-          height: 192
-        };
-
-        return state.flight.obstacles.some((obstacle) => collideCircleRect(obstacle, rect));
-      }
-
-      function roundedRectPath(ctx, x, y, width, height, radius) {
-        const radiusValue = Math.min(radius, width / 2, height / 2);
-        ctx.beginPath();
-        ctx.moveTo(x + radiusValue, y);
-        ctx.lineTo(x + width - radiusValue, y);
-        ctx.quadraticCurveTo(x + width, y, x + width, y + radiusValue);
-        ctx.lineTo(x + width, y + height - radiusValue);
-        ctx.quadraticCurveTo(x + width, y + height, x + width - radiusValue, y + height);
-        ctx.lineTo(x + radiusValue, y + height);
-        ctx.quadraticCurveTo(x, y + height, x, y + height - radiusValue);
-        ctx.lineTo(x, y + radiusValue);
-        ctx.quadraticCurveTo(x, y, x + radiusValue, y);
-        ctx.closePath();
-      }
-
-      function paintSegmentShape(partKey, pathDrawer, bounds) {
-        const part = state.parts[partKey];
-        const palette = getPalette(partKey);
+      function drawRocketImage() {
+        const x = state.flight.rocketX;
+        const y = state.flight.rocketY;
 
         flightCtx.save();
-        pathDrawer();
-        flightCtx.clip();
+        flightCtx.fillStyle = "rgba(255, 255, 255, 0.12)";
+        flightCtx.beginPath();
+        flightCtx.ellipse(x, y + 4, 60, 82, 0, 0, Math.PI * 2);
+        flightCtx.fill();
+        flightCtx.restore();
 
-        if (part && part.mode === "draw" && state.flight.assets[partKey] && state.flight.assets[partKey].complete) {
-          flightCtx.fillStyle = "#20355d";
-          flightCtx.fillRect(bounds.x, bounds.y, bounds.width, bounds.height);
-          flightCtx.drawImage(state.flight.assets[partKey], bounds.x, bounds.y, bounds.width, bounds.height);
+        if (state.rocketImage && state.rocketImage.complete) {
+          const width = 132;
+          const height = 170;
+          flightCtx.drawImage(state.rocketImage, x - width / 2, y - height / 2, width, height);
         } else {
-          const gradient = flightCtx.createLinearGradient(bounds.x, bounds.y, bounds.x, bounds.y + bounds.height);
-          gradient.addColorStop(0, palette.primary);
-          gradient.addColorStop(1, palette.accent);
-          flightCtx.fillStyle = gradient;
-          flightCtx.fillRect(bounds.x, bounds.y, bounds.width, bounds.height);
+          flightCtx.fillStyle = "#ffffff";
+          flightCtx.beginPath();
+          flightCtx.moveTo(x, y - 70);
+          flightCtx.lineTo(x + 34, y + 52);
+          flightCtx.lineTo(x - 34, y + 52);
+          flightCtx.closePath();
+          flightCtx.fill();
         }
-
-        flightCtx.restore();
-        flightCtx.save();
-        flightCtx.strokeStyle = "rgba(255,255,255,0.18)";
-        flightCtx.lineWidth = 3;
-        pathDrawer();
-        flightCtx.stroke();
-        flightCtx.restore();
-      }
-
-      function drawRocket() {
-        const centerX = state.flight.rocketX;
-        const bottom = flightCanvas.height - 58;
-        const engineY = bottom - 74;
-        const bodyY = engineY - 122;
-        const noseY = bodyY - 84;
-
-        paintSegmentShape(
-          "nose",
-          () => {
-            flightCtx.beginPath();
-            flightCtx.moveTo(centerX, noseY);
-            flightCtx.lineTo(centerX + 42, bodyY + 8);
-            flightCtx.lineTo(centerX - 42, bodyY + 8);
-            flightCtx.closePath();
-          },
-          { x: centerX - 42, y: noseY, width: 84, height: bodyY + 8 - noseY }
-        );
-
-        paintSegmentShape(
-          "body",
-          () => roundedRectPath(flightCtx, centerX - 46, bodyY, 92, 126, 26),
-          { x: centerX - 46, y: bodyY, width: 92, height: 126 }
-        );
-
-        paintSegmentShape(
-          "engine",
-          () => roundedRectPath(flightCtx, centerX - 54, engineY, 108, 82, 24),
-          { x: centerX - 54, y: engineY, width: 108, height: 82 }
-        );
-
-        const bodyPalette = getPalette("body");
-        flightCtx.fillStyle = "rgba(255,255,255,0.24)";
-        flightCtx.fillRect(centerX - 26, bodyY + 42, 52, 10);
-        flightCtx.fillRect(centerX - 26, bodyY + 78, 52, 10);
-        flightCtx.fillStyle = bodyPalette.window;
-        flightCtx.beginPath();
-        flightCtx.arc(centerX, bodyY + 22, 14, 0, Math.PI * 2);
-        flightCtx.fill();
-        flightCtx.strokeStyle = "#0d2142";
-        flightCtx.lineWidth = 3;
-        flightCtx.stroke();
-
-        const enginePalette = getPalette("engine");
-        flightCtx.fillStyle = enginePalette.accent;
-        flightCtx.beginPath();
-        flightCtx.moveTo(centerX - 54, engineY + 52);
-        flightCtx.lineTo(centerX - 78, bottom - 18);
-        flightCtx.lineTo(centerX - 54, bottom - 10);
-        flightCtx.closePath();
-        flightCtx.fill();
-
-        flightCtx.beginPath();
-        flightCtx.moveTo(centerX + 54, engineY + 52);
-        flightCtx.lineTo(centerX + 78, bottom - 18);
-        flightCtx.lineTo(centerX + 54, bottom - 10);
-        flightCtx.closePath();
-        flightCtx.fill();
-
-        const flamePulse = state.flight.running ? 18 + Math.sin(state.flight.elapsedMs / 90) * 8 : 10;
-        const flameGradient = flightCtx.createLinearGradient(centerX, bottom - 6, centerX, bottom + 56);
-        flameGradient.addColorStop(0, "#fff6a2");
-        flameGradient.addColorStop(0.5, "#ff9930");
-        flameGradient.addColorStop(1, "rgba(255, 110, 42, 0)");
-        flightCtx.fillStyle = flameGradient;
-        flightCtx.beginPath();
-        flightCtx.moveTo(centerX - 18, bottom - 4);
-        flightCtx.quadraticCurveTo(centerX, bottom + flamePulse, centerX + 18, bottom - 4);
-        flightCtx.closePath();
-        flightCtx.fill();
       }
 
       function drawPlanet(obstacle) {
@@ -2462,16 +1698,15 @@
         flightCtx.translate(obstacle.x, obstacle.y);
         flightCtx.rotate(obstacle.rotation * 0.4);
 
-        const ringColor = obstacle.hue > 0.5 ? "#fbd495" : "#9cd6ff";
-        flightCtx.strokeStyle = ringColor;
+        flightCtx.strokeStyle = obstacle.hue > 0.5 ? "#f9d58a" : "#9fd6ff";
         flightCtx.lineWidth = 6;
         flightCtx.beginPath();
         flightCtx.ellipse(0, 0, obstacle.radius + 10, obstacle.radius / 2.2, 0, 0, Math.PI * 2);
         flightCtx.stroke();
 
         const gradient = flightCtx.createRadialGradient(-obstacle.radius / 3, -obstacle.radius / 3, 4, 0, 0, obstacle.radius);
-        gradient.addColorStop(0, obstacle.hue > 0.5 ? "#c9ffec" : "#ffeeb5");
-        gradient.addColorStop(1, obstacle.hue > 0.5 ? "#34b8a4" : "#ff8f43");
+        gradient.addColorStop(0, obstacle.hue > 0.5 ? "#fff0bf" : "#d2fdff");
+        gradient.addColorStop(1, obstacle.hue > 0.5 ? "#ff9449" : "#3fb6a8");
         flightCtx.fillStyle = gradient;
         flightCtx.beginPath();
         flightCtx.arc(0, 0, obstacle.radius, 0, Math.PI * 2);
@@ -2498,21 +1733,15 @@
         }
         flightCtx.closePath();
         flightCtx.fill();
-
-        flightCtx.fillStyle = "rgba(59, 51, 45, 0.35)";
-        flightCtx.beginPath();
-        flightCtx.arc(-4, -2, obstacle.radius / 4.5, 0, Math.PI * 2);
-        flightCtx.arc(9, 6, obstacle.radius / 5.5, 0, Math.PI * 2);
-        flightCtx.fill();
         flightCtx.restore();
       }
 
       function drawFlightScene() {
-        const gradient = flightCtx.createLinearGradient(0, 0, 0, flightCanvas.height);
+        const gradient = flightCtx.createLinearGradient(0, 0, 0, elements.flightCanvas.height);
         gradient.addColorStop(0, "#08142f");
         gradient.addColorStop(1, "#020713");
         flightCtx.fillStyle = gradient;
-        flightCtx.fillRect(0, 0, flightCanvas.width, flightCanvas.height);
+        flightCtx.fillRect(0, 0, elements.flightCanvas.width, elements.flightCanvas.height);
 
         state.flight.stars.forEach((star) => {
           flightCtx.fillStyle = "rgba(255,255,255,0.82)";
@@ -2529,18 +1758,66 @@
           }
         });
 
-        drawRocket();
+        drawRocketImage();
       }
 
-      function finishFlight(reason) {
+      function updateFlight(dt, timestamp) {
+        state.flight.elapsedMs = timestamp - state.flight.startTime;
+        elements.flightTime.textContent = formatTime(state.flight.elapsedMs);
+
+        state.flight.rocketX = clamp(
+          state.flight.rocketX + state.flight.moveDir * 270 * dt,
+          56,
+          elements.flightCanvas.width - 56
+        );
+
+        state.flight.spawnCooldown -= dt;
+        if (state.flight.spawnCooldown <= 0) {
+          spawnObstacle();
+          state.flight.spawnCooldown = Math.max(0.34, 0.92 - state.flight.elapsedMs / 15000) + Math.random() * 0.24;
+        }
+
+        state.flight.stars.forEach((star) => {
+          star.y += star.speed * dt;
+          if (star.y > elements.flightCanvas.height + 4) {
+            star.y = -4;
+            star.x = Math.random() * elements.flightCanvas.width;
+          }
+        });
+
+        state.flight.obstacles = state.flight.obstacles
+          .map((obstacle) => ({
+            ...obstacle,
+            y: obstacle.y + obstacle.speed * dt,
+            x: obstacle.x + obstacle.drift * dt,
+            rotation: obstacle.rotation + dt * 0.8
+          }))
+          .filter((obstacle) => obstacle.y < elements.flightCanvas.height + obstacle.radius + 24);
+      }
+
+      function collideCircleRect(circle, rect) {
+        const nearestX = clamp(circle.x, rect.x, rect.x + rect.width);
+        const nearestY = clamp(circle.y, rect.y, rect.y + rect.height);
+        const dx = circle.x - nearestX;
+        const dy = circle.y - nearestY;
+        return dx * dx + dy * dy < circle.radius * circle.radius;
+      }
+
+      function detectFlightCollision() {
+        const rect = {
+          x: state.flight.rocketX - 48,
+          y: state.flight.rocketY - 66,
+          width: 96,
+          height: 132
+        };
+        return state.flight.obstacles.some((obstacle) => collideCircleRect(obstacle, rect));
+      }
+
+      function finishFlight(title) {
         stopFlight();
-        state.flight.finished = true;
-        state.lastFlightMs = state.flight.elapsedMs;
-        elements.launchState.textContent = "Misia ukončená";
-        setResultBox(reason, `${state.playerName || "Pilot"} letel ${formatTime(state.flight.elapsedMs)}. Výsledok bol uložený do tabuľky pilotov.`);
-        setMissionStatus("Let sa skončil", "Výsledok je uložený. Môžete skúsiť ďalší let s rovnakou raketou alebo novú misiu s novými otázkami.");
+        elements.flightState.textContent = "Kolízia";
+        setFlightResult(title, `${state.playerName || "Pilot"} letel ${formatTime(state.flight.elapsedMs)}. Výsledok je uložený.`);
         saveScore(state.flight.elapsedMs);
-        updateDashboard();
       }
 
       function flightLoop(timestamp) {
@@ -2550,41 +1827,41 @@
 
         const dt = state.flight.lastFrame ? (timestamp - state.flight.lastFrame) / 1000 : 0;
         state.flight.lastFrame = timestamp;
-
         updateFlight(dt, timestamp);
         drawFlightScene();
 
-        if (detectCollision()) {
-          finishFlight("Raketu zastavil náraz do prekážky.");
+        if (detectFlightCollision()) {
+          finishFlight("Raketa narazila do vesmírneho telesa.");
           return;
         }
 
-        state.flight.animationFrame = window.requestAnimationFrame(flightLoop);
+        state.flight.frameId = window.requestAnimationFrame(flightLoop);
       }
 
-      function setCountdownText(text) {
-        elements.countdownOverlay.textContent = text;
-        elements.countdownOverlay.classList.add("visible");
+      function showCountdown(text) {
+        elements.countdown.textContent = text;
+        elements.countdown.classList.add("visible");
       }
 
       function hideCountdown() {
-        elements.countdownOverlay.classList.remove("visible");
+        elements.countdown.classList.remove("visible");
       }
 
       function startFlightCountdown() {
-        if (!(state.fuel === 3 && getPartsCount() === 3) || state.flight.countdown || state.flight.running) {
+        if (state.flight.running || state.flight.countdown) {
           return;
         }
 
+        stopFlight();
         resetFlightScene();
         state.flight.countdown = true;
-        elements.launchState.textContent = "Odpočítavanie";
-        setMissionStatus("Odpočítavanie beží", "Trieda môže nahlas rátať: 3, 2, 1, štart.");
+        elements.flightState.textContent = "Odpočítavanie";
+        setFlightResult("Odpočítavanie", "Teraz môže celá trieda nahlas rátať: 3, 2, 1, štart.");
 
         const sequence = ["3", "2", "1", "ŠTART"];
         state.flight.countdownTimers = [];
         sequence.forEach((label, index) => {
-          const timerId = window.setTimeout(() => setCountdownText(label), index * 800);
+          const timerId = window.setTimeout(() => showCountdown(label), index * 800);
           state.flight.countdownTimers.push(timerId);
         });
 
@@ -2594,24 +1871,17 @@
           state.flight.running = true;
           state.flight.startTime = performance.now();
           state.flight.lastFrame = 0;
-          elements.launchState.textContent = "Vo vesmíre";
-          setMissionStatus("Raketa letí", "Posúvajte ju doľava a doprava a vyhýbajte sa asteroidom aj planétam.");
-          state.flight.animationFrame = window.requestAnimationFrame(flightLoop);
+          elements.flightState.textContent = "Letí";
+          setFlightResult("Let prebieha", "Posúvaj raketu šípkami a vydrž čo najdlhšie bez kolízie.");
+          state.flight.frameId = window.requestAnimationFrame(flightLoop);
         }, sequence.length * 800);
         state.flight.countdownTimers.push(launchTimer);
       }
 
       function retryFlight() {
-        if (state.stage !== "launch") {
-          goToLaunchPad();
-          return;
-        }
-
         stopFlight();
         resetFlightScene();
-        elements.launchState.textContent = "Čaká na odpočítavanie";
-        setResultBox("Pripravené na nový pokus", "Raketa zostala rovnaká. Môžete hneď spustiť ďalšie odpočítavanie.");
-        setMissionStatus("Raketa je znovu pripravená", "Môžete skúsiť ďalší let s rovnakou raketou.");
+        setFlightResult("Pripravené", "Raketa je znova pripravená na nový pokus.");
       }
 
       function setMoveDir(dir, active) {
@@ -2625,12 +1895,12 @@
       }
 
       function nudgeRocket(dir) {
-        state.flight.rocketX = clamp(state.flight.rocketX + dir * 26, 56, flightCanvas.width - 56);
+        state.flight.rocketX = clamp(state.flight.rocketX + dir * 26, 56, elements.flightCanvas.width - 56);
         drawFlightScene();
       }
 
-      function attachControlButton(button, dir) {
-        const activate = (event) => {
+      function attachArrowControl(button, dir) {
+        const press = (event) => {
           event.preventDefault();
           setMoveDir(dir, true);
           nudgeRocket(dir);
@@ -2638,7 +1908,7 @@
 
         const release = () => setMoveDir(dir, false);
 
-        button.addEventListener("pointerdown", activate);
+        button.addEventListener("pointerdown", press);
         button.addEventListener("pointerup", release);
         button.addEventListener("pointercancel", release);
         button.addEventListener("pointerleave", release);
@@ -2668,42 +1938,31 @@
         const savedName = safeLoad(STORAGE_NAME_KEY, "");
         if (typeof savedName === "string" && savedName.trim()) {
           state.playerName = savedName.trim();
-          elements.pilotName.value = state.playerName;
+          elements.playerName.value = state.playerName;
         }
 
         renderScores();
-        renderColorButtons();
-        renderBrushButtons();
-        paintStudioBackground();
+        resetBuildState();
         resetFlightScene();
-        renderFuelCells();
-        renderBuildOptions();
-        updateBuildStatus();
-        updatePreview();
-        updateDashboard();
-        renderQuestion();
 
-        elements.startMission.addEventListener("click", () => startMission());
-        elements.shuffleQuestions.addEventListener("click", () => startMission({ keepLastFlight: true }));
-        elements.goLaunch.addEventListener("click", goToLaunchPad);
-        elements.saveDrawing.addEventListener("click", saveDrawingToPart);
-        elements.clearDrawing.addEventListener("click", clearStudioCanvas);
-        elements.closeStudio.addEventListener("click", closeStudio);
-        elements.launchButton.addEventListener("click", startFlightCountdown);
-        elements.retryFlight.addEventListener("click", retryFlight);
-        elements.pilotForm.addEventListener("submit", (event) => {
+        elements.enterMission.addEventListener("click", startMission);
+        elements.welcomeForm.addEventListener("submit", (event) => {
           event.preventDefault();
           startMission();
         });
+        elements.clearCanvas.addEventListener("click", clearCanvas);
+        elements.prepareLaunch.addEventListener("click", prepareLaunch);
+        elements.startFlight.addEventListener("click", startFlightCountdown);
+        elements.retryFlight.addEventListener("click", retryFlight);
 
-        attachControlButton(elements.moveLeft, -1);
-        attachControlButton(elements.moveRight, 1);
+        elements.buildCanvas.addEventListener("pointerdown", onBuildPointerDown);
+        elements.buildCanvas.addEventListener("pointermove", onBuildPointerMove);
+        elements.buildCanvas.addEventListener("pointerup", onBuildPointerUp);
+        elements.buildCanvas.addEventListener("pointercancel", onBuildPointerUp);
+        elements.buildCanvas.addEventListener("pointerleave", onBuildPointerUp);
 
-        elements.drawCanvas.addEventListener("pointerdown", beginStroke);
-        elements.drawCanvas.addEventListener("pointermove", moveStroke);
-        elements.drawCanvas.addEventListener("pointerup", endStroke);
-        elements.drawCanvas.addEventListener("pointercancel", endStroke);
-        elements.drawCanvas.addEventListener("pointerleave", endStroke);
+        attachArrowControl(elements.moveLeft, -1);
+        attachArrowControl(elements.moveRight, 1);
 
         window.addEventListener("keydown", handleKeyDown);
         window.addEventListener("keyup", handleKeyUp);
