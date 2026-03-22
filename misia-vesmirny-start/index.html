@@ -89,6 +89,11 @@
         align-content: start;
       }
 
+      #screen-build.active,
+      #screen-launch.active {
+        grid-template-rows: auto minmax(0, 1fr);
+      }
+
       h1,
       h2,
       h3,
@@ -361,6 +366,7 @@
       .build-shell {
         display: grid;
         gap: 16px;
+        min-height: 0;
       }
 
       .build-tools,
@@ -371,11 +377,19 @@
         border-radius: 24px;
         background: rgba(255, 255, 255, 0.06);
         border: 1px solid rgba(255, 255, 255, 0.08);
+        overflow: auto;
       }
 
       .tool-grid {
         display: grid;
         gap: 14px;
+      }
+
+      .build-main {
+        display: grid;
+        grid-template-rows: minmax(0, 1fr) auto;
+        gap: 14px;
+        min-height: 0;
       }
 
       .tool-group {
@@ -438,6 +452,8 @@
       }
 
       .canvas-wrap {
+        min-height: 0;
+        height: 100%;
         padding: 18px;
         border-radius: 24px;
         background: rgba(255, 255, 255, 0.06);
@@ -447,7 +463,8 @@
       canvas#build-canvas {
         display: block;
         width: 100%;
-        min-height: 430px;
+        height: 100%;
+        min-height: 0;
         border-radius: 24px;
         border: 3px solid rgba(255, 255, 255, 0.12);
         background: #ffffff;
@@ -474,9 +491,10 @@
 
       .build-layout {
         display: grid;
-        grid-template-columns: minmax(0, 1fr) minmax(280px, 340px);
+        grid-template-columns: 280px minmax(0, 1fr) 280px;
         gap: 16px;
         min-height: 0;
+        align-items: stretch;
       }
 
       .launch-layout {
@@ -667,10 +685,6 @@
           align-items: flex-start;
         }
 
-        canvas#build-canvas {
-          min-height: 320px;
-        }
-
         .arrow {
           min-height: 78px;
         }
@@ -743,36 +757,36 @@
         </div>
 
         <div class="build-layout">
-          <div class="build-shell">
-            <div class="build-tools">
-              <div class="tool-grid">
-                <div class="tool-group">
-                  <h3>Časť rakety</h3>
-                  <div class="tool-row" id="role-row"></div>
-                </div>
+          <aside class="build-tools">
+            <div class="tool-grid">
+              <div class="tool-group">
+                <h3>Časť rakety</h3>
+                <div class="tool-row" id="role-row"></div>
+              </div>
 
-                <div class="tool-group">
-                  <h3>Nástroj</h3>
-                  <div class="tool-row" id="tool-row"></div>
-                </div>
+              <div class="tool-group">
+                <h3>Nástroj</h3>
+                <div class="tool-row" id="tool-row"></div>
+              </div>
 
-                <div class="tool-group">
-                  <h3>Farba</h3>
-                  <div class="tool-row" id="color-row"></div>
-                </div>
+              <div class="tool-group">
+                <h3>Farba</h3>
+                <div class="tool-row" id="color-row"></div>
+              </div>
 
-                <div class="tool-group">
-                  <h3>Hrúbka čiary</h3>
-                  <div class="tool-row" id="size-row"></div>
-                </div>
+              <div class="tool-group">
+                <h3>Hrúbka čiary</h3>
+                <div class="tool-row" id="size-row"></div>
+              </div>
 
-                <div class="tool-group">
-                  <h3>Nálepky</h3>
-                  <div class="tool-row" id="sticker-row"></div>
-                </div>
+              <div class="tool-group">
+                <h3>Nálepky</h3>
+                <div class="tool-row" id="sticker-row"></div>
               </div>
             </div>
+          </aside>
 
+          <div class="build-main">
             <div class="canvas-wrap">
               <canvas id="build-canvas" width="920" height="560" aria-label="Kreslenie rakety"></canvas>
             </div>
