@@ -1,0 +1,813 @@
+:root {
+  color-scheme: light;
+  --bg-top: #f4efe2;
+  --bg-bottom: #dfeef6;
+  --ink: #1f2a32;
+  --muted: #61707d;
+  --line: rgba(31, 42, 50, 0.12);
+  --panel: rgba(255, 252, 247, 0.88);
+  --panel-strong: rgba(255, 255, 255, 0.94);
+  --shadow: rgba(24, 42, 51, 0.18);
+  --teal: #0d766e;
+  --teal-deep: #084d49;
+  --amber: #d28b22;
+  --fraud: #c2413b;
+  --fraud-soft: #fce4e1;
+  --safe: #1f7a57;
+  --safe-soft: #e2f3eb;
+  --wa: #dff8ea;
+  --sms: #f4f6f8;
+  --email: #eef3ff;
+  --surface: rgba(244, 248, 251, 0.92);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at top left, rgba(13, 118, 110, 0.18), transparent 28rem),
+    radial-gradient(circle at top right, rgba(210, 139, 34, 0.18), transparent 26rem),
+    linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.28) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.28) 1px, transparent 1px);
+  background-size: 38px 38px;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.65), transparent 78%);
+}
+
+.app-shell {
+  width: min(1260px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 28px 0 36px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  background: var(--panel);
+  box-shadow: 0 24px 64px var(--shadow);
+  backdrop-filter: blur(12px);
+}
+
+.card::after {
+  content: "";
+  position: absolute;
+  right: -56px;
+  bottom: -56px;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(13, 118, 110, 0.14), transparent 68%);
+  pointer-events: none;
+}
+
+.hero,
+.progress-card,
+.message-card,
+.inspector-card,
+.summary-hero,
+.history-card {
+  padding: 24px;
+}
+
+.hero {
+  display: grid;
+  gap: 20px;
+}
+
+.hero-copy {
+  max-width: 72ch;
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  font-size: 0.8rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--teal);
+}
+
+h1,
+h2 {
+  margin: 0;
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+h1 {
+  font-size: clamp(2.4rem, 4.6vw, 4.8rem);
+  line-height: 0.95;
+}
+
+h2 {
+  font-size: clamp(1.6rem, 2.8vw, 2.5rem);
+}
+
+.lead,
+.best-score,
+.context-text,
+.feedback-text,
+.history-explanation {
+  margin: 0;
+  line-height: 1.7;
+  color: var(--muted);
+}
+
+.hero-stats,
+.summary-stats,
+.score-strip {
+  display: grid;
+  gap: 14px;
+}
+
+.hero-stats {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.stat-pill,
+.summary-box,
+.score-box,
+.note-card,
+.history-item {
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.stat-pill,
+.summary-box,
+.score-box {
+  padding: 16px 18px;
+}
+
+.stat-pill strong,
+.summary-box strong,
+.score-box strong {
+  display: block;
+  font-size: 1.25rem;
+}
+
+.stat-pill span,
+.summary-box span,
+.score-box span {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+}
+
+.hero-notes {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+
+.note-card {
+  padding: 18px;
+}
+
+.note-card p,
+.note-card ul {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.note-card ul {
+  padding-left: 18px;
+}
+
+.note-title,
+.inspector-title,
+.feedback-verdict,
+.history-top strong,
+.device-kicker,
+.mail-label,
+.bubble-meta,
+.sms-topline,
+.wa-note,
+.attachment-label {
+  font-size: 0.86rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.note-title,
+.inspector-title,
+.device-kicker,
+.mail-label,
+.attachment-label {
+  margin: 0 0 10px;
+  color: var(--muted);
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: center;
+}
+
+.name-form {
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.name-label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+.name-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.name-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 14px 16px;
+  border: 1px solid rgba(31, 42, 50, 0.16);
+  border-radius: 18px;
+  font: inherit;
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.name-input:focus-visible {
+  outline: 2px solid rgba(13, 118, 110, 0.24);
+  outline-offset: 2px;
+}
+
+.name-hint {
+  margin: 10px 0 0;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.name-hint.error {
+  color: var(--fraud);
+}
+
+.primary-button,
+.decision-button {
+  border: 0;
+  border-radius: 999px;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+}
+
+.primary-button {
+  padding: 14px 20px;
+  color: #fff;
+  background: linear-gradient(135deg, var(--teal) 0%, var(--teal-deep) 100%);
+  box-shadow: 0 14px 28px rgba(8, 77, 73, 0.2);
+}
+
+.primary-button:hover,
+.primary-button:focus-visible,
+.decision-button:hover,
+.decision-button:focus-visible {
+  transform: translateY(-1px);
+}
+
+.primary-button.wide {
+  width: 100%;
+}
+
+.primary-button[disabled] {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.game-grid {
+  display: grid;
+  gap: 18px;
+  margin-top: 18px;
+  grid-template-columns: minmax(0, 1.28fr) minmax(320px, 0.76fr);
+}
+
+.progress-card,
+.message-card {
+  grid-column: 1 / 2;
+}
+
+.inspector-card {
+  grid-column: 2 / 3;
+  grid-row: 1 / span 2;
+  display: grid;
+  gap: 16px;
+  align-content: start;
+}
+
+.progress-head,
+.message-card-head,
+.history-top,
+.mail-top,
+.sms-header,
+.wa-header,
+.mail-addresses {
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.channel-badge {
+  align-self: center;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: rgba(13, 118, 110, 0.12);
+  color: var(--teal-deep);
+  font-weight: 700;
+}
+
+.score-strip {
+  margin-top: 18px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.progress-bar {
+  height: 12px;
+  margin-top: 18px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(13, 118, 110, 0.12);
+}
+
+.progress-fill {
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--amber) 0%, var(--teal) 100%);
+  transition: width 0.22s ease;
+}
+
+.message-viewport {
+  margin-top: 18px;
+}
+
+.device-frame {
+  width: min(100%, 760px);
+  margin: 0 auto;
+  border: 1px solid rgba(31, 42, 50, 0.14);
+  border-radius: 30px;
+  overflow: hidden;
+  background: var(--panel-strong);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.device-top {
+  padding: 18px 20px;
+  border-bottom: 1px solid rgba(31, 42, 50, 0.1);
+}
+
+.device-kicker {
+  color: var(--muted);
+}
+
+.device-title {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.sms-device {
+  background: linear-gradient(180deg, #fbfcfd 0%, var(--sms) 100%);
+}
+
+.sms-header {
+  margin-top: 8px;
+}
+
+.sender-name {
+  font-weight: 700;
+  font-size: 1.08rem;
+}
+
+.sender-meta,
+.sms-topline,
+.wa-note,
+.mail-subtle {
+  color: var(--muted);
+}
+
+.sms-body,
+.wa-body {
+  padding: 20px;
+  display: grid;
+  gap: 14px;
+}
+
+.bubble {
+  max-width: min(86%, 520px);
+  padding: 14px 16px;
+  border-radius: 22px 22px 22px 10px;
+  background: #fff;
+  box-shadow: 0 12px 24px rgba(31, 42, 50, 0.08);
+  line-height: 1.55;
+  white-space: pre-line;
+}
+
+.bubble.incoming {
+  justify-self: start;
+}
+
+.bubble.outgoing {
+  justify-self: end;
+  border-radius: 22px 22px 10px 22px;
+  background: #d0f1df;
+}
+
+.bubble-meta {
+  display: block;
+  margin-top: 10px;
+  color: rgba(31, 42, 50, 0.56);
+}
+
+.link-chip,
+.tag-chip,
+.mail-chip,
+.attachment-chip {
+  display: inline-flex;
+  align-items: center;
+  margin-top: 10px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(13, 118, 110, 0.1);
+  color: var(--teal-deep);
+  font-size: 0.92rem;
+  word-break: break-all;
+}
+
+.whatsapp-device {
+  background: linear-gradient(180deg, #f6fff7 0%, var(--wa) 100%);
+}
+
+.wa-header {
+  margin-top: 8px;
+}
+
+.wa-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0d766e, #5a9f8f);
+  color: #fff;
+  font-weight: 700;
+}
+
+.wa-contact {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.wa-day {
+  justify-self: center;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.8);
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.wa-note {
+  display: inline-block;
+  margin-top: 8px;
+}
+
+.email-device {
+  background: linear-gradient(180deg, #f7f9ff 0%, var(--email) 100%);
+}
+
+.mail-toolbar {
+  display: flex;
+  gap: 10px;
+  padding: 14px 20px;
+  border-bottom: 1px solid rgba(31, 42, 50, 0.1);
+  background: rgba(255, 255, 255, 0.75);
+}
+
+.mail-chip {
+  margin-top: 0;
+  background: rgba(31, 77, 166, 0.08);
+  color: #21456b;
+}
+
+.mail-main {
+  padding: 20px;
+}
+
+.mail-subject {
+  margin: 6px 0 0;
+  font-size: 1.4rem;
+}
+
+.mail-addresses {
+  margin-top: 14px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(31, 42, 50, 0.08);
+}
+
+.mail-grid {
+  display: grid;
+  gap: 8px;
+}
+
+.mail-line {
+  color: var(--ink);
+  word-break: break-word;
+}
+
+.mail-label {
+  margin: 0 8px 0 0;
+  display: inline-block;
+}
+
+.mail-preview {
+  margin-top: 16px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.mail-body {
+  margin-top: 18px;
+  display: grid;
+  gap: 14px;
+  line-height: 1.65;
+}
+
+.mail-body p {
+  margin: 0;
+}
+
+.attachments {
+  margin-top: 18px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.attachment-chip {
+  margin-top: 0;
+  background: rgba(210, 139, 34, 0.12);
+  color: #7a4c07;
+}
+
+.inspector-block {
+  padding: 18px;
+  border-radius: 22px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.checklist,
+.clue-list {
+  margin: 0;
+  padding-left: 18px;
+  line-height: 1.65;
+  color: var(--muted);
+}
+
+.answer-buttons {
+  display: grid;
+  gap: 12px;
+}
+
+.decision-button {
+  padding: 14px 16px;
+  text-align: left;
+  background: #fff;
+}
+
+.decision-button.fraud {
+  border: 2px solid rgba(194, 65, 59, 0.2);
+  color: var(--fraud);
+}
+
+.decision-button.real {
+  border: 2px solid rgba(31, 122, 87, 0.2);
+  color: var(--safe);
+}
+
+.decision-button[disabled] {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.feedback {
+  border-color: rgba(13, 118, 110, 0.2);
+}
+
+.feedback.is-correct {
+  background: var(--safe-soft);
+}
+
+.feedback.is-wrong {
+  background: var(--fraud-soft);
+}
+
+.feedback-verdict {
+  margin: 0 0 10px;
+  font-weight: 700;
+}
+
+.feedback-verdict.correct {
+  color: var(--safe);
+}
+
+.feedback-verdict.wrong {
+  color: var(--fraud);
+}
+
+.inspector-title.small {
+  margin-top: 14px;
+}
+
+.summary {
+  display: grid;
+  gap: 18px;
+  margin-top: 18px;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+}
+
+.summary-stats {
+  margin-top: 18px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.diploma-panel {
+  margin-top: 18px;
+  padding: 24px;
+  border-radius: 24px;
+  border: 2px solid rgba(210, 139, 34, 0.32);
+  background:
+    linear-gradient(180deg, rgba(255, 250, 239, 0.96), rgba(250, 245, 230, 0.98)),
+    radial-gradient(circle at top right, rgba(210, 139, 34, 0.16), transparent 14rem);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.7);
+}
+
+.diploma-kicker {
+  margin: 0;
+  font-size: 0.82rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #8c6321;
+}
+
+.diploma-name {
+  margin: 12px 0 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.7rem, 3vw, 2.7rem);
+  font-weight: 700;
+  color: #5d3c0a;
+}
+
+.diploma-percent,
+.diploma-rating,
+.diploma-message {
+  margin: 10px 0 0;
+  line-height: 1.6;
+}
+
+.diploma-percent {
+  font-size: 1.05rem;
+  color: #7a5a23;
+}
+
+.diploma-rating {
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.diploma-message {
+  color: #594f43;
+}
+
+.history-list {
+  display: grid;
+  gap: 12px;
+}
+
+.history-item {
+  padding: 16px 18px;
+}
+
+.history-top {
+  margin-bottom: 8px;
+}
+
+.history-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag-chip {
+  margin-top: 0;
+}
+
+.tag-chip.good {
+  background: rgba(31, 122, 87, 0.12);
+  color: var(--safe);
+}
+
+.tag-chip.bad {
+  background: rgba(194, 65, 59, 0.12);
+  color: var(--fraud);
+}
+
+.tag-chip.neutral {
+  background: rgba(13, 118, 110, 0.1);
+}
+
+@media (max-width: 980px) {
+  .game-grid,
+  .summary {
+    grid-template-columns: 1fr;
+  }
+
+  .progress-card,
+  .message-card,
+  .inspector-card {
+    grid-column: auto;
+    grid-row: auto;
+  }
+
+  .hero-stats,
+  .hero-notes,
+  .summary-stats,
+  .score-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .name-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+@media (max-width: 640px) {
+  .app-shell {
+    width: min(100% - 20px, 1260px);
+    padding-top: 18px;
+  }
+
+  .hero,
+  .progress-card,
+  .message-card,
+  .inspector-card,
+  .summary-hero,
+  .history-card {
+    padding: 18px;
+  }
+
+  h1 {
+    font-size: clamp(2.1rem, 11vw, 3.2rem);
+  }
+
+  .device-top,
+  .sms-body,
+  .wa-body,
+  .mail-main,
+  .mail-toolbar {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .bubble {
+    max-width: 100%;
+  }
+}

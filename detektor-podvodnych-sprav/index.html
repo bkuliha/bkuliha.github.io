@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="sk">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detektor podvodných správ</title>
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="hero card">
+        <div class="hero-copy">
+          <p class="eyebrow">Triedna hra o digitálnej bezpečnosti</p>
+          <h1>Detektor podvodných správ</h1>
+          <p class="lead">
+            V každom kole dostaneš 15 realisticky pripravených SMS, WhatsApp a email správ.
+            Tvojou úlohou je rozhodnúť, či ide o podvodnú správu alebo správu, ktorá môže byť reálna.
+          </p>
+        </div>
+
+        <div class="hero-stats">
+          <div class="stat-pill">
+            <strong>15 úloh</strong>
+            <span>jedno herné kolo</span>
+          </div>
+          <div class="stat-pill">
+            <strong>54 správ</strong>
+            <span>veľká banka otázok</span>
+          </div>
+          <div class="stat-pill">
+            <strong>3 kanály</strong>
+            <span>SMS, WhatsApp, email</span>
+          </div>
+        </div>
+
+        <div class="hero-notes">
+          <article class="note-card">
+            <p class="note-title">Na čo sa sústrediť</p>
+            <ul>
+              <li>Odosielateľ a doména</li>
+              <li>Žiadosť o heslo, kód alebo platbu</li>
+              <li>Nátlak, časový stres a chyby v texte</li>
+              <li>Nečakané prílohy a zvláštne odkazy</li>
+            </ul>
+          </article>
+
+          <article class="note-card">
+            <p class="note-title">Pre triedu</p>
+            <p>
+              Každé zariadenie dostane náhodných 15 správ z banky 54 úloh, takže žiaci môžu hrať naraz
+              a pravdepodobne nebudú mať rovnaké zadania.
+            </p>
+          </article>
+        </div>
+
+        <div class="name-form">
+          <label class="name-label" for="playerNameInput">Meno alebo prezývka na diplom</label>
+          <div class="name-row">
+            <input id="playerNameInput" class="name-input" type="text" maxlength="36" placeholder="Napríklad Nina alebo Kapitán Bezpečák">
+            <button id="startButton" class="primary-button" type="button" disabled>Začať nové kolo</button>
+          </div>
+          <p id="nameHintText" class="name-hint">Najprv napíš meno alebo prezývku, ktorá sa zobrazí na diplome.</p>
+        </div>
+
+        <div class="hero-actions">
+          <p id="bestScoreText" class="best-score">Najlepší uložený výsledok: zatiaľ bez odohraného kola.</p>
+        </div>
+      </section>
+
+      <section id="gameScreen" class="game-grid hidden" aria-live="polite">
+        <article class="card progress-card">
+          <div class="progress-head">
+            <div>
+              <p class="eyebrow">Práve hráš</p>
+              <h2 id="roundHeadline">Úloha 1 z 15</h2>
+            </div>
+            <div id="channelBadge" class="channel-badge">SMS</div>
+          </div>
+
+          <div class="score-strip">
+            <div class="score-box">
+              <span>Správne odpovede</span>
+              <strong id="scoreValue">0</strong>
+            </div>
+            <div class="score-box">
+              <span>Úspešnosť</span>
+              <strong id="percentValue">0 %</strong>
+            </div>
+            <div class="score-box">
+              <span>Zostáva</span>
+              <strong id="remainingValue">15</strong>
+            </div>
+          </div>
+
+          <div class="progress-bar" aria-hidden="true">
+            <div id="progressFill" class="progress-fill"></div>
+          </div>
+        </article>
+
+        <section class="card message-card">
+          <div class="message-card-head">
+            <div>
+              <p class="eyebrow">Správa na preverenie</p>
+              <h2 id="taskTitle">Skontroluj podrobnosti</h2>
+            </div>
+            <p id="taskContext" class="context-text"></p>
+          </div>
+
+          <div id="messageViewport" class="message-viewport"></div>
+        </section>
+
+        <aside class="card inspector-card">
+          <div class="inspector-block">
+            <p class="inspector-title">Kontrolný zoznam</p>
+            <ul class="checklist">
+              <li>Je odosielateľ očakávaný a dôveryhodný?</li>
+              <li>Sedí doména alebo telefónne číslo?</li>
+              <li>Nepýta si správa heslo, kód alebo urgentnú platbu?</li>
+              <li>Nevyvoláva paniku alebo tlak na okamžité kliknutie?</li>
+            </ul>
+          </div>
+
+          <div class="inspector-block">
+            <p class="inspector-title">Tvoje rozhodnutie</p>
+            <div class="answer-buttons">
+              <button id="fraudButton" class="decision-button fraud" type="button">Podvodná správa</button>
+              <button id="realButton" class="decision-button real" type="button">Môže byť reálna</button>
+            </div>
+          </div>
+
+          <div id="feedbackPanel" class="inspector-block feedback hidden">
+            <p id="feedbackVerdict" class="feedback-verdict"></p>
+            <p id="feedbackText" class="feedback-text"></p>
+            <div>
+              <p id="clueTitle" class="inspector-title small"></p>
+              <ul id="clueList" class="clue-list"></ul>
+            </div>
+            <button id="nextButton" class="primary-button wide" type="button">Ďalšia úloha</button>
+          </div>
+        </aside>
+      </section>
+
+      <section id="summaryScreen" class="summary hidden">
+        <article class="card summary-hero">
+          <p class="eyebrow">Koniec kola</p>
+          <h2 id="summaryHeadline">Výsledok</h2>
+          <p id="summaryText" class="lead"></p>
+
+          <div class="summary-stats">
+            <div class="summary-box">
+              <span>Správne</span>
+              <strong id="summaryScore">0 / 15</strong>
+            </div>
+            <div class="summary-box">
+              <span>Úspešnosť</span>
+              <strong id="summaryPercent">0 %</strong>
+            </div>
+            <div class="summary-box">
+              <span>Najlepší výsledok</span>
+              <strong id="summaryBest">0 %</strong>
+            </div>
+          </div>
+
+          <section class="diploma-panel" aria-label="Diplom">
+            <p class="diploma-kicker">Diplom za digitálnu opatrnosť</p>
+            <p id="diplomaName" class="diploma-name">Hráč</p>
+            <p id="diplomaPercentLine" class="diploma-percent">Úspešnosť: 0 %</p>
+            <p id="diplomaRating" class="diploma-rating">Hodnotenie</p>
+            <p id="diplomaMessage" class="diploma-message"></p>
+          </section>
+
+          <div class="hero-actions">
+            <button id="restartButton" class="primary-button" type="button">Zahrať nové kolo</button>
+          </div>
+        </article>
+
+        <article class="card history-card">
+          <div class="message-card-head">
+            <div>
+              <p class="eyebrow">Prehľad kola</p>
+              <h2>Čo si riešil</h2>
+            </div>
+          </div>
+
+          <div id="historyList" class="history-list"></div>
+        </article>
+      </section>
+    </main>
+
+    <script src="./game.js"></script>
+  </body>
+</html>
