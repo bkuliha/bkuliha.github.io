@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Slovné druhy detektív</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="bubble-field" aria-hidden="true">
+    <span class="bubble bubble-a"></span>
+    <span class="bubble bubble-b"></span>
+    <span class="bubble bubble-c"></span>
+    <span class="bubble bubble-d"></span>
+    <span class="bubble bubble-e"></span>
+    <span class="bubble bubble-f"></span>
+    <span class="bubble bubble-g"></span>
+    <span class="bubble bubble-h"></span>
+    <span class="bubble bubble-i"></span>
+    <span class="bubble bubble-j"></span>
+  </div>
+
+  <main class="app-shell">
+    <header class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">slovne-druhy-detektiv</p>
+        <h1>Slovné druhy detektív</h1>
+        <p class="subtitle">
+          Jedna hra, dva pohybové jazykové režimy. Žiaci môžu loviť slovesá vo vetách alebo určovať
+          slovné druhy v jednoduchej vete. Každé kolo vyberie 10 viet z veľkej banky.
+        </p>
+      </div>
+
+      <aside class="hero-note">
+        <span class="note-label">Banka viet</span>
+        <strong id="bankSizeValue">0</strong>
+        <p>Iba z ohybných slovných druhov: podstatné mená, prídavné mená, zámená, číslovky a slovesá.</p>
+      </aside>
+    </header>
+
+    <section class="mode-strip" aria-label="Výber režimu">
+      <button class="mode-card active" type="button" data-mode="verbs">
+        <span class="mode-kicker">Režim 1</span>
+        <strong>Nájdi slovesá</strong>
+        <span>Klikni na všetky slovesá vo vete. Aj tvar usmieva sa sa ráta ako jedno sloveso.</span>
+        <span class="mode-enter">Vstúpiť do hry</span>
+      </button>
+      <button class="mode-card" type="button" data-mode="parts">
+        <span class="mode-kicker">Režim 2</span>
+        <strong>Urči slovné druhy</strong>
+        <span>Pri každom slove vyber správny slovný druh.</span>
+        <span class="mode-enter">Vstúpiť do hry</span>
+      </button>
+    </section>
+
+    <section class="status-bar" aria-label="Stav hry">
+      <div class="status-pill">
+        <span class="status-label">Režim</span>
+        <strong id="modeValue">Nájdi slovesá</strong>
+      </div>
+      <div class="status-pill">
+        <span class="status-label">Postup</span>
+        <strong id="progressValue">0 / 10</strong>
+      </div>
+      <div class="status-pill">
+        <span class="status-label">Skóre</span>
+        <strong id="scoreValue">0</strong>
+      </div>
+      <button id="restartButton" class="ghost-button" type="button">Nové kolo</button>
+    </section>
+
+    <section id="introScreen" class="panel intro-panel">
+      <div class="intro-copy">
+        <p class="intro-kicker">Štart hry</p>
+        <h2>Pripravené na jazykový pohyb</h2>
+        <p id="introText">
+          Vyber si režim a spusti desať viet. V každom kole sa náhodne vyberie nová zostava z celej banky.
+        </p>
+        <div class="intro-steps" aria-label="Ako začať">
+          <span class="intro-step">1. Vyber hru vyššie</span>
+          <span class="intro-step">2. Klikni na slová alebo určuj druhy</span>
+          <span class="intro-step">3. Zahraj 10 viet</span>
+        </div>
+      </div>
+      <button id="startButton" class="primary-button" type="button">Spustiť kolo</button>
+    </section>
+
+    <section id="questionScreen" class="panel question-panel hidden" aria-live="polite">
+      <div class="question-head">
+        <p id="questionBadge" class="question-badge">Veta 1 z 10</p>
+        <h2 id="questionTitle">Nájdi slovesá vo vete</h2>
+        <p id="questionHelp" class="question-help">Klikni na všetky slovesá a potom skontroluj odpoveď.</p>
+      </div>
+
+      <div class="sentence-box">
+        <p id="sentenceText" class="sentence-text"></p>
+      </div>
+
+      <div id="interactionArea" class="interaction-area"></div>
+
+      <section id="feedbackBox" class="feedback hidden">
+        <h3 id="feedbackTitle">Výsledok</h3>
+        <p id="feedbackText"></p>
+      </section>
+
+      <div class="actions">
+        <button id="checkButton" class="primary-button" type="button">Skontrolovať</button>
+        <button id="nextButton" class="secondary-button hidden" type="button">Ďalšia veta</button>
+      </div>
+    </section>
+
+    <section id="resultScreen" class="panel result-panel hidden">
+      <p class="result-kicker">Kolo je hotové</p>
+      <h2 id="resultTitle">Tvoje skóre: 0 / 10</h2>
+      <p id="resultText" class="result-text"></p>
+      <button id="playAgainButton" class="primary-button" type="button">Hrať znova</button>
+    </section>
+  </main>
+
+  <script src="./game.js"></script>
+</body>
+</html>
