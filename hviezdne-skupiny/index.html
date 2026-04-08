@@ -1,0 +1,1219 @@
+<!DOCTYPE html>
+<html lang="sk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hviezdne skupiny</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg-top: #081120;
+        --bg-bottom: #030711;
+        --panel: rgba(8, 17, 32, 0.78);
+        --panel-strong: rgba(11, 23, 43, 0.92);
+        --line: rgba(158, 189, 255, 0.24);
+        --line-strong: rgba(255, 214, 120, 0.42);
+        --text: #eef4ff;
+        --muted: #a9b6d7;
+        --accent: #ffd76f;
+        --accent-strong: #ffbf3d;
+        --accent-soft: rgba(255, 215, 111, 0.16);
+        --success: #7fffd4;
+        --danger: #ff8c9f;
+        --shadow: 0 24px 60px rgba(0, 0, 0, 0.34);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+        color: var(--text);
+        background:
+          radial-gradient(circle at top left, rgba(71, 102, 255, 0.22), transparent 24%),
+          radial-gradient(circle at top right, rgba(255, 196, 78, 0.2), transparent 20%),
+          radial-gradient(circle at bottom, rgba(44, 81, 154, 0.28), transparent 26%),
+          linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+        overflow-x: hidden;
+      }
+
+      body::before,
+      body::after {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      body::before {
+        background-image:
+          radial-gradient(circle at 12% 18%, rgba(255, 255, 255, 0.8) 0 1.6px, transparent 1.8px),
+          radial-gradient(circle at 32% 44%, rgba(255, 215, 111, 0.78) 0 1.8px, transparent 2px),
+          radial-gradient(circle at 56% 14%, rgba(255, 255, 255, 0.85) 0 1.3px, transparent 1.6px),
+          radial-gradient(circle at 82% 26%, rgba(255, 255, 255, 0.88) 0 1.5px, transparent 1.8px),
+          radial-gradient(circle at 70% 62%, rgba(255, 215, 111, 0.72) 0 1.6px, transparent 1.9px),
+          radial-gradient(circle at 18% 78%, rgba(255, 255, 255, 0.82) 0 1.5px, transparent 1.8px),
+          radial-gradient(circle at 90% 82%, rgba(255, 255, 255, 0.72) 0 1.3px, transparent 1.6px);
+        opacity: 0.8;
+        animation: twinkle 8s linear infinite alternate;
+      }
+
+      body::after {
+        background:
+          radial-gradient(circle at 25% 18%, rgba(255, 215, 111, 0.12), transparent 18%),
+          radial-gradient(circle at 76% 12%, rgba(111, 173, 255, 0.14), transparent 16%);
+        filter: blur(18px);
+        opacity: 0.9;
+      }
+
+      @keyframes twinkle {
+        from {
+          opacity: 0.45;
+          transform: scale(1);
+        }
+
+        to {
+          opacity: 0.92;
+          transform: scale(1.02);
+        }
+      }
+
+      .page {
+        position: relative;
+        z-index: 1;
+        width: min(1180px, calc(100% - 28px));
+        margin: 28px auto 44px;
+      }
+
+      .hero {
+        padding: 28px;
+        border: 1px solid var(--line);
+        border-radius: 28px;
+        background:
+          linear-gradient(135deg, rgba(255, 215, 111, 0.12), transparent 45%),
+          linear-gradient(180deg, rgba(14, 29, 57, 0.92), rgba(7, 15, 31, 0.92));
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+
+      .hero::after {
+        content: "";
+        position: absolute;
+        width: 220px;
+        height: 220px;
+        right: -38px;
+        top: -46px;
+        background:
+          radial-gradient(circle, rgba(255, 234, 166, 0.9) 0 18%, rgba(255, 215, 111, 0.28) 18% 42%, transparent 43%),
+          radial-gradient(circle, transparent 0 58%, rgba(255, 215, 111, 0.14) 59% 100%);
+        filter: blur(1px);
+        opacity: 0.92;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 14px;
+        border-radius: 999px;
+        background: rgba(255, 215, 111, 0.12);
+        border: 1px solid rgba(255, 215, 111, 0.26);
+        font-size: 0.92rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        margin: 18px 0 12px;
+        max-width: 660px;
+        font-size: clamp(2.2rem, 4.6vw, 4.2rem);
+        line-height: 0.98;
+      }
+
+      .hero p {
+        max-width: 720px;
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.65;
+        font-size: 1.05rem;
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: minmax(320px, 440px) minmax(0, 1fr);
+        gap: 22px;
+        margin-top: 22px;
+      }
+
+      .panel {
+        padding: 24px;
+        border-radius: 24px;
+        border: 1px solid var(--line);
+        background: var(--panel);
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(10px);
+      }
+
+      .panel h2,
+      .panel h3 {
+        margin: 0 0 10px;
+      }
+
+      .panel p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.55;
+      }
+
+      .stack {
+        display: grid;
+        gap: 18px;
+      }
+
+      .field-label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 700;
+      }
+
+      .input-row {
+        display: flex;
+        gap: 10px;
+      }
+
+      input[type="text"],
+      input[type="number"],
+      textarea {
+        width: 100%;
+        padding: 13px 14px;
+        border-radius: 16px;
+        border: 1px solid rgba(158, 189, 255, 0.22);
+        background: rgba(6, 12, 24, 0.82);
+        color: var(--text);
+        font: inherit;
+      }
+
+      input[type="text"]::placeholder,
+      textarea::placeholder {
+        color: #7f8cb0;
+      }
+
+      input:focus-visible,
+      textarea:focus-visible,
+      button:focus-visible {
+        outline: 2px solid rgba(255, 215, 111, 0.66);
+        outline-offset: 2px;
+      }
+
+      textarea {
+        min-height: 150px;
+        resize: vertical;
+      }
+
+      .button-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      button {
+        border: 0;
+        border-radius: 999px;
+        padding: 12px 18px;
+        font: inherit;
+        font-weight: 700;
+        cursor: pointer;
+        transition:
+          transform 160ms ease,
+          background 160ms ease,
+          color 160ms ease,
+          box-shadow 160ms ease;
+      }
+
+      button:hover {
+        transform: translateY(-1px);
+      }
+
+      .primary {
+        background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+        color: #221200;
+        box-shadow: 0 16px 30px rgba(255, 191, 61, 0.24);
+      }
+
+      .secondary {
+        background: rgba(158, 189, 255, 0.12);
+        color: var(--text);
+        border: 1px solid rgba(158, 189, 255, 0.18);
+      }
+
+      .danger {
+        background: rgba(255, 140, 159, 0.14);
+        color: #ffdce3;
+        border: 1px solid rgba(255, 140, 159, 0.22);
+      }
+
+      .note {
+        padding: 14px 16px;
+        border-radius: 18px;
+        background: rgba(255, 215, 111, 0.08);
+        border: 1px solid rgba(255, 215, 111, 0.18);
+        color: #ffe9b4;
+        line-height: 1.5;
+      }
+
+      .student-list {
+        display: grid;
+        gap: 12px;
+      }
+
+      .student-card {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 14px;
+        align-items: center;
+        padding: 14px;
+        border-radius: 18px;
+        background: rgba(7, 14, 28, 0.84);
+        border: 1px solid rgba(158, 189, 255, 0.16);
+      }
+
+      .student-main {
+        display: grid;
+        gap: 10px;
+      }
+
+      .student-name {
+        font-size: 1.05rem;
+        font-weight: 700;
+      }
+
+      .student-edit {
+        display: none;
+      }
+
+      .student-card.editing .student-name {
+        display: none;
+      }
+
+      .student-card.editing .student-edit {
+        display: block;
+      }
+
+      .badge-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 7px 12px;
+        border-radius: 999px;
+        font-size: 0.92rem;
+        font-weight: 700;
+      }
+
+      .status-badge.present {
+        background: rgba(127, 255, 212, 0.12);
+        color: #cffff0;
+      }
+
+      .status-badge.absent {
+        background: rgba(255, 140, 159, 0.14);
+        color: #ffd9df;
+      }
+
+      .toggle {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--muted);
+        font-size: 0.92rem;
+      }
+
+      .student-actions {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 8px;
+      }
+
+      .chip-button {
+        padding: 9px 14px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.06);
+        color: var(--text);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .summary-card {
+        padding: 16px;
+        border-radius: 18px;
+        background: rgba(7, 14, 28, 0.84);
+        border: 1px solid rgba(158, 189, 255, 0.16);
+      }
+
+      .summary-card strong {
+        display: block;
+        font-size: 1.8rem;
+        margin-top: 6px;
+      }
+
+      .mode-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .mode-option {
+        position: relative;
+      }
+
+      .mode-option input {
+        position: absolute;
+        opacity: 0;
+        inset: 0;
+      }
+
+      .mode-card {
+        height: 100%;
+        padding: 16px;
+        border-radius: 18px;
+        border: 1px solid rgba(158, 189, 255, 0.18);
+        background: rgba(8, 17, 32, 0.74);
+        transition:
+          border-color 160ms ease,
+          background 160ms ease,
+          transform 160ms ease;
+      }
+
+      .mode-option input:checked + .mode-card {
+        border-color: var(--line-strong);
+        background: rgba(255, 215, 111, 0.1);
+        transform: translateY(-1px);
+      }
+
+      .mode-card strong {
+        display: block;
+        margin-bottom: 8px;
+      }
+
+      .inline-field {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 120px;
+        gap: 12px;
+        align-items: end;
+      }
+
+      .message {
+        min-height: 26px;
+        color: #ffe9b4;
+        font-weight: 700;
+      }
+
+      .message.error {
+        color: #ffd3da;
+      }
+
+      .group-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 16px;
+      }
+
+      .group-card {
+        position: relative;
+        padding: 22px 18px 18px;
+        border-radius: 24px;
+        border: 1px solid rgba(255, 215, 111, 0.2);
+        background:
+          linear-gradient(180deg, rgba(255, 215, 111, 0.08), transparent 36%),
+          var(--panel-strong);
+        overflow: hidden;
+      }
+
+      .group-card::before {
+        content: "★";
+        position: absolute;
+        top: 12px;
+        right: 16px;
+        font-size: 1.1rem;
+        color: rgba(255, 215, 111, 0.72);
+      }
+
+      .group-title {
+        margin: 0 0 6px;
+        font-size: 1.2rem;
+      }
+
+      .group-count {
+        color: var(--muted);
+        margin-bottom: 14px;
+      }
+
+      .group-members {
+        display: grid;
+        gap: 10px;
+      }
+
+      .member {
+        padding: 11px 12px;
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.07);
+      }
+
+      .absent-box {
+        margin-top: 16px;
+        padding: 16px;
+        border-radius: 18px;
+        background: rgba(255, 140, 159, 0.08);
+        border: 1px solid rgba(255, 140, 159, 0.18);
+      }
+
+      .pill-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 10px;
+      }
+
+      .pill {
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.07);
+      }
+
+      .empty-state {
+        padding: 22px;
+        border-radius: 22px;
+        border: 1px dashed rgba(158, 189, 255, 0.24);
+        color: var(--muted);
+        text-align: center;
+        background: rgba(8, 17, 32, 0.58);
+      }
+
+      @media (max-width: 900px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+
+        .summary-grid,
+        .mode-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 640px) {
+        .page {
+          width: min(100% - 18px, 100%);
+          margin-top: 18px;
+        }
+
+        .hero,
+        .panel {
+          padding: 18px;
+          border-radius: 22px;
+        }
+
+        .input-row,
+        .inline-field,
+        .student-card {
+          grid-template-columns: 1fr;
+          display: grid;
+        }
+
+        .input-row,
+        .button-row,
+        .student-actions {
+          display: grid;
+        }
+
+        .student-actions {
+          justify-content: stretch;
+        }
+
+        button {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <section class="hero">
+        <div class="eyebrow">Hviezdny motiv • nahodny vyber skupin</div>
+        <h1>Rozdel ziakov do skupin za par sekund.</h1>
+        <p>
+          Doplnaj a upravuj zoznam ziakov, oznac pritomnych a nepritomnych,
+          vyber pocet skupin alebo velkost skupiny a nechaj aplikaciu vytvorit
+          spravodlive hviezdne rozdelenie.
+        </p>
+      </section>
+
+      <section class="layout">
+        <div class="stack">
+          <section class="panel stack" aria-labelledby="students-heading">
+            <div>
+              <h2 id="students-heading">Zoznam ziakov</h2>
+              <p>Ziakov mozes pridavat po jednom aj hromadne. Zoznam sa uklada priamo v prehliadaci.</p>
+            </div>
+
+            <div>
+              <label class="field-label" for="student-name-input">Pridat jedneho ziaka</label>
+              <div class="input-row">
+                <input id="student-name-input" type="text" placeholder="Napriklad: Adam Novak" />
+                <button class="primary" id="add-student-button" type="button">Pridat</button>
+              </div>
+            </div>
+
+            <div>
+              <label class="field-label" for="bulk-input">Rychle doplnenie viacerych ziakov</label>
+              <textarea
+                id="bulk-input"
+                placeholder="Kazde meno napis na novy riadok.
+Napriklad:
+Ema
+Filip
+Hanka"
+              ></textarea>
+              <div class="button-row" style="margin-top: 10px;">
+                <button class="secondary" id="bulk-add-button" type="button">Pridat zoznam</button>
+              </div>
+            </div>
+
+            <div class="button-row">
+              <button class="secondary" id="mark-all-present-button" type="button">Vsetci pritomni</button>
+              <button class="secondary" id="mark-all-absent-button" type="button">Vsetci nepritomni</button>
+              <button class="danger" id="clear-all-button" type="button">Vymazat cely zoznam</button>
+            </div>
+
+            <div class="note">
+              Tip: klikni na <strong>Upravit</strong> pri mene, ak chces niekoho prepisat, alebo prepni pritomnost
+              priamo na karticke ziaka.
+            </div>
+
+            <div class="student-list" id="student-list"></div>
+          </section>
+        </div>
+
+        <div class="stack">
+          <section class="panel stack" aria-labelledby="generator-heading">
+            <div>
+              <h2 id="generator-heading">Nastavenie rozdelenia</h2>
+              <p>Skupiny sa vytvaraju len zo ziakov, ktori su oznaceni ako pritomni v triede.</p>
+            </div>
+
+            <div class="summary-grid">
+              <article class="summary-card">
+                Celkom ziakov
+                <strong id="total-count">0</strong>
+              </article>
+              <article class="summary-card">
+                Pritomni
+                <strong id="present-count">0</strong>
+              </article>
+              <article class="summary-card">
+                Nepritomni
+                <strong id="absent-count">0</strong>
+              </article>
+            </div>
+
+            <div class="mode-grid" role="radiogroup" aria-label="Rezim tvorby skupin">
+              <label class="mode-option">
+                <input type="radio" name="group-mode" value="group-count" checked />
+                <span class="mode-card">
+                  <strong>Pocet skupin</strong>
+                  Zadaj, na kolko skupin sa maju pritomni ziaci rozdelit.
+                </span>
+              </label>
+              <label class="mode-option">
+                <input type="radio" name="group-mode" value="group-size" />
+                <span class="mode-card">
+                  <strong>Pocet deti v skupine</strong>
+                  Zadaj, kolko ziakov ma byt idealne v jednej skupine.
+                </span>
+              </label>
+            </div>
+
+            <div class="inline-field">
+              <div>
+                <label class="field-label" id="group-number-label" for="group-number-input">Pocet skupin</label>
+                <p id="group-number-help">Ak mas 20 pritomnych ziakov a zadas 4, vzniknu 4 skupiny.</p>
+              </div>
+              <input id="group-number-input" type="number" min="1" step="1" value="4" />
+            </div>
+
+            <div class="button-row">
+              <button class="primary" id="generate-button" type="button">Vytvorit hviezdne skupiny</button>
+              <button class="secondary" id="reshuffle-button" type="button">Premiesat znova</button>
+            </div>
+
+            <div class="message" id="message" aria-live="polite"></div>
+          </section>
+
+          <section class="panel stack" aria-labelledby="results-heading">
+            <div>
+              <h2 id="results-heading">Vysledne skupiny</h2>
+              <p>Po kazdom miesani dostanes nove nahodne rozdelenie len zo ziakov, ktori su dnes v triede.</p>
+            </div>
+
+            <div id="groups-output" class="empty-state">
+              Zatial tu nie su ziadne skupiny. Najprv pridaj ziakov a potom klikni na tlacidlo pre generovanie.
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const STORAGE_KEY = "hviezdne-skupiny-state-v1";
+      const constellationNames = [
+        "Orion",
+        "Lyra",
+        "Sirius",
+        "Andromeda",
+        "Pegas",
+        "Vega",
+        "Cassiopeia",
+        "Altair",
+        "Polaris",
+        "Phoenix",
+        "Aquila",
+        "Perzeus"
+      ];
+
+      const defaultStudents = createDefaultStudents();
+
+      const state = loadState();
+
+      const studentNameInput = document.getElementById("student-name-input");
+      const addStudentButton = document.getElementById("add-student-button");
+      const bulkInput = document.getElementById("bulk-input");
+      const bulkAddButton = document.getElementById("bulk-add-button");
+      const markAllPresentButton = document.getElementById("mark-all-present-button");
+      const markAllAbsentButton = document.getElementById("mark-all-absent-button");
+      const clearAllButton = document.getElementById("clear-all-button");
+      const studentList = document.getElementById("student-list");
+      const totalCount = document.getElementById("total-count");
+      const presentCount = document.getElementById("present-count");
+      const absentCount = document.getElementById("absent-count");
+      const groupNumberLabel = document.getElementById("group-number-label");
+      const groupNumberHelp = document.getElementById("group-number-help");
+      const groupNumberInput = document.getElementById("group-number-input");
+      const generateButton = document.getElementById("generate-button");
+      const reshuffleButton = document.getElementById("reshuffle-button");
+      const groupsOutput = document.getElementById("groups-output");
+      const message = document.getElementById("message");
+      const modeInputs = Array.from(document.querySelectorAll('input[name="group-mode"]'));
+
+      render();
+
+      addStudentButton.addEventListener("click", () => {
+        addStudentsFromText(studentNameInput.value, true);
+        studentNameInput.value = "";
+        studentNameInput.focus();
+      });
+
+      studentNameInput.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          addStudentButton.click();
+        }
+      });
+
+      bulkAddButton.addEventListener("click", () => {
+        addStudentsFromText(bulkInput.value, false);
+        bulkInput.value = "";
+      });
+
+      markAllPresentButton.addEventListener("click", () => {
+        state.students.forEach((student) => {
+          student.present = true;
+        });
+        state.lastGroups = [];
+        persistAndRender();
+        setMessage("Vsetci ziaci su oznaceni ako pritomni.");
+      });
+
+      markAllAbsentButton.addEventListener("click", () => {
+        state.students.forEach((student) => {
+          student.present = false;
+        });
+        state.lastGroups = [];
+        persistAndRender();
+        setMessage("Vsetci ziaci su oznaceni ako nepritomni.");
+      });
+
+      clearAllButton.addEventListener("click", () => {
+        if (!window.confirm("Naozaj chces vymazat cely zoznam ziakov?")) {
+          return;
+        }
+
+        state.students = [];
+        state.lastGroups = [];
+        persistAndRender();
+        setMessage("Zoznam ziakov bol vymazany.");
+      });
+
+      modeInputs.forEach((input) => {
+        input.addEventListener("change", () => {
+          state.mode = input.value;
+          updateModeCopy();
+          persistState();
+        });
+      });
+
+      groupNumberInput.addEventListener("change", () => {
+        state.groupValue = normalizePositiveInteger(groupNumberInput.value, 1);
+        groupNumberInput.value = state.groupValue;
+        persistState();
+      });
+
+      generateButton.addEventListener("click", generateGroups);
+      reshuffleButton.addEventListener("click", generateGroups);
+
+      function loadState() {
+        try {
+          const storedValue = window.localStorage.getItem(STORAGE_KEY);
+          if (!storedValue) {
+            return {
+              students: createDefaultStudents(),
+              mode: "group-count",
+              groupValue: 4,
+              lastGroups: []
+            };
+          }
+
+          const parsed = JSON.parse(storedValue);
+          const students = Array.isArray(parsed.students)
+            ? parsed.students
+                .map((student) => ({
+                  id: typeof student.id === "string" ? student.id : createId(),
+                  name: typeof student.name === "string" ? student.name.trim() : "",
+                  present: Boolean(student.present)
+                }))
+                .filter((student) => student.name)
+            : createDefaultStudents();
+
+          return {
+            students,
+            mode: parsed.mode === "group-size" ? "group-size" : "group-count",
+            groupValue: normalizePositiveInteger(parsed.groupValue, 4),
+            lastGroups: Array.isArray(parsed.lastGroups) ? parsed.lastGroups : []
+          };
+        } catch (error) {
+          return {
+            students: createDefaultStudents(),
+            mode: "group-count",
+            groupValue: 4,
+            lastGroups: []
+          };
+        }
+      }
+
+      function persistState() {
+        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      }
+
+      function persistAndRender() {
+        persistState();
+        render();
+      }
+
+      function render() {
+        renderStudents();
+        renderSummary();
+        renderGroups();
+        updateModeCopy();
+      }
+
+      function renderStudents() {
+        studentList.innerHTML = "";
+
+        if (!state.students.length) {
+          studentList.innerHTML = '<div class="empty-state">Zatial tu nie je ziaden ziak. Pridaj mena hore.</div>';
+          return;
+        }
+
+        state.students.forEach((student) => {
+          const card = document.createElement("article");
+          card.className = "student-card";
+          card.dataset.id = student.id;
+
+          const main = document.createElement("div");
+          main.className = "student-main";
+
+          const name = document.createElement("div");
+          name.className = "student-name";
+          name.textContent = student.name;
+
+          const editInput = document.createElement("input");
+          editInput.className = "student-edit";
+          editInput.type = "text";
+          editInput.value = student.name;
+          editInput.setAttribute("aria-label", `Upravit meno ziaka ${student.name}`);
+
+          const badgeRow = document.createElement("div");
+          badgeRow.className = "badge-row";
+
+          const status = document.createElement("span");
+          status.className = `status-badge ${student.present ? "present" : "absent"}`;
+          status.textContent = student.present ? "Pritomny" : "Nepritomny";
+
+          const toggle = document.createElement("label");
+          toggle.className = "toggle";
+          const checkbox = document.createElement("input");
+          checkbox.type = "checkbox";
+          checkbox.checked = student.present;
+          checkbox.addEventListener("change", () => {
+            student.present = checkbox.checked;
+            state.lastGroups = [];
+            persistAndRender();
+            setMessage(
+              checkbox.checked
+                ? `${student.name} je oznaceny ako pritomny.`
+                : `${student.name} je oznaceny ako nepritomny.`
+            );
+          });
+
+          const toggleText = document.createElement("span");
+          toggleText.textContent = "je dnes v triede";
+          toggle.append(checkbox, toggleText);
+
+          badgeRow.append(status, toggle);
+          main.append(name, editInput, badgeRow);
+
+          const actions = document.createElement("div");
+          actions.className = "student-actions";
+
+          const editButton = document.createElement("button");
+          editButton.type = "button";
+          editButton.className = "chip-button";
+          editButton.textContent = "Upravit";
+          editButton.addEventListener("click", () => {
+            if (!card.classList.contains("editing")) {
+              card.classList.add("editing");
+              editInput.focus();
+              editInput.select();
+              editButton.textContent = "Ulozit";
+              return;
+            }
+
+            saveStudentName(student.id, editInput.value);
+          });
+
+          editInput.addEventListener("keydown", (event) => {
+            if (event.key === "Enter") {
+              event.preventDefault();
+              saveStudentName(student.id, editInput.value);
+            }
+
+            if (event.key === "Escape") {
+              editInput.value = student.name;
+              card.classList.remove("editing");
+              editButton.textContent = "Upravit";
+            }
+          });
+
+          const removeButton = document.createElement("button");
+          removeButton.type = "button";
+          removeButton.className = "chip-button";
+          removeButton.textContent = "Odstranit";
+          removeButton.addEventListener("click", () => {
+            state.students = state.students.filter((item) => item.id !== student.id);
+            state.lastGroups = [];
+            persistAndRender();
+            setMessage(`Ziak ${student.name} bol odstraneny zo zoznamu.`);
+          });
+
+          actions.append(editButton, removeButton);
+          card.append(main, actions);
+          studentList.appendChild(card);
+        });
+      }
+
+      function renderSummary() {
+        const total = state.students.length;
+        const present = state.students.filter((student) => student.present).length;
+        const absent = total - present;
+
+        totalCount.textContent = total;
+        presentCount.textContent = present;
+        absentCount.textContent = absent;
+      }
+
+      function renderGroups() {
+        if (!Array.isArray(state.lastGroups) || !state.lastGroups.length) {
+          groupsOutput.className = "empty-state";
+          groupsOutput.textContent =
+            "Zatial tu nie su ziadne skupiny. Najprv pridaj ziakov a potom klikni na tlacidlo pre generovanie.";
+          return;
+        }
+
+        const presentStudents = state.students.filter((student) => student.present);
+        const absentStudents = state.students.filter((student) => !student.present);
+        const wrapper = document.createElement("div");
+        wrapper.className = "stack";
+
+        const grid = document.createElement("div");
+        grid.className = "group-grid";
+
+        state.lastGroups.forEach((group, index) => {
+          const card = document.createElement("article");
+          card.className = "group-card";
+
+          const title = document.createElement("h3");
+          title.className = "group-title";
+          title.textContent = `${constellationNames[index % constellationNames.length]} ${index + 1}`;
+
+          const count = document.createElement("div");
+          count.className = "group-count";
+          count.textContent = `${group.length} ${group.length === 1 ? "ziak" : group.length < 5 ? "ziaci" : "ziakov"}`;
+
+          const members = document.createElement("div");
+          members.className = "group-members";
+
+          group.forEach((studentName) => {
+            const member = document.createElement("div");
+            member.className = "member";
+            member.textContent = studentName;
+            members.appendChild(member);
+          });
+
+          card.append(title, count, members);
+          grid.appendChild(card);
+        });
+
+        wrapper.appendChild(grid);
+
+        if (!presentStudents.length) {
+          const info = document.createElement("div");
+          info.className = "absent-box";
+          info.textContent = "Nikto nie je oznaceny ako pritomny, preto sa skupiny nedaju vytvorit.";
+          wrapper.appendChild(info);
+        } else if (absentStudents.length) {
+          const absentBox = document.createElement("div");
+          absentBox.className = "absent-box";
+
+          const title = document.createElement("strong");
+          title.textContent = "Nepritomni ziaci";
+
+          const pills = document.createElement("div");
+          pills.className = "pill-list";
+
+          absentStudents.forEach((student) => {
+            const pill = document.createElement("span");
+            pill.className = "pill";
+            pill.textContent = student.name;
+            pills.appendChild(pill);
+          });
+
+          absentBox.append(title, pills);
+          wrapper.appendChild(absentBox);
+        }
+
+        groupsOutput.className = "";
+        groupsOutput.innerHTML = "";
+        groupsOutput.appendChild(wrapper);
+      }
+
+      function updateModeCopy() {
+        modeInputs.forEach((input) => {
+          input.checked = input.value === state.mode;
+        });
+
+        if (state.mode === "group-size") {
+          groupNumberLabel.textContent = "Pocet deti v jednej skupine";
+          groupNumberHelp.textContent =
+            "Ak zadas 4, aplikacia sa pokusi vytvorit skupiny po styroch ziakoch.";
+        } else {
+          groupNumberLabel.textContent = "Pocet skupin";
+          groupNumberHelp.textContent =
+            "Ak mas 20 pritomnych ziakov a zadas 4, vzniknu 4 skupiny.";
+        }
+
+        groupNumberInput.value = state.groupValue;
+      }
+
+      function addStudentsFromText(text, singleMode) {
+        const names = parseNames(text);
+        if (!names.length) {
+          setMessage(singleMode ? "Najprv napis meno ziaka." : "V zozname nie su ziadne mena.", true);
+          return;
+        }
+
+        const existingNames = new Set(state.students.map((student) => normalizeName(student.name)));
+        let added = 0;
+
+        names.forEach((name) => {
+          if (existingNames.has(normalizeName(name))) {
+            return;
+          }
+
+          state.students.push({
+            id: createId(),
+            name,
+            present: true
+          });
+          existingNames.add(normalizeName(name));
+          added += 1;
+        });
+
+        state.lastGroups = [];
+        persistAndRender();
+
+        if (!added) {
+          setMessage("Vsetky zadane mena uz v zozname su.", true);
+          return;
+        }
+
+        setMessage(
+          added === 1
+            ? `Pridany bol 1 ziak.`
+            : `Pridanych bolo ${added} ziakov.`
+        );
+      }
+
+      function saveStudentName(studentId, nextValue) {
+        const cleaned = cleanName(nextValue);
+        if (!cleaned) {
+          setMessage("Meno ziaka nemoze ostat prazdne.", true);
+          return;
+        }
+
+        const targetStudent = state.students.find((student) => student.id === studentId);
+        if (!targetStudent) {
+          return;
+        }
+
+        const previousName = targetStudent.name;
+
+        const duplicateExists = state.students.some(
+          (student) => student.id !== studentId && normalizeName(student.name) === normalizeName(cleaned)
+        );
+
+        if (duplicateExists) {
+          setMessage("Toto meno uz v zozname existuje.", true);
+          return;
+        }
+
+        targetStudent.name = cleaned;
+        state.lastGroups = state.lastGroups.map((group) =>
+          group.map((memberName) => (memberName === previousName ? cleaned : memberName))
+        );
+
+        persistAndRender();
+        setMessage(`Meno ziaka bolo upravene na ${cleaned}.`);
+      }
+
+      function generateGroups() {
+        const presentStudents = state.students
+          .filter((student) => student.present)
+          .map((student) => student.name);
+
+        if (!presentStudents.length) {
+          state.lastGroups = [];
+          persistAndRender();
+          setMessage("Najprv oznac aspon jedneho pritomneho ziaka.", true);
+          return;
+        }
+
+        const requestedValue = normalizePositiveInteger(groupNumberInput.value, 1);
+        state.groupValue = requestedValue;
+        groupNumberInput.value = requestedValue;
+
+        const shuffled = shuffle([...presentStudents]);
+        let groups = [];
+
+        if (state.mode === "group-size") {
+          const groupSize = Math.min(requestedValue, shuffled.length);
+          for (let index = 0; index < shuffled.length; index += groupSize) {
+            groups.push(shuffled.slice(index, index + groupSize));
+          }
+        } else {
+          const groupCount = Math.min(requestedValue, shuffled.length);
+          groups = Array.from({ length: groupCount }, () => []);
+          shuffled.forEach((studentName, index) => {
+            groups[index % groupCount].push(studentName);
+          });
+        }
+
+        state.lastGroups = groups;
+        persistAndRender();
+        setMessage(`Hotovo. Vytvorenych bolo ${groups.length} skupin.`);
+      }
+
+      function parseNames(text) {
+        return text
+          .split(/\r?\n|,/)
+          .map((name) => cleanName(name))
+          .filter(Boolean);
+      }
+
+      function cleanName(value) {
+        return String(value || "")
+          .replace(/\s+/g, " ")
+          .trim();
+      }
+
+      function createId() {
+        if (window.crypto && typeof window.crypto.randomUUID === "function") {
+          return window.crypto.randomUUID();
+        }
+
+        return `student-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`;
+      }
+
+      function createDefaultStudents() {
+        return [
+          { id: createId(), name: "Adam", present: true },
+          { id: createId(), name: "Bianka", present: true },
+          { id: createId(), name: "Cyril", present: true },
+          { id: createId(), name: "Dorota", present: true },
+          { id: createId(), name: "Ela", present: true },
+          { id: createId(), name: "Filip", present: false }
+        ];
+      }
+
+      function normalizeName(value) {
+        return cleanName(value).toLocaleLowerCase("sk");
+      }
+
+      function normalizePositiveInteger(value, fallback) {
+        const parsed = Number.parseInt(value, 10);
+        return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
+      }
+
+      function shuffle(items) {
+        for (let index = items.length - 1; index > 0; index -= 1) {
+          const swapIndex = Math.floor(Math.random() * (index + 1));
+          [items[index], items[swapIndex]] = [items[swapIndex], items[index]];
+        }
+        return items;
+      }
+
+      function setMessage(text, isError = false) {
+        message.textContent = text;
+        message.className = isError ? "message error" : "message";
+      }
+    </script>
+  </body>
+</html>

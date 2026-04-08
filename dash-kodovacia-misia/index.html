@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="sk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dash: Kodovacia misia</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="hero card">
+        <div class="hero-copy">
+          <p class="eyebrow">Interaktivna roboticka hra</p>
+          <h1>Dash: Kodovacia misia</h1>
+          <p class="hero-text">
+            Poskladaj program z blokov, spusti ho a sleduj, ako sa Dash dostane
+            zo startu k cielu. Hra je pripravena pre pocitac aj tablet a ponuka
+            pohyb, otacanie, rychlost, podmienky aj male efekty ako zvuk, svetlo
+            a hovorenie.
+          </p>
+
+          <div class="hero-chips">
+            <span class="chip"><strong id="levelBadge">Uloha 1</strong></span>
+            <span class="chip">Smer: <strong id="directionBadge">vpravo</strong></span>
+            <span class="chip">Rychlost: <strong id="speedBadge">stredne</strong></span>
+          </div>
+
+          <div class="hero-actions">
+            <button id="runButton" class="button primary" type="button">Spustit program</button>
+            <button id="clearButton" class="button secondary" type="button">Vymazat bloky</button>
+            <button id="nextLevelButton" class="button ghost" type="button">Dalsia uloha</button>
+          </div>
+        </div>
+
+        <div class="hero-robot" aria-hidden="true">
+          <svg viewBox="0 0 260 260" role="presentation">
+            <defs>
+              <linearGradient id="dashBody" x1="0%" x2="100%" y1="0%" y2="100%">
+                <stop offset="0%" stop-color="#7fe4ff"></stop>
+                <stop offset="55%" stop-color="#2f8dff"></stop>
+                <stop offset="100%" stop-color="#1f54c7"></stop>
+              </linearGradient>
+              <radialGradient id="dashEye" cx="35%" cy="35%" r="80%">
+                <stop offset="0%" stop-color="#ffffff"></stop>
+                <stop offset="100%" stop-color="#b7ddff"></stop>
+              </radialGradient>
+            </defs>
+            <ellipse cx="132" cy="228" rx="78" ry="16" fill="rgba(10, 35, 86, 0.18)"></ellipse>
+            <ellipse cx="76" cy="154" rx="20" ry="44" fill="#244eb5"></ellipse>
+            <ellipse cx="185" cy="154" rx="20" ry="44" fill="#244eb5"></ellipse>
+            <circle cx="130" cy="158" r="76" fill="url(#dashBody)"></circle>
+            <circle cx="130" cy="82" r="58" fill="url(#dashBody)"></circle>
+            <circle cx="145" cy="73" r="28" fill="url(#dashEye)"></circle>
+            <circle cx="153" cy="76" r="11" fill="#132654"></circle>
+            <circle cx="156" cy="73" r="4" fill="#ffffff"></circle>
+            <circle cx="113" cy="67" r="8" fill="#103a8e" opacity="0.4"></circle>
+            <circle cx="104" cy="149" r="12" fill="#8fd2ff" opacity="0.75"></circle>
+            <circle cx="162" cy="140" r="10" fill="#8fd2ff" opacity="0.65"></circle>
+            <path
+              d="M96 181c11 10 26 15 40 15 18 0 36-7 47-18"
+              fill="none"
+              stroke="#123b92"
+              stroke-linecap="round"
+              stroke-width="8"
+              opacity="0.45"
+            ></path>
+          </svg>
+        </div>
+      </section>
+
+      <section class="content-grid">
+        <aside class="card toolbox-panel">
+          <div class="panel-head">
+            <div>
+              <p class="panel-kicker">Vlavo</p>
+              <h2>Bloky prikazov</h2>
+            </div>
+            <p class="panel-note">Tukni na blok a prida sa do programu.</p>
+          </div>
+          <div id="toolGroups" class="tool-groups"></div>
+        </aside>
+
+        <section class="card workspace-panel">
+          <div class="panel-head">
+            <div>
+              <p class="panel-kicker">Stred</p>
+              <h2>Program pre Dasha</h2>
+            </div>
+            <p id="programMeta" class="panel-note">Zatial nie je vlozeny ziadny blok.</p>
+          </div>
+
+          <div class="workspace-hint">
+            Prvy blok by mal byt <strong>START</strong>. Bloky mozes presuvat sipkami
+            a v kazdom nastavit kroky, stupne, rychlost alebo text.
+          </div>
+
+          <ol id="workspaceList" class="workspace-list" aria-label="Program pre Dasha"></ol>
+        </section>
+
+        <aside class="card simulator-panel">
+          <div class="panel-head">
+            <div>
+              <p class="panel-kicker">Vpravo</p>
+              <h2>Mapa a animacia</h2>
+            </div>
+            <p class="panel-note">Tu sa ukaze, kadial Dash pojde.</p>
+          </div>
+
+          <section class="mission-card">
+            <div class="mission-copy">
+              <h3 id="missionTitle">Uloha 1</h3>
+              <p id="missionText"></p>
+            </div>
+            <div class="mission-mini">
+              <span class="legend-item"><span class="legend-dot start"></span>Start</span>
+              <span class="legend-item"><span class="legend-dot goal"></span>Ciel</span>
+              <span class="legend-item"><span class="legend-dot obstacle"></span>Prekazka</span>
+            </div>
+          </section>
+
+          <div id="boardWrap" class="board-wrap">
+            <canvas id="boardCanvas" aria-label="Mapa Dasha"></canvas>
+          </div>
+
+          <div id="feedback" class="feedback" aria-live="polite"></div>
+        </aside>
+      </section>
+
+      <section class="card footer-panel">
+        <div class="panel-head">
+          <div>
+            <p class="panel-kicker">Log jazdy</p>
+            <h2>Co Dash robi</h2>
+          </div>
+          <p class="panel-note">Postup programu, chyby aj uspech sa zapisuju sem.</p>
+        </div>
+        <div id="logList" class="log-list" aria-live="polite"></div>
+      </section>
+    </main>
+
+    <script src="./game.js"></script>
+  </body>
+</html>
