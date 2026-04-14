@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="sk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Slovesné časy duel</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:wght@600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="page-glow page-glow-a" aria-hidden="true"></div>
+    <div class="page-glow page-glow-b" aria-hidden="true"></div>
+    <div class="page-grid" aria-hidden="true"></div>
+
+    <main class="app-shell">
+      <section id="startScreen" class="start-screen panel">
+        <div class="title-chip">dotyková tabuľa • dvaja hráči • 3 kolá</div>
+        <h1>Slovesné časy duel</h1>
+        <p class="lead">
+          Obaja hráči súťažia naraz. Na strede sa ukáže rovnaké sloveso a každý na svojej polovici
+          ťukne, či ide o prítomný, minulý alebo budúci čas.
+        </p>
+
+        <div class="intro-grid">
+          <article class="intro-card">
+            <span class="intro-label">Ako sa hrá</span>
+            <strong>3 rýchle kolá</strong>
+            <p>Po každom kole sa ukáže správna odpoveď a body sa pripočítajú obom hráčom naraz.</p>
+          </article>
+          <article class="intro-card">
+            <span class="intro-label">Rozhodca</span>
+            <strong>Skóre a čas</strong>
+            <p>Ak bude po troch kolách skóre rovnaké, rozhodne nižší súčet reakčných časov.</p>
+          </article>
+          <article class="intro-card">
+            <span class="intro-label">Zásoba</span>
+            <strong><span id="bankSizeValue">0</span> slovesných tvarov</strong>
+            <p>Veľká banka slovies zabezpečí, že sa pri triede odpovede pekne premiešajú.</p>
+          </article>
+        </div>
+
+        <button id="startButton" class="primary-button pulse-button" type="button">Spustiť duel</button>
+      </section>
+
+      <section id="gameScreen" class="game-screen hidden" aria-live="polite">
+        <header class="top-bar panel">
+          <div class="top-bar-group">
+            <div class="status-pill">
+              <span class="status-label">Kolo</span>
+              <strong id="roundValue">1 / 3</strong>
+            </div>
+            <div class="status-pill accent-pill">
+              <span class="status-label">Správny čas</span>
+              <strong id="answerValue">Čakáme na odpovede</strong>
+            </div>
+          </div>
+          <button id="restartButton" class="ghost-button" type="button">Nová hra</button>
+        </header>
+
+        <section class="prompt-panel panel">
+          <p class="prompt-kicker">Urči slovesný čas</p>
+          <h2 id="verbDisplay" class="verb-display">beží</h2>
+          <p id="promptHint" class="prompt-hint">Obaja hráči vyberú odpoveď na svojej polovici.</p>
+        </section>
+
+        <section class="arena" aria-label="Herné pole pre dvoch hráčov">
+          <article class="player-side player-one" data-player="1">
+            <div class="player-head">
+              <div>
+                <p class="player-tag">ľavá polovica</p>
+                <h3>Hráč 1</h3>
+              </div>
+              <div class="player-stats">
+                <span>Body <strong id="score1Value">0</strong></span>
+                <span>Čas <strong id="time1Value">0.00 s</strong></span>
+              </div>
+            </div>
+
+            <div id="feedback1" class="player-feedback neutral">Vyber odpoveď.</div>
+
+            <div class="answer-grid" id="answers1">
+              <button class="answer-button" type="button" data-player="1" data-answer="present">Prítomný</button>
+              <button class="answer-button" type="button" data-player="1" data-answer="past">Minulý</button>
+              <button class="answer-button" type="button" data-player="1" data-answer="future">Budúci</button>
+            </div>
+          </article>
+
+          <article class="player-side player-two" data-player="2">
+            <div class="player-head">
+              <div>
+                <p class="player-tag">pravá polovica</p>
+                <h3>Hráč 2</h3>
+              </div>
+              <div class="player-stats">
+                <span>Body <strong id="score2Value">0</strong></span>
+                <span>Čas <strong id="time2Value">0.00 s</strong></span>
+              </div>
+            </div>
+
+            <div id="feedback2" class="player-feedback neutral">Vyber odpoveď.</div>
+
+            <div class="answer-grid" id="answers2">
+              <button class="answer-button" type="button" data-player="2" data-answer="present">Prítomný</button>
+              <button class="answer-button" type="button" data-player="2" data-answer="past">Minulý</button>
+              <button class="answer-button" type="button" data-player="2" data-answer="future">Budúci</button>
+            </div>
+          </article>
+        </section>
+
+        <section class="round-footer panel">
+          <div id="roundSummary" class="round-summary">Kolo beží. Ťuknite na odpoveď čo najrýchlejšie.</div>
+          <button id="nextButton" class="primary-button hidden" type="button">Ďalšie kolo</button>
+        </section>
+      </section>
+
+      <section id="resultScreen" class="result-screen panel hidden">
+        <p class="result-kicker">Duel skončil</p>
+        <h2 id="winnerTitle">Vyhráva hráč 1</h2>
+        <p id="winnerText" class="winner-text"></p>
+
+        <div class="result-scoreboard">
+          <article class="result-card result-card-one">
+            <span>Hráč 1</span>
+            <strong id="finalScore1">0 body</strong>
+            <p id="finalTime1">0.00 s</p>
+          </article>
+          <article class="result-card result-card-two">
+            <span>Hráč 2</span>
+            <strong id="finalScore2">0 body</strong>
+            <p id="finalTime2">0.00 s</p>
+          </article>
+        </div>
+
+        <div id="historyList" class="history-list" aria-label="Výsledky kôl"></div>
+
+        <button id="playAgainButton" class="primary-button pulse-button" type="button">Hrať znova</button>
+      </section>
+    </main>
+
+    <script src="./verbs.js" defer></script>
+    <script src="./game.js" defer></script>
+  </body>
+</html>
