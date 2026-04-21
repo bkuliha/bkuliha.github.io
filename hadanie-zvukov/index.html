@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="sk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hádanie zvukov</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Zvuková hra pre deti</p>
+          <h1>Hádanie zvukov</h1>
+          <p class="subtitle">
+            Klikni na otáznik, vypočuj si zvuk a napíš odpoveď. Potom označ, či ide o zvuk
+            prírody alebo o niečo z ľudskej činnosti.
+          </p>
+        </div>
+
+        <div class="hero-note">
+          <h2>Kam vložiť zvuky</h2>
+          <p>
+            Súbory vlož do priečinka <code>hadanie-zvukov/zvuky/</code> a pomenuj ich
+            <code>zvuk-01</code> až <code>zvuk-16</code>. Podporované prípony:
+            <code>.mp3</code>, <code>.wav</code>, <code>.ogg</code>, <code>.m4a</code>.
+          </p>
+          <p>
+            Správne odpovede a kategórie zapisuj do súboru
+            <code>hadanie-zvukov/sound-data.js</code>.
+          </p>
+        </div>
+      </section>
+
+      <section class="status-bar" aria-label="Stav hry">
+        <div class="status-pill">
+          <span class="status-label">Vyplnené</span>
+          <strong id="savedCount">0 / 16</strong>
+        </div>
+        <div class="status-pill">
+          <span class="status-label">Správne celé</span>
+          <strong id="perfectCount">0 / 16</strong>
+        </div>
+        <div class="status-pill">
+          <span class="status-label">Kľúč učiteľa</span>
+          <strong id="keyCount">0 / 16</strong>
+        </div>
+        <div class="status-pill">
+          <span class="status-label">Aktívny zvuk</span>
+          <strong id="activeSound">Zvuk 01</strong>
+        </div>
+        <button id="clearAllButton" class="ghost-button" type="button">Vymazať odpovede</button>
+      </section>
+
+      <section class="layout">
+        <section class="board panel" aria-labelledby="boardTitle">
+          <div class="panel-head">
+            <div>
+              <p class="panel-kicker">Hracia plocha</p>
+              <h2 id="boardTitle">16 otáznikov</h2>
+            </div>
+            <p class="panel-help">Každý otáznik otvorí jeden zvuk.</p>
+          </div>
+
+          <div id="soundGrid" class="sound-grid" aria-label="Výber zvukov"></div>
+        </section>
+
+        <section class="player panel" aria-labelledby="detailTitle">
+          <div class="panel-head">
+            <div>
+              <p class="panel-kicker">Detail zvuku</p>
+              <h2 id="detailTitle">Zvuk 01</h2>
+            </div>
+            <span id="soundState" class="state-badge">Načítavam zvuk</span>
+          </div>
+
+          <div class="player-card">
+            <label class="field-label" for="audioPlayer">Prehrávanie</label>
+            <audio id="audioPlayer" controls preload="none" hidden></audio>
+            <p id="audioHint" class="audio-hint" aria-live="polite"></p>
+          </div>
+
+          <form id="answerForm" class="answer-form">
+            <label class="field-label" for="guessInput">Čo podľa teba počuješ?</label>
+            <input
+              id="guessInput"
+              name="guess"
+              type="text"
+              maxlength="120"
+              placeholder="Napíš svoju odpoveď"
+              autocomplete="off"
+            />
+
+            <fieldset class="category-group">
+              <legend class="field-label">O aký typ zvuku ide?</legend>
+              <label class="choice-card">
+                <input type="radio" name="category" value="priroda" />
+                <span>Zvuk prírody</span>
+              </label>
+              <label class="choice-card">
+                <input type="radio" name="category" value="ludska-cinnost" />
+                <span>Ľudská činnosť</span>
+              </label>
+            </fieldset>
+
+            <div class="form-actions">
+              <button class="primary-button" type="submit">Uložiť odpoveď</button>
+              <button id="clearCurrentButton" class="ghost-button" type="button">
+                Vymazať tento zvuk
+              </button>
+            </div>
+          </form>
+
+          <p id="formMessage" class="form-message" aria-live="polite">
+            Vyber zvuk, vypočuj si ho a zapíš svoju odpoveď.
+          </p>
+          <div id="evaluationCard" class="evaluation-card" aria-live="polite"></div>
+        </section>
+      </section>
+
+      <section class="summary panel" aria-labelledby="summaryTitle">
+        <div class="panel-head">
+          <div>
+            <p class="panel-kicker">Prehľad odpovedí</p>
+            <h2 id="summaryTitle">Zatiaľ uložené odpovede</h2>
+          </div>
+          <p class="panel-help">Na zvuk môžeš kliknúť znova a odpoveď upraviť.</p>
+        </div>
+
+        <div id="summaryList" class="summary-list"></div>
+      </section>
+    </main>
+
+    <script src="./sound-data.js"></script>
+    <script src="./game.js"></script>
+  </body>
+</html>
