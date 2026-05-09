@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="sk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Koleso spojok</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #18213b;
+        --muted: #516079;
+        --cream: #fff8e7;
+        --panel: rgba(255, 255, 255, 0.82);
+        --line: rgba(24, 33, 59, 0.16);
+        --sun: #ffd34d;
+        --rose: #ff5c8a;
+        --aqua: #26c6da;
+        --leaf: #55c95a;
+        --violet: #8a6bff;
+        --orange: #ff9f1c;
+        --shadow: rgba(29, 38, 78, 0.22);
+        --wheel-rotation: 0deg;
+        --slice-deg: 30deg;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        overflow-x: hidden;
+        font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at 12% 18%, rgba(255, 211, 77, 0.48), transparent 22%),
+          radial-gradient(circle at 88% 12%, rgba(38, 198, 218, 0.38), transparent 24%),
+          radial-gradient(circle at 78% 82%, rgba(255, 92, 138, 0.35), transparent 24%),
+          linear-gradient(135deg, #fff4bd 0%, #dff7ff 52%, #ffe2ed 100%);
+      }
+
+      button {
+        font: inherit;
+      }
+
+      .page {
+        width: min(1160px, calc(100% - 28px));
+        min-height: 100vh;
+        margin: 0 auto;
+        padding: 22px 0;
+        display: grid;
+        grid-template-rows: auto 1fr;
+        gap: 18px;
+      }
+
+      header {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 20px;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(2rem, 5vw, 4.7rem);
+        line-height: 0.95;
+        letter-spacing: 0;
+      }
+
+      .subtitle {
+        max-width: 620px;
+        margin: 10px 0 0;
+        color: var(--muted);
+        font-size: clamp(1rem, 2vw, 1.2rem);
+        line-height: 1.45;
+      }
+
+      .sparkles {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+      }
+
+      .sparkles span {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: var(--color);
+        box-shadow: 0 8px 18px rgba(24, 33, 59, 0.16);
+      }
+
+      .game {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(280px, 360px);
+        align-items: center;
+        gap: clamp(18px, 4vw, 44px);
+      }
+
+      .wheel-zone {
+        min-width: 0;
+        display: grid;
+        place-items: center;
+        position: relative;
+        padding: 10px;
+      }
+
+      .wheel-wrap {
+        position: relative;
+        width: min(78vh, 100%, 660px);
+        aspect-ratio: 1;
+        display: grid;
+        place-items: center;
+      }
+
+      .pointer {
+        position: absolute;
+        right: -2px;
+        top: 50%;
+        z-index: 8;
+        width: clamp(66px, 10vw, 96px);
+        height: clamp(48px, 7vw, 70px);
+        transform: translateY(-50%);
+        filter: drop-shadow(0 10px 14px rgba(24, 33, 59, 0.25));
+      }
+
+      .pointer::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: #ffffff;
+        clip-path: polygon(0 50%, 100% 6%, 82% 50%, 100% 94%);
+      }
+
+      .pointer::after {
+        content: "";
+        position: absolute;
+        inset: 9px 12px 9px 12px;
+        background: #17244a;
+        clip-path: polygon(0 50%, 100% 9%, 82% 50%, 100% 91%);
+      }
+
+      .wheel {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        transform: rotate(var(--wheel-rotation));
+        transition: transform 4.8s cubic-bezier(0.08, 0.7, 0.1, 1);
+        box-shadow:
+          0 28px 70px var(--shadow),
+          inset 0 0 0 15px #ffffff,
+          inset 0 0 0 22px rgba(24, 33, 59, 0.12);
+        background: #ffd34d;
+      }
+
+      .wheel::before {
+        content: "";
+        position: absolute;
+        inset: 9%;
+        border-radius: 50%;
+        background:
+          radial-gradient(circle, rgba(255, 255, 255, 0.18) 0 42%, transparent 43%),
+          repeating-conic-gradient(from calc(var(--slice-deg) / -2), rgba(255, 255, 255, 0.42) 0 1deg, transparent 1deg var(--slice-deg));
+        pointer-events: none;
+      }
+
+      .label {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 38%;
+        transform:
+          translate(-50%, -50%)
+          rotate(calc(var(--angle) * 1deg))
+          translateX(54%);
+        transform-origin: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: clamp(30px, 5vw, 44px);
+        padding: 2px 8px;
+        color: #ffffff;
+        font-weight: 900;
+        font-size: clamp(0.86rem, 2vw, 1.45rem);
+        text-align: center;
+        text-transform: uppercase;
+        text-shadow:
+          0 2px 0 rgba(16, 25, 54, 0.5),
+          2px 0 0 rgba(16, 25, 54, 0.28),
+          -2px 0 0 rgba(16, 25, 54, 0.28),
+          0 4px 10px rgba(16, 25, 54, 0.55);
+        pointer-events: none;
+        transition:
+          transform 0.28s ease,
+          color 0.28s ease,
+          text-shadow 0.28s ease;
+      }
+
+      .label.active {
+        z-index: 6;
+        color: #fff7a8;
+        text-shadow:
+          0 3px 0 #101936,
+          3px 0 0 #101936,
+          -3px 0 0 #101936,
+          0 0 18px rgba(255, 255, 255, 0.95);
+        transform:
+          translate(-50%, -50%)
+          rotate(calc(var(--angle) * 1deg))
+          translateX(57%)
+          scale(1.22);
+      }
+
+      .hub {
+        position: absolute;
+        z-index: 7;
+        width: 28%;
+        aspect-ratio: 1;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        background:
+          radial-gradient(circle at 35% 28%, #ffffff 0 13%, transparent 14%),
+          linear-gradient(135deg, #ffffff 0%, #ffe37c 48%, #ff9f1c 100%);
+        border: clamp(8px, 1.5vw, 14px) solid #ffffff;
+        box-shadow: 0 18px 30px rgba(24, 33, 59, 0.24);
+        font-weight: 900;
+        font-size: clamp(0.9rem, 2.2vw, 1.45rem);
+        text-align: center;
+      }
+
+      .result-panel {
+        align-self: stretch;
+        display: grid;
+        align-content: center;
+        gap: 18px;
+        padding: clamp(18px, 3vw, 28px);
+        border: 2px solid rgba(255, 255, 255, 0.72);
+        border-radius: 8px;
+        background: var(--panel);
+        box-shadow: 0 24px 54px rgba(24, 33, 59, 0.16);
+      }
+
+      .result-kicker {
+        margin: 0;
+        font-weight: 900;
+        color: #8a2d57;
+        text-transform: uppercase;
+        letter-spacing: 0;
+      }
+
+      .result-word {
+        min-height: 150px;
+        display: grid;
+        place-items: center;
+        border-radius: 8px;
+        border: 3px dashed rgba(24, 33, 59, 0.16);
+        background:
+          linear-gradient(135deg, rgba(255, 211, 77, 0.58), rgba(38, 198, 218, 0.35)),
+          #ffffff;
+        color: #111936;
+        font-size: clamp(2.6rem, 10vw, 5.6rem);
+        font-weight: 900;
+        line-height: 1;
+        text-align: center;
+        text-transform: uppercase;
+        box-shadow: inset 0 0 0 10px rgba(255, 255, 255, 0.48);
+      }
+
+      .sentence {
+        min-height: 64px;
+        margin: 0;
+        color: var(--muted);
+        font-size: 1.08rem;
+        line-height: 1.45;
+      }
+
+      .spin-button {
+        min-height: 64px;
+        border: 0;
+        border-radius: 999px;
+        background:
+          linear-gradient(135deg, #17244a 0%, #7c3aed 48%, #ff5c8a 100%);
+        color: #ffffff;
+        font-size: 1.45rem;
+        font-weight: 900;
+        cursor: pointer;
+        box-shadow: 0 18px 24px rgba(124, 58, 237, 0.28);
+        transition:
+          transform 0.2s ease,
+          box-shadow 0.2s ease,
+          filter 0.2s ease;
+      }
+
+      .spin-button:hover,
+      .spin-button:focus-visible {
+        transform: translateY(-2px);
+        box-shadow: 0 22px 30px rgba(124, 58, 237, 0.34);
+      }
+
+      .spin-button:disabled {
+        cursor: wait;
+        filter: grayscale(0.28);
+        transform: none;
+      }
+
+      .history {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        min-height: 42px;
+        align-content: start;
+      }
+
+      .chip {
+        padding: 8px 11px;
+        border-radius: 999px;
+        background: #ffffff;
+        border: 1px solid var(--line);
+        font-weight: 800;
+        color: #263453;
+      }
+
+      .confetti-layer {
+        position: fixed;
+        inset: 0;
+        z-index: 20;
+        overflow: hidden;
+        pointer-events: none;
+      }
+
+      .confetti {
+        position: absolute;
+        top: -24px;
+        left: var(--left);
+        width: var(--size);
+        height: calc(var(--size) * 1.55);
+        border-radius: 3px;
+        background: var(--color);
+        opacity: 0.95;
+        transform: translate3d(0, 0, 0) rotate(var(--start-rotation));
+        animation: confetti-fall var(--duration) linear forwards;
+      }
+
+      @keyframes confetti-fall {
+        0% {
+          transform: translate3d(0, -24px, 0) rotate(var(--start-rotation));
+        }
+
+        100% {
+          transform: translate3d(var(--drift), calc(100vh + 42px), 0) rotate(var(--end-rotation));
+        }
+      }
+
+      @media (max-width: 860px) {
+        .page {
+          min-height: auto;
+        }
+
+        header,
+        .game {
+          grid-template-columns: 1fr;
+        }
+
+        header {
+          align-items: start;
+        }
+
+        .sparkles {
+          justify-content: flex-start;
+        }
+
+        .wheel-wrap {
+          width: min(94vw, 620px);
+        }
+
+        .result-panel {
+          align-content: start;
+        }
+      }
+
+      @media (max-width: 520px) {
+        .page {
+          width: min(100% - 18px, 1160px);
+          padding: 14px 0;
+        }
+
+        .label {
+          font-size: clamp(0.64rem, 2.7vw, 0.9rem);
+          padding-inline: 6px;
+          width: 40%;
+        }
+
+        .pointer {
+          right: -12px;
+        }
+
+        .result-word {
+          min-height: 112px;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          scroll-behavior: auto !important;
+        }
+
+        .wheel {
+          transition-duration: 0.01ms;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <header>
+        <div>
+          <h1>Koleso spojok</h1>
+          <p class="subtitle">Roztoč farebné koleso a objav spojku, ktorá pristane priamo pri šípke.</p>
+        </div>
+        <div class="sparkles" aria-hidden="true">
+          <span style="--color: var(--rose)"></span>
+          <span style="--color: var(--sun)"></span>
+          <span style="--color: var(--aqua)"></span>
+          <span style="--color: var(--leaf)"></span>
+        </div>
+      </header>
+
+      <section class="game" aria-label="Koleso spojok">
+        <div class="wheel-zone">
+          <div class="wheel-wrap">
+            <div class="pointer" aria-hidden="true"></div>
+            <div id="wheel" class="wheel" aria-live="polite"></div>
+            <div class="hub">SPOJKY</div>
+          </div>
+        </div>
+
+        <aside class="result-panel" aria-label="Výsledok">
+          <p class="result-kicker">Šípka ukazuje</p>
+          <div id="resultWord" class="result-word">?</div>
+          <p id="sentence" class="sentence">Klikni na tlačidlo Točiť a vybraná spojka sa ukáže veľká vpredu.</p>
+          <button id="spinButton" class="spin-button" type="button">Točiť</button>
+          <div id="history" class="history" aria-label="Posledné spojky"></div>
+        </aside>
+      </section>
+    </main>
+    <div id="confettiLayer" class="confetti-layer" aria-hidden="true"></div>
+
+    <script>
+      const conjunctions = [
+        { word: "a", example: "Maľujem slnko a modrý oblak." },
+        { word: "aj", example: "Aj malý nápad môže byť výborný." },
+        { word: "ale", example: "Chcel bežať, ale začalo pršať." },
+        { word: "alebo", example: "Vyber si pero alebo pastelku." },
+        { word: "lebo", example: "Usmievam sa, lebo sa mi darí." },
+        { word: "pretože", example: "Teším sa, pretože prídu hostia." },
+        { word: "že", example: "Viem, že to zvládneš." },
+        { word: "keď", example: "Keď zazvoní, začneme hru." },
+        { word: "aby", example: "Cvičíme, aby sme boli šikovní." },
+        { word: "ak", example: "Ak chceš, pridaj sa ku hre." },
+        { word: "či", example: "Premýšľam, či odpoveď poznám." },
+        { word: "no", example: "Bolo ticho, no všetci počúvali." }
+      ];
+      const colors = [
+        "#ff5c8a",
+        "#ffd34d",
+        "#26c6da",
+        "#8a6bff",
+        "#55c95a",
+        "#ff9f1c",
+        "#f15bb5",
+        "#00bbf9",
+        "#fee440",
+        "#00f5d4",
+        "#9b5de5",
+        "#f3722c"
+      ];
+
+      const wheel = document.getElementById("wheel");
+      const spinButton = document.getElementById("spinButton");
+      const resultWord = document.getElementById("resultWord");
+      const sentence = document.getElementById("sentence");
+      const history = document.getElementById("history");
+      const confettiLayer = document.getElementById("confettiLayer");
+      const slice = 360 / conjunctions.length;
+      let currentRotation = 0;
+      let lastIndex = -1;
+      let spinning = false;
+
+      const gradientStops = conjunctions.map((_, index) => {
+        const start = index * slice;
+        const end = start + slice;
+        return `${colors[index % colors.length]} ${start}deg ${end}deg`;
+      });
+      wheel.style.setProperty("--slice-deg", `${slice}deg`);
+      wheel.style.background = `conic-gradient(from ${-slice / 2}deg, ${gradientStops.join(", ")})`;
+
+      conjunctions.forEach((item, index) => {
+        const label = document.createElement("span");
+        label.className = "label";
+        label.dataset.index = index;
+        label.style.setProperty("--angle", index * slice);
+        label.textContent = item.word;
+        wheel.appendChild(label);
+      });
+
+      function chooseNextIndex() {
+        let index = Math.floor(Math.random() * conjunctions.length);
+        if (index === lastIndex) {
+          index = (index + 1 + Math.floor(Math.random() * (conjunctions.length - 1))) % conjunctions.length;
+        }
+        return index;
+      }
+
+      function setActiveLabel(index) {
+        document.querySelectorAll(".label").forEach((label) => {
+          label.classList.toggle("active", Number(label.dataset.index) === index);
+        });
+      }
+
+      function addHistory(word) {
+        const chip = document.createElement("span");
+        chip.className = "chip";
+        chip.textContent = word;
+        history.prepend(chip);
+
+        while (history.children.length > 6) {
+          history.lastElementChild.remove();
+        }
+      }
+
+      function launchConfetti() {
+        const confettiColors = ["#ff5c8a", "#ffd34d", "#26c6da", "#55c95a", "#8a6bff", "#ff9f1c"];
+        const pieces = 90;
+        confettiLayer.textContent = "";
+
+        for (let index = 0; index < pieces; index += 1) {
+          const piece = document.createElement("span");
+          const size = 7 + Math.random() * 9;
+          const drift = -90 + Math.random() * 180;
+          const duration = 2.5 + Math.random() * 1.6;
+          const delay = Math.random() * 0.35;
+          piece.className = "confetti";
+          piece.style.setProperty("--left", `${Math.random() * 100}%`);
+          piece.style.setProperty("--size", `${size}px`);
+          piece.style.setProperty("--color", confettiColors[index % confettiColors.length]);
+          piece.style.setProperty("--drift", `${drift}px`);
+          piece.style.setProperty("--duration", `${duration}s`);
+          piece.style.setProperty("--start-rotation", `${Math.random() * 180}deg`);
+          piece.style.setProperty("--end-rotation", `${360 + Math.random() * 540}deg`);
+          piece.style.animationDelay = `${delay}s`;
+          confettiLayer.appendChild(piece);
+        }
+
+        window.setTimeout(() => {
+          confettiLayer.textContent = "";
+        }, 4600);
+      }
+
+      function reveal(index) {
+        const selected = conjunctions[index];
+        lastIndex = index;
+        setActiveLabel(index);
+        resultWord.textContent = selected.word;
+        sentence.textContent = selected.example;
+        addHistory(selected.word);
+        launchConfetti();
+        spinButton.disabled = false;
+        spinButton.textContent = "Točiť znova";
+        spinning = false;
+      }
+
+      function spinWheel() {
+        if (spinning) {
+          return;
+        }
+
+        spinning = true;
+        spinButton.disabled = true;
+        spinButton.textContent = "Točí sa...";
+        resultWord.textContent = "?";
+        sentence.textContent = "Koleso sa krúti. Sleduj šípku napravo!";
+        setActiveLabel(-1);
+
+        const nextIndex = chooseNextIndex();
+        const targetAngle = nextIndex * slice;
+        const pointerAngle = 0;
+        const extraTurns = 5 + Math.floor(Math.random() * 3);
+        currentRotation = currentRotation + extraTurns * 360 + (pointerAngle - targetAngle - (currentRotation % 360));
+        wheel.style.setProperty("--wheel-rotation", `${currentRotation}deg`);
+
+        window.setTimeout(() => reveal(nextIndex), 4900);
+      }
+
+      spinButton.addEventListener("click", spinWheel);
+    </script>
+  </body>
+</html>

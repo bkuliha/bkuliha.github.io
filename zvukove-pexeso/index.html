@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="sk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Zvukove pexeso</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f6efe3;
+        --ink: #23211d;
+        --muted: #645d52;
+        --paper: #fffaf2;
+        --line: #d9ccb9;
+        --teal: #14786d;
+        --teal-dark: #0f5d54;
+        --gold: #f0b43e;
+        --rose: #d85764;
+        --green: #3f874b;
+        --shadow: 0 18px 48px rgba(70, 54, 32, 0.16);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at 8% 8%, rgba(20, 120, 109, 0.18), transparent 30%),
+          radial-gradient(circle at 90% 4%, rgba(240, 180, 62, 0.2), transparent 25%),
+          linear-gradient(180deg, #fbf7ef 0%, var(--bg) 100%);
+      }
+
+      button {
+        font: inherit;
+      }
+
+      .app {
+        width: min(1200px, calc(100% - 28px));
+        margin: 24px auto 36px;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 20px;
+        align-items: end;
+        padding: 20px 0 18px;
+      }
+
+      .eyebrow {
+        margin: 0 0 8px;
+        color: var(--teal-dark);
+        font-size: 0.86rem;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(2.2rem, 7vw, 4.7rem);
+        line-height: 0.96;
+        letter-spacing: 0;
+      }
+
+      .subtitle {
+        max-width: 760px;
+        margin: 14px 0 0;
+        color: var(--muted);
+        font-size: clamp(1rem, 2vw, 1.18rem);
+        line-height: 1.55;
+      }
+
+      .actions {
+        display: flex;
+        justify-content: flex-end;
+      }
+
+      .primary-button {
+        min-height: 48px;
+        padding: 12px 18px;
+        border: 0;
+        border-radius: 8px;
+        color: #fff;
+        background: var(--teal);
+        box-shadow: 0 10px 24px rgba(20, 120, 109, 0.24);
+        cursor: pointer;
+        font-weight: 800;
+        transition:
+          transform 150ms ease,
+          background 150ms ease,
+          box-shadow 150ms ease;
+      }
+
+      .primary-button:hover,
+      .primary-button:focus-visible {
+        background: var(--teal-dark);
+        transform: translateY(-1px);
+      }
+
+      .status {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+        margin: 8px 0 18px;
+      }
+
+      .status-tile {
+        min-height: 82px;
+        padding: 14px 16px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(255, 250, 242, 0.88);
+      }
+
+      .status-tile span {
+        display: block;
+        color: var(--muted);
+        font-size: 0.84rem;
+        font-weight: 800;
+        text-transform: uppercase;
+      }
+
+      .status-tile strong {
+        display: block;
+        margin-top: 6px;
+        font-size: clamp(1.35rem, 3vw, 2rem);
+      }
+
+      .board {
+        display: grid;
+        grid-template-columns: minmax(350px, 0.92fr) minmax(440px, 1.08fr);
+        gap: 16px;
+        align-items: start;
+      }
+
+      .panel {
+        min-width: 0;
+        padding: 18px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: rgba(255, 250, 242, 0.94);
+        box-shadow: var(--shadow);
+      }
+
+      .panel-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 14px;
+        align-items: start;
+        margin-bottom: 14px;
+      }
+
+      h2 {
+        margin: 0;
+        font-size: clamp(1.25rem, 3vw, 1.75rem);
+      }
+
+      .help {
+        max-width: 360px;
+        margin: 2px 0 0;
+        color: var(--muted);
+        line-height: 1.45;
+      }
+
+      .sound-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .sound-card,
+      .picture-card {
+        position: relative;
+        min-width: 0;
+        border: 2px solid transparent;
+        border-radius: 8px;
+      }
+
+      .sound-card {
+        aspect-ratio: 1;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        cursor: pointer;
+        perspective: 900px;
+        transition: transform 150ms ease;
+      }
+
+      .sound-card:hover .sound-face,
+      .sound-card:focus-visible .sound-face,
+      .sound-card.active .sound-face {
+        border-color: #073f39;
+      }
+
+      .sound-card:hover,
+      .sound-card:focus-visible,
+      .sound-card.active {
+        transform: translateY(-2px);
+      }
+
+      .sound-card:focus-visible {
+        outline: 3px solid rgba(20, 120, 109, 0.35);
+        outline-offset: 3px;
+      }
+
+      .sound-card.flipped .sound-inner {
+        transform: rotateY(180deg);
+      }
+
+      .sound-inner {
+        position: absolute;
+        inset: 0;
+        transform-style: preserve-3d;
+        transition: transform 360ms ease;
+      }
+
+      .sound-face {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        padding: 14px;
+        border: 2px solid transparent;
+        border-radius: 8px;
+        backface-visibility: hidden;
+        box-shadow: 0 10px 20px rgba(20, 120, 109, 0.22);
+      }
+
+      .sound-front {
+        color: #fff;
+        background:
+          linear-gradient(145deg, rgba(255, 255, 255, 0.18), transparent 45%),
+          var(--teal);
+      }
+
+      .sound-back {
+        color: var(--ink);
+        background:
+          linear-gradient(145deg, rgba(255, 255, 255, 0.9), rgba(255, 244, 224, 0.88)),
+          var(--gold);
+        transform: rotateY(180deg);
+      }
+
+      .question-mark {
+        font-size: clamp(2.8rem, 8vw, 5rem);
+        line-height: 1;
+      }
+
+      .sound-word {
+        display: block;
+        max-width: 100%;
+        overflow-wrap: anywhere;
+        text-align: center;
+        font-size: clamp(1.04rem, 2.5vw, 1.58rem);
+        font-weight: 900;
+        line-height: 1.04;
+      }
+
+      .sound-index {
+        position: absolute;
+        left: 8px;
+        top: 8px;
+        z-index: 2;
+        display: grid;
+        width: 28px;
+        height: 28px;
+        place-items: center;
+        border-radius: 999px;
+        color: var(--teal-dark);
+        background: rgba(255, 255, 255, 0.92);
+        font-size: 0.82rem;
+        font-weight: 900;
+      }
+
+      .picture-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .picture-card {
+        aspect-ratio: 1;
+        display: grid;
+        place-items: center;
+        padding: 10px;
+        cursor: pointer;
+        overflow: hidden;
+        background:
+          linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(255, 246, 231, 0.94)),
+          var(--tone);
+        box-shadow: 0 10px 20px rgba(71, 56, 36, 0.12);
+      }
+
+      .picture-card::before {
+        content: "";
+        position: absolute;
+        inset: auto -18% -30% -18%;
+        height: 58%;
+        border-radius: 999px 999px 0 0;
+        background: color-mix(in srgb, var(--tone) 74%, white);
+      }
+
+      .picture-card:hover,
+      .picture-card:focus-visible {
+        outline: 0;
+        border-color: var(--teal);
+        transform: translateY(-2px);
+      }
+
+      .picture-card.wrong {
+        animation: wobble 320ms ease;
+        border-color: var(--rose);
+      }
+
+      .picture-card.correct,
+      .sound-card.correct {
+        animation: vanish 420ms ease forwards;
+        pointer-events: none;
+      }
+
+      .animal-image {
+        position: relative;
+        z-index: 1;
+        width: min(88%, 128px);
+        height: min(88%, 128px);
+        object-fit: contain;
+        filter: drop-shadow(0 9px 10px rgba(69, 53, 35, 0.2));
+      }
+
+      .matched {
+        display: none;
+      }
+
+      .message {
+        min-height: 48px;
+        margin: 14px 0 0;
+        padding: 12px 14px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        color: var(--muted);
+        background: rgba(255, 255, 255, 0.72);
+        line-height: 1.35;
+      }
+
+      .message.success {
+        color: #23592d;
+        border-color: rgba(69, 139, 79, 0.42);
+        background: rgba(225, 245, 224, 0.9);
+      }
+
+      .message.error {
+        color: #8d2c32;
+        border-color: rgba(216, 87, 100, 0.42);
+        background: rgba(255, 234, 235, 0.9);
+      }
+
+      .complete {
+        display: none;
+        margin-top: 16px;
+        padding: 18px;
+        border-radius: 8px;
+        color: #fff;
+        background:
+          linear-gradient(135deg, rgba(255, 255, 255, 0.16), transparent),
+          var(--green);
+        box-shadow: var(--shadow);
+      }
+
+      .complete.visible {
+        display: block;
+      }
+
+      .complete h2 {
+        margin-bottom: 6px;
+      }
+
+      .complete p {
+        margin: 0;
+        line-height: 1.45;
+      }
+
+      @keyframes wobble {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        25% {
+          transform: translateX(-6px);
+        }
+        75% {
+          transform: translateX(6px);
+        }
+      }
+
+      @keyframes vanish {
+        to {
+          opacity: 0;
+          transform: scale(0.72);
+        }
+      }
+
+      @media (max-width: 980px) {
+        .hero,
+        .board {
+          grid-template-columns: 1fr;
+        }
+
+        .actions {
+          justify-content: flex-start;
+        }
+      }
+
+      @media (max-width: 720px) {
+        .picture-grid {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 620px) {
+        .app {
+          width: min(100% - 18px, 1200px);
+          margin-top: 12px;
+        }
+
+        .status {
+          grid-template-columns: 1fr;
+        }
+
+        .panel {
+          padding: 12px;
+        }
+
+        .panel-head {
+          display: block;
+        }
+
+        .sound-grid,
+        .picture-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .help {
+          max-width: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="app">
+      <header class="hero">
+        <div>
+          <p class="eyebrow">Anglické zvuky</p>
+          <h1>Zvukové pexeso</h1>
+          <p class="subtitle">
+            Klikni na otáznik. Kartička sa otočí, zobrazí anglické zvukové slovo a prehrá
+            sa jeho výslovnosť. Potom vyber obrázok, ku ktorému slovo patrí.
+          </p>
+        </div>
+        <div class="actions">
+          <button id="resetButton" class="primary-button" type="button">Nová hra</button>
+        </div>
+      </header>
+
+      <section class="status" aria-label="Stav hry">
+        <div class="status-tile">
+          <span>Nájdené dvojice</span>
+          <strong id="scoreValue">0 / 13</strong>
+        </div>
+        <div class="status-tile">
+          <span>Pokusy</span>
+          <strong id="triesValue">0</strong>
+        </div>
+        <div class="status-tile">
+          <span>Aktívna kartička</span>
+          <strong id="activeValue">Vyber ?</strong>
+        </div>
+      </section>
+
+      <section class="board">
+        <section class="panel" aria-labelledby="soundsTitle">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">Otázniky</p>
+              <h2 id="soundsTitle">Slová so zvukom</h2>
+            </div>
+            <p class="help">Slovo si môžeš kliknutím prehrať opakovane. Po správnej dvojici obe kartičky zmiznú.</p>
+          </div>
+          <div id="soundGrid" class="sound-grid" aria-label="Kartičky so slovami"></div>
+          <p id="message" class="message" aria-live="polite">
+            Začni kliknutím na ľubovoľný otáznik.
+          </p>
+        </section>
+
+        <section class="panel" aria-labelledby="picturesTitle">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">Obrázky</p>
+              <h2 id="picturesTitle">Vyber správny obrázok</h2>
+            </div>
+            <p class="help">Obrázky ostávajú viditeľné, kým ich nespáruješ so správnym anglickým slovom.</p>
+          </div>
+          <div id="pictureGrid" class="picture-grid" aria-label="Obrázkové kartičky"></div>
+        </section>
+      </section>
+
+      <section id="completePanel" class="complete" aria-live="polite">
+        <h2>Výborne, všetky dvojice sú nájdené.</h2>
+        <p>Spusti novú hru a poradie kartičiek sa premieša.</p>
+      </section>
+    </main>
+
+    <script>
+      const items = [
+        { id: "cat", word: "meow", image: "images/cat.svg", tone: "#f39bb3" },
+        { id: "dog", word: "woof", image: "images/dog.svg", tone: "#f2c466" },
+        { id: "turkey", word: "gobble", image: "images/turkey.svg", tone: "#d6895d" },
+        { id: "pig", word: "oink", image: "images/pig.svg", tone: "#f0a8be" },
+        { id: "horse", word: "neigh", image: "images/horse.svg", tone: "#c89464" },
+        { id: "donkey", word: "hee-haw", image: "images/donkey.svg", tone: "#a9b0bb" },
+        { id: "pigeon", word: "coo", image: "images/pigeon.svg", tone: "#9fb8cf" },
+        { id: "dolphin", word: "click-click", image: "images/dolphin.svg", tone: "#77c5df" },
+        { id: "frog", word: "ribbit", image: "images/frog.svg", tone: "#87c76a" },
+        { id: "owl", word: "hoot", image: "images/owl.svg", tone: "#b69363" },
+        { id: "crow", word: "caw", image: "images/crow.svg", tone: "#6d7282" },
+        { id: "rooster", word: "cock-a-doodle-doo", image: "images/rooster.svg", tone: "#e0705b" },
+        { id: "sheep", word: "baa", image: "images/sheep.svg", tone: "#ddd7c8" }
+      ];
+
+      const soundGrid = document.getElementById("soundGrid");
+      const pictureGrid = document.getElementById("pictureGrid");
+      const scoreValue = document.getElementById("scoreValue");
+      const triesValue = document.getElementById("triesValue");
+      const activeValue = document.getElementById("activeValue");
+      const message = document.getElementById("message");
+      const completePanel = document.getElementById("completePanel");
+      const resetButton = document.getElementById("resetButton");
+
+      let activeId = null;
+      let matched = new Set();
+      let tries = 0;
+
+      function shuffle(list) {
+        const copy = [...list];
+        for (let index = copy.length - 1; index > 0; index -= 1) {
+          const randomIndex = Math.floor(Math.random() * (index + 1));
+          [copy[index], copy[randomIndex]] = [copy[randomIndex], copy[index]];
+        }
+        return copy;
+      }
+
+      function speak(text) {
+        if (!("speechSynthesis" in window)) {
+          setMessage("Prehliadač nevie prehrať hlas. Slovo na kartičke však môžeš prečítať.", "error");
+          return;
+        }
+
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = "en-US";
+        utterance.rate = 0.78;
+        utterance.pitch = 1.05;
+        window.speechSynthesis.speak(utterance);
+      }
+
+      function setMessage(text, state = "") {
+        message.textContent = text;
+        message.className = `message ${state}`.trim();
+      }
+
+      function updateStatus() {
+        scoreValue.textContent = `${matched.size} / ${items.length}`;
+        triesValue.textContent = String(tries);
+        activeValue.textContent = activeId ? "Vyber obrázok" : "Vyber ?";
+        completePanel.classList.toggle("visible", matched.size === items.length);
+      }
+
+      function renderGame() {
+        activeId = null;
+        matched = new Set();
+        tries = 0;
+        soundGrid.replaceChildren();
+        pictureGrid.replaceChildren();
+
+        shuffle(items).forEach((item, index) => {
+          const button = document.createElement("button");
+          button.className = "sound-card";
+          button.type = "button";
+          button.dataset.id = item.id;
+          button.setAttribute("aria-label", `Prehrať slovo ${index + 1}`);
+          button.innerHTML = `
+            <span class="sound-index">${index + 1}</span>
+            <span class="sound-inner">
+              <span class="sound-face sound-front"><span class="question-mark">?</span></span>
+              <span class="sound-face sound-back"><span class="sound-word">${item.word}</span></span>
+            </span>
+          `;
+          button.addEventListener("click", () => selectSound(item.id));
+          soundGrid.appendChild(button);
+        });
+
+        shuffle(items).forEach((item, index) => {
+          const button = document.createElement("button");
+          button.className = "picture-card";
+          button.type = "button";
+          button.dataset.id = item.id;
+          button.style.setProperty("--tone", item.tone);
+          button.setAttribute("aria-label", `Vybrať obrázok ${index + 1}`);
+          button.innerHTML = `<img class="animal-image" src="${item.image}" alt="" draggable="false" />`;
+          button.addEventListener("click", () => selectPicture(item.id, button));
+          pictureGrid.appendChild(button);
+        });
+
+        setMessage("Začni kliknutím na ľubovoľný otáznik.");
+        updateStatus();
+      }
+
+      function selectSound(id) {
+        if (matched.has(id)) return;
+
+        activeId = id;
+        document.querySelectorAll(".sound-card").forEach((card) => {
+          const isCurrent = card.dataset.id === id;
+          card.classList.toggle("active", isCurrent);
+          card.classList.toggle("flipped", isCurrent || matched.has(card.dataset.id));
+        });
+
+        const item = items.find((entry) => entry.id === id);
+        speak(item.word);
+        setMessage("Teraz vyber obrázok, ktorý patrí k tomuto slovu.");
+        updateStatus();
+      }
+
+      function selectPicture(id, button) {
+        if (matched.has(id)) return;
+
+        if (!activeId) {
+          setMessage("Najprv klikni na otáznik, otoč kartičku a vypočuj si slovo.", "error");
+          return;
+        }
+
+        tries += 1;
+
+        if (id === activeId) {
+          matched.add(id);
+          const soundCard = document.querySelector(`.sound-card[data-id="${id}"]`);
+          button.classList.add("correct");
+          soundCard.classList.add("correct");
+          setTimeout(() => {
+            button.classList.add("matched");
+            soundCard.classList.add("matched");
+          }, 420);
+          activeId = null;
+          setMessage("Správne. Dvojica zmizla z hracej plochy.", "success");
+          document.querySelectorAll(".sound-card").forEach((card) => card.classList.remove("active"));
+        } else {
+          button.classList.add("wrong");
+          setMessage("Ešte nie. Klikni na otočenú kartičku znova alebo skús iný obrázok.", "error");
+          setTimeout(() => button.classList.remove("wrong"), 360);
+        }
+
+        updateStatus();
+      }
+
+      resetButton.addEventListener("click", renderGame);
+      renderGame();
+    </script>
+  </body>
+</html>
