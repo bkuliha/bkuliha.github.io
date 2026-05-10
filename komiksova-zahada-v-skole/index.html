@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="sk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Komiksová záhada v škole</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #1f2024;
+        --muted: #64606a;
+        --paper: #fffdf7;
+        --line: #24242a;
+        --soft-line: #d8d2c5;
+        --school-green: #22715f;
+        --school-red: #c94b42;
+        --school-blue: #3867b8;
+        --sun: #f2c14e;
+        --mist: #f3efe7;
+        --shadow: rgba(26, 22, 15, 0.15);
+        --success: #267447;
+        --danger: #a93832;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+        color: var(--ink);
+        background:
+          linear-gradient(90deg, rgba(34, 113, 95, 0.1) 1px, transparent 1px),
+          linear-gradient(rgba(56, 103, 184, 0.08) 1px, transparent 1px),
+          linear-gradient(135deg, #fbf6eb 0%, #ece5d9 100%);
+        background-size: 36px 36px, 36px 36px, auto;
+      }
+
+      button,
+      select,
+      input {
+        font: inherit;
+      }
+
+      button {
+        border: 0;
+      }
+
+      .app {
+        width: min(1180px, calc(100% - 28px));
+        margin: 24px auto 56px;
+      }
+
+      .topbar {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 18px;
+        align-items: end;
+        margin-bottom: 18px;
+      }
+
+      .title-block p {
+        margin: 0 0 6px;
+        color: var(--school-red);
+        font-size: 0.82rem;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(2rem, 5vw, 4.2rem);
+        line-height: 0.94;
+        letter-spacing: 0;
+      }
+
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 10px;
+      }
+
+      .control,
+      .action {
+        min-height: 42px;
+        border-radius: 8px;
+        border: 2px solid var(--line);
+        background: var(--paper);
+        box-shadow: 3px 3px 0 var(--line);
+        color: var(--ink);
+        font-weight: 800;
+      }
+
+      .control {
+        padding: 0 12px;
+      }
+
+      .action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 0 14px;
+        cursor: pointer;
+      }
+
+      .action.primary {
+        background: var(--school-green);
+        color: #fff;
+      }
+
+      .action.warn {
+        background: var(--sun);
+      }
+
+      .action:active {
+        transform: translate(2px, 2px);
+        box-shadow: 1px 1px 0 var(--line);
+      }
+
+      .score-strip {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 10px;
+        margin: 0 0 18px;
+      }
+
+      .stat {
+        min-height: 72px;
+        padding: 12px 14px;
+        border: 2px solid var(--line);
+        border-radius: 8px;
+        background: rgba(255, 253, 247, 0.94);
+        box-shadow: 4px 4px 0 rgba(31, 32, 36, 0.15);
+      }
+
+      .stat span {
+        display: block;
+        color: var(--muted);
+        font-size: 0.8rem;
+        font-weight: 800;
+        text-transform: uppercase;
+      }
+
+      .stat strong {
+        display: block;
+        margin-top: 3px;
+        font-size: 1.55rem;
+      }
+
+      .workspace {
+        display: grid;
+        grid-template-columns: minmax(280px, 1fr) minmax(310px, 380px);
+        gap: 18px;
+        align-items: start;
+      }
+
+      .page-stage {
+        display: grid;
+        justify-items: center;
+        gap: 14px;
+      }
+
+      .comic-page {
+        width: min(100%, 794px);
+        aspect-ratio: 210 / 297;
+        padding: 26px;
+        border: 3px solid var(--line);
+        background: var(--paper);
+        box-shadow: 0 24px 44px var(--shadow);
+      }
+
+      .page-inner {
+        height: 100%;
+        display: grid;
+        grid-template-rows: auto repeat(3, 1fr);
+        gap: 14px;
+      }
+
+      .page-title {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 12px;
+        border-bottom: 4px solid var(--line);
+        padding-bottom: 10px;
+      }
+
+      .page-number {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 42px;
+        height: 42px;
+        border: 3px solid var(--line);
+        border-radius: 50%;
+        background: var(--sun);
+        font-size: 1.25rem;
+        font-weight: 900;
+      }
+
+      .page-title h2 {
+        margin: 0;
+        font-size: clamp(1.35rem, 3.2vw, 2.4rem);
+        line-height: 1;
+      }
+
+      .page-title small {
+        justify-self: end;
+        color: var(--muted);
+        font-weight: 900;
+        text-transform: uppercase;
+      }
+
+      .panel {
+        position: relative;
+        display: grid;
+        grid-template-columns: minmax(140px, 42%) minmax(0, 1fr);
+        min-height: 0;
+        overflow: hidden;
+        border: 3px solid var(--line);
+        background: #fff;
+      }
+
+      .art {
+        position: relative;
+        min-width: 0;
+        overflow: hidden;
+        border-right: 3px solid var(--line);
+        background:
+          radial-gradient(circle at 18% 22%, rgba(242, 193, 78, 0.56), transparent 18%),
+          linear-gradient(135deg, rgba(56, 103, 184, 0.18), rgba(34, 113, 95, 0.12)),
+          repeating-linear-gradient(-10deg, rgba(31, 32, 36, 0.05) 0 7px, transparent 7px 16px);
+      }
+
+      .art img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: none;
+      }
+
+      .art.has-image img {
+        display: block;
+      }
+
+      .scene-mark {
+        position: absolute;
+        inset: 14px;
+        display: grid;
+        place-items: center;
+        text-align: center;
+        color: rgba(31, 32, 36, 0.72);
+        font-size: clamp(0.8rem, 1.7vw, 1.08rem);
+        font-weight: 900;
+        line-height: 1.2;
+      }
+
+      .art.has-image .scene-mark {
+        display: none;
+      }
+
+      .panel-copy {
+        position: relative;
+        display: grid;
+        grid-template-rows: minmax(0, 1fr) auto;
+        gap: 8px;
+        padding: 14px;
+      }
+
+      .narration {
+        margin: 0;
+        color: #2d2b2f;
+        font-size: clamp(0.78rem, 1.55vw, 1rem);
+        line-height: 1.28;
+      }
+
+      .speech {
+        position: relative;
+        align-self: end;
+        min-height: 70px;
+        padding: 12px 14px 13px;
+        border: 3px solid var(--line);
+        border-radius: 50% 46% 48% 44% / 46% 54% 42% 48%;
+        background: #fff;
+      }
+
+      .speech::after {
+        content: "";
+        position: absolute;
+        left: 24px;
+        bottom: -19px;
+        width: 32px;
+        height: 22px;
+        border-left: 3px solid var(--line);
+        border-bottom: 3px solid var(--line);
+        background: #fff;
+        transform: skew(-26deg) rotate(-8deg);
+      }
+
+      .dialogue {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        gap: 8px;
+      }
+
+      .dialogue-line {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        align-items: baseline;
+        font-weight: 800;
+        line-height: 1.22;
+      }
+
+      .choice {
+        min-width: 116px;
+        max-width: 100%;
+        padding: 7px 9px;
+        border: 2px solid var(--line);
+        border-radius: 8px;
+        background: #f7fbff;
+        color: var(--ink);
+        font-weight: 900;
+      }
+
+      .panel.correct .choice {
+        border-color: var(--success);
+        background: #e9f7ed;
+      }
+
+      .panel.wrong .choice {
+        border-color: var(--danger);
+        background: #fff0ef;
+      }
+
+      .upload-row {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .upload-row input {
+        width: 100%;
+        font-size: 0.78rem;
+      }
+
+      .side-panel {
+        display: grid;
+        gap: 14px;
+      }
+
+      .toolbox,
+      .teacher-box {
+        border: 2px solid var(--line);
+        border-radius: 8px;
+        background: rgba(255, 253, 247, 0.96);
+        box-shadow: 4px 4px 0 rgba(31, 32, 36, 0.15);
+        padding: 16px;
+      }
+
+      .toolbox h2,
+      .teacher-box h2 {
+        margin: 0 0 10px;
+        font-size: 1.2rem;
+      }
+
+      .page-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 8px;
+      }
+
+      .page-button {
+        min-height: 42px;
+        border: 2px solid var(--line);
+        border-radius: 8px;
+        background: #fff;
+        color: var(--ink);
+        font-weight: 900;
+        cursor: pointer;
+      }
+
+      .page-button.active {
+        background: var(--school-blue);
+        color: #fff;
+      }
+
+      .teacher-box {
+        display: none;
+      }
+
+      .teacher-box.visible {
+        display: block;
+      }
+
+      .answer-list {
+        columns: 2;
+        margin: 0;
+        padding-left: 22px;
+        line-height: 1.75;
+        font-weight: 800;
+      }
+
+      .feedback {
+        min-height: 28px;
+        margin: 0;
+        color: var(--muted);
+        font-weight: 800;
+      }
+
+      .print-stack {
+        display: none;
+      }
+
+      @media (max-width: 900px) {
+        .topbar,
+        .workspace,
+        .score-strip {
+          grid-template-columns: 1fr;
+        }
+
+        .controls {
+          justify-content: flex-start;
+        }
+
+        .comic-page {
+          padding: 16px;
+        }
+
+        .panel {
+          grid-template-columns: 1fr;
+        }
+
+        .art {
+          min-height: 118px;
+          border-right: 0;
+          border-bottom: 3px solid var(--line);
+        }
+      }
+
+      @media (max-width: 540px) {
+        .app {
+          width: min(100% - 18px, 1180px);
+          margin-top: 14px;
+        }
+
+        .comic-page {
+          width: 100%;
+          aspect-ratio: auto;
+          min-height: 1120px;
+        }
+
+        .page-grid {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+
+      @page {
+        size: A4 portrait;
+        margin: 0;
+      }
+
+      @media print {
+        body {
+          background: #fff;
+        }
+
+        .app > :not(.print-stack) {
+          display: none !important;
+        }
+
+        .print-stack {
+          display: block;
+        }
+
+        .comic-page {
+          width: 210mm;
+          height: 297mm;
+          aspect-ratio: auto;
+          padding: 9mm;
+          border: 0;
+          box-shadow: none;
+          page-break-after: always;
+        }
+
+        .comic-page:last-child {
+          page-break-after: auto;
+        }
+
+        .panel {
+          break-inside: avoid;
+        }
+
+        .upload-row,
+        .choice,
+        .teacher-box,
+        .toolbox,
+        .controls,
+        .score-strip {
+          display: none !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="app">
+      <header class="topbar">
+        <div class="title-block">
+          <p>Interaktívny komiks</p>
+          <h1>Záhada v škole</h1>
+        </div>
+        <div class="controls" aria-label="Ovládanie hry">
+          <select id="printMode" class="control" aria-label="Výber strán na tlač">
+            <option value="all">Tlačiť všetky strany</option>
+            <option value="current">Tlačiť aktuálnu stranu</option>
+            <option value="first3">Tlačiť strany 1-3</option>
+          </select>
+          <button id="checkButton" class="action primary" type="button">Skontrolovať</button>
+          <button id="teacherButton" class="action warn" type="button">Riešenie</button>
+          <button id="resetButton" class="action" type="button">Vynulovať</button>
+          <button id="printButton" class="action" type="button">Tlačiť</button>
+        </div>
+      </header>
+
+      <section class="score-strip" aria-label="Stav hry">
+        <div class="stat">
+          <span>Strana</span>
+          <strong id="pageStat">1 / 10</strong>
+        </div>
+        <div class="stat">
+          <span>Vyplnené</span>
+          <strong id="filledStat">0 / 30</strong>
+        </div>
+        <div class="stat">
+          <span>Správne</span>
+          <strong id="scoreStat">0 / 30</strong>
+        </div>
+        <div class="stat">
+          <span>Režim</span>
+          <strong id="modeStat">Žiak</strong>
+        </div>
+      </section>
+
+      <section class="workspace">
+        <div class="page-stage">
+          <article id="comicPage" class="comic-page" aria-live="polite"></article>
+          <p id="feedback" class="feedback">Vyber citoslovce do každej bubliny.</p>
+        </div>
+
+        <aside class="side-panel">
+          <section class="toolbox">
+            <h2>Strany príbehu</h2>
+            <div id="pageGrid" class="page-grid" aria-label="Výber strany"></div>
+          </section>
+          <section class="toolbox">
+            <h2>Obrázky panelov</h2>
+            <div id="uploadList"></div>
+          </section>
+          <section id="teacherBox" class="teacher-box">
+            <h2>Riešenie pre učiteľa</h2>
+            <ol id="answerList" class="answer-list"></ol>
+          </section>
+        </aside>
+      </section>
+
+      <section id="printStack" class="print-stack" aria-hidden="true"></section>
+    </main>
+
+    <script>
+      const pages = [
+        {
+          title: "Čudné ráno",
+          panels: [
+            {
+              scene: "Ranný budík a ospalá detektívka Lea",
+              narration: "Ráno zazvonil budík tak hlasno, až detektívka Lea vyskočila z postele.",
+              before: "„",
+              after: "! Už je ráno?“ zamrmlala ospalo.",
+              answer: "Crrr",
+              options: ["Crrr", "Mňam", "Ššš"]
+            },
+            {
+              scene: "Mama klope na dvere izby",
+              narration: "Zrazu niekto zaklopal na dvere jej izby.",
+              before: "„",
+              after: "! Lea, vstávaj!“ ozvala sa mama spoza dverí.",
+              answer: "Ťuk-ťuk",
+              options: ["Ťuk-ťuk", "Hop", "Húúú"]
+            },
+            {
+              scene: "Lea sa pošmykla na papuči",
+              narration: "Lea sa pošmykla na papuči a skoro spadla.",
+              before: "„",
+              after: "! To bolo tesné!“ zvolala.",
+              answer: "Uf",
+              options: ["Uf", "Cvak", "Čvirik"]
+            }
+          ]
+        },
+        {
+          title: "Správa v taške",
+          panels: [
+            {
+              scene: "Zvláštna obálka v školskej taške",
+              narration: "V škole otvorila Lea tašku a našla v nej zvláštnu obálku.",
+              before: "„",
+              after: "! Toto som sem určite nedala,“ povedala prekvapene.",
+              answer: "Aha",
+              options: ["Aha", "Fuj", "Bác"]
+            },
+            {
+              scene: "Papierový netopier vyskočil z obálky",
+              narration: "Keď obálku otvorila, vyskočil z nej malý papierový netopier.",
+              before: "„",
+              after: "!“ skríkla Lea a odskočila.",
+              answer: "Ááá",
+              options: ["Ááá", "Ššš", "Mňau"]
+            },
+            {
+              scene: "Prvý detektívny lístok",
+              narration: "Na lístku stálo: Nájdi stratený školský zvonček, inak dnes nebude prestávka! Lea si zamyslene pošúchala bradu.",
+              before: "„",
+              after: "… toto je prípad pre mňa.“",
+              answer: "Hm",
+              options: ["Hm", "Hurá", "Bum"]
+            }
+          ]
+        },
+        {
+          title: "Prvá stopa",
+          panels: [
+            {
+              scene: "Tichý zvuk spod lavičky",
+              narration: "Lea išla po chodbe a zrazu začula tichý zvuk spod lavičky.",
+              before: "„",
+              after: "? Čo to bolo?“ zašepkala.",
+              answer: "Hm",
+              options: ["Hm", "Haf", "Crrr"]
+            },
+            {
+              scene: "Mačka školníčky s modrou stužkou",
+              narration: "Pod lavičkou sedela mačka školníčky a držala v labke malú modrú stužku.",
+              before: "„",
+              after: ", ty si niečo našla?“ spýtala sa Lea.",
+              answer: "Aha",
+              options: ["Aha", "Čľup", "Bác"]
+            },
+            {
+              scene: "Mačka spokojne mňauká",
+              narration: "Mačka sa len natiahla a spokojne zamňaukala.",
+              before: "„",
+              after: "!“ ozvalo sa chodbou.",
+              answer: "Mňau",
+              options: ["Mňau", "Hop", "Fuj"]
+            }
+          ]
+        },
+        {
+          title: "V triede výtvarnej výchovy",
+          panels: [
+            {
+              scene: "Modrá stužka a kvapky farby",
+              narration: "Modrá stužka viedla až do výtvarnej triedy. Na zemi boli kvapky farby.",
+              before: "„",
+              after: ", stopa pokračuje!“ potešila sa Lea.",
+              answer: "Hurá",
+              options: ["Hurá", "Ššš", "Čože"]
+            },
+            {
+              scene: "Pohár so štetcami padá zo stola",
+              narration: "Zrazu spadol zo stola pohár so štetcami.",
+              before: "„",
+              after: "!“ rozleteli sa štetce po podlahe.",
+              answer: "Bum",
+              options: ["Bum", "Mňam", "Cvak"]
+            },
+            {
+              scene: "Modrá farba na rukáve",
+              narration: "Lea sa zohla po štetec, ale namočila si rukáv do modrej farby.",
+              before: "„",
+              after: "! Teraz vyzerám ako dôkaz!“ povzdychla si.",
+              answer: "Jaj",
+              options: ["Jaj", "Čvirik", "Húúú"]
+            }
+          ]
+        },
+        {
+          title: "Tajomstvo v telocvični",
+          panels: [
+            {
+              scene: "Lopta sa sama kotúľa v telocvični",
+              narration: "Ďalšia stopa viedla do telocvične. Tam sa kotúľala lopta celkom sama.",
+              before: "„",
+              after: "! Kto ju poslal?“ čudovala sa Lea.",
+              answer: "Čože",
+              options: ["Čože", "Mňau", "Uf"]
+            },
+            {
+              scene: "Lopta naráža do rebrín",
+              narration: "Lopta narazila do rebrín a odrazila sa späť.",
+              before: "„",
+              after: "!“ ozvalo sa po celej telocvični.",
+              answer: "Bác",
+              options: ["Bác", "Ťuk-ťuk", "Ššš"]
+            },
+            {
+              scene: "Lístok za rebrinami",
+              narration: "Za rebrinami našla Lea ďalší lístok: Hľadaj tam, kde je ticho.",
+              before: "„",
+              after: "… kde je v škole najväčšie ticho?“ premýšľala.",
+              answer: "Hm",
+              options: ["Hm", "Hop", "Hurá"]
+            }
+          ]
+        },
+        {
+          title: "V knižnici",
+          panels: [
+            {
+              scene: "Tichá knižnica",
+              narration: "Lea vošla do knižnice po špičkách. Pani knihovníčka si položila prst na ústa.",
+              before: "„",
+              after: ", tu sa číta potichu,“ povedala.",
+              answer: "Ššš",
+              options: ["Ššš", "Bum", "Ááá"]
+            },
+            {
+              scene: "Kniha padá z najvyššej police",
+              narration: "Z najvyššej police sa pomaly zosunula kniha a spadla na koberec.",
+              before: "„",
+              after: "!“ Lea sa mykla.",
+              answer: "Bác",
+              options: ["Bác", "Mňam", "Crrr"]
+            },
+            {
+              scene: "Obrázok školského zvončeka v knihe",
+              narration: "V knihe bol založený obrázok školského zvončeka.",
+              before: "„",
+              after: "! Už som blízko!“ zašepkala Lea.",
+              answer: "Aha",
+              options: ["Aha", "Fuj", "Čľup"]
+            }
+          ]
+        },
+        {
+          title: "Stopa v jedálni",
+          panels: [
+            {
+              scene: "Školská jedáleň a voňavá polievka",
+              narration: "Obrázok ju priviedol do školskej jedálne. Práve sa varila polievka.",
+              before: "„",
+              after: "! Tá krásne vonia,“ povedala Lea.",
+              answer: "Mňam",
+              options: ["Mňam", "Cvak", "Húúú"]
+            },
+            {
+              scene: "Kuchárka ochutnáva polievku",
+              narration: "Kuchárka ochutnala polievku a zamračila sa.",
+              before: "„",
+              after: "! Chýba soľ,“ povedala.",
+              answer: "Fuj",
+              options: ["Fuj", "Hurá", "Hop"]
+            },
+            {
+              scene: "Kovové srdiečko zo zvončeka",
+              narration: "Na stole pri miskách ležal malý kovový predmet. Lea ho zdvihla.",
+              before: "„",
+              after: "! Veď toto je srdiečko zo zvončeka!“",
+              answer: "Aha",
+              options: ["Aha", "Ááá", "Bum"]
+            }
+          ]
+        },
+        {
+          title: "Na školskom dvore",
+          panels: [
+            {
+              scene: "Vietor odfúkol lístok cez okno",
+              narration: "Zrazu cez otvorené okno zafúkal vietor a odfúkol ďalší lístok von.",
+              before: "„",
+              after: "!“ zahučal vietor.",
+              answer: "Húúú",
+              options: ["Húúú", "Ťuk-ťuk", "Mňau"]
+            },
+            {
+              scene: "Lea preskakuje kalužu",
+              narration: "Lea vybehla na dvor a preskočila kalužu.",
+              before: "„",
+              after: "!“ zvolala pri skoku.",
+              answer: "Hop",
+              options: ["Hop", "Ššš", "Fuj"]
+            },
+            {
+              scene: "Voda vyšplechla na topánky",
+              narration: "Ale dopadla rovno vedľa kaluže a voda vyšplechla na jej topánky.",
+              before: "„",
+              after: "!“ čľapla voda.",
+              answer: "Čľup",
+              options: ["Čľup", "Crrr", "Čože"]
+            }
+          ]
+        },
+        {
+          title: "Posledná stopa",
+          panels: [
+            {
+              scene: "Vrabec drží kúsok špagátu",
+              narration: "Na plote sedel vrabec a v zobáčiku držal kúsok špagátu.",
+              before: "„",
+              after: "! Aj ty si do toho zapletený?“ spýtala sa Lea.",
+              answer: "Aha",
+              options: ["Aha", "Jaj", "Bác"]
+            },
+            {
+              scene: "Vrabec letí k starému stromu",
+              narration: "Vrabec zamával krídlami a odletel k starému stromu.",
+              before: "„",
+              after: "!“ zaštebotal veselo.",
+              answer: "Čvirik",
+              options: ["Čvirik", "Mňam", "Uf"]
+            },
+            {
+              scene: "Škatuľka pri strome zacvakla",
+              narration: "Pri strome stála malá škatuľka. Keď ju Lea otvorila, niečo v nej zacvaklo.",
+              before: "„",
+              after: "!“ ozval sa kovový zvuk.",
+              answer: "Cvak",
+              options: ["Cvak", "Ššš", "Húúú"]
+            }
+          ]
+        },
+        {
+          title: "Vyriešený prípad",
+          panels: [
+            {
+              scene: "Stratený školský zvonček v škatuľke",
+              narration: "V škatuľke bol stratený školský zvonček. Bol zabalený v modrej stužke.",
+              before: "„",
+              after: "! Našla som ho!“ zvolala Lea.",
+              answer: "Hurá",
+              options: ["Hurá", "Bum", "Fuj"]
+            },
+            {
+              scene: "Školníčka prezrádza detektívnu hru",
+              narration: "Vtom prišla školníčka a zasmiala sa. „To nebola záhada, Lea. Chystali sme pre triedu detektívnu hru.“ Lea prekvapene otvorila ústa.",
+              before: "„",
+              after: "! Takže som bola súčasťou plánu?“",
+              answer: "Čože",
+              options: ["Čože", "Mňam", "Crrr"]
+            },
+            {
+              scene: "Deti bežia na prestávku",
+              narration: "Zvonček konečne zazvonil a všetci žiaci vybehli na prestávku.",
+              before: "„",
+              after: "!“ tešili sa deti na chodbe.",
+              answer: "Hurá",
+              options: ["Hurá", "Ššš", "Jaj"]
+            }
+          ]
+        }
+      ];
+
+      const state = {
+        pageIndex: 0,
+        answers: {},
+        images: JSON.parse(localStorage.getItem("komiksLeaImages") || "{}"),
+        teacherVisible: false
+      };
+
+      const comicPage = document.getElementById("comicPage");
+      const pageGrid = document.getElementById("pageGrid");
+      const uploadList = document.getElementById("uploadList");
+      const printStack = document.getElementById("printStack");
+      const answerList = document.getElementById("answerList");
+      const teacherBox = document.getElementById("teacherBox");
+      const feedback = document.getElementById("feedback");
+      const pageStat = document.getElementById("pageStat");
+      const filledStat = document.getElementById("filledStat");
+      const scoreStat = document.getElementById("scoreStat");
+      const modeStat = document.getElementById("modeStat");
+
+      function panelKey(pageIndex, panelIndex) {
+        return `${pageIndex}-${panelIndex}`;
+      }
+
+      function imageKey(pageIndex, panelIndex) {
+        return `image-${pageIndex}-${panelIndex}`;
+      }
+
+      function getAllPanels() {
+        return pages.flatMap((page, pageIndex) =>
+          page.panels.map((panel, panelIndex) => ({ page, pageIndex, panel, panelIndex }))
+        );
+      }
+
+      function renderPage(target, pageIndex, forPrint = false) {
+        const page = pages[pageIndex];
+        target.innerHTML = "";
+        const inner = document.createElement("div");
+        inner.className = "page-inner";
+        inner.innerHTML = `
+          <header class="page-title">
+            <span class="page-number">${pageIndex + 1}</span>
+            <h2>${page.title}</h2>
+            <small>3 panely</small>
+          </header>
+        `;
+
+        page.panels.forEach((panel, panelIndex) => {
+          const key = panelKey(pageIndex, panelIndex);
+          const selected = state.answers[key] || "";
+          const article = document.createElement("section");
+          article.className = "panel";
+          if (selected) {
+            article.classList.add(selected === panel.answer ? "correct" : "wrong");
+          }
+
+          const storedImage = state.images[imageKey(pageIndex, panelIndex)];
+          const options = ['<option value="">______</option>']
+            .concat(panel.options.map((option) => `<option value="${option}" ${option === selected ? "selected" : ""}>${option}</option>`))
+            .join("");
+
+          article.innerHTML = `
+            <div class="art ${storedImage ? "has-image" : ""}">
+              <img alt="Ilustrácia: ${panel.scene}" src="${storedImage || ""}">
+              <div class="scene-mark">${panel.scene}</div>
+            </div>
+            <div class="panel-copy">
+              <p class="narration">${panel.narration}</p>
+              <div class="speech">
+                <div class="dialogue">
+                  <div class="dialogue-line">
+                    <span>${panel.before}</span>
+                    <select class="choice" data-page="${pageIndex}" data-panel="${panelIndex}" aria-label="Citoslovce pre panel ${panelIndex + 1}">
+                      ${options}
+                    </select>
+                    <span>${panel.after}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+
+          if (forPrint) {
+            const select = article.querySelector("select");
+            const selectedText = selected || "________";
+            const replacement = document.createElement("strong");
+            replacement.textContent = selectedText;
+            select.replaceWith(replacement);
+          }
+
+          inner.appendChild(article);
+        });
+
+        target.appendChild(inner);
+      }
+
+      function renderPageButtons() {
+        pageGrid.innerHTML = "";
+        pages.forEach((page, index) => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = `page-button ${index === state.pageIndex ? "active" : ""}`;
+          button.textContent = index + 1;
+          button.setAttribute("aria-label", `Strana ${index + 1}: ${page.title}`);
+          button.addEventListener("click", () => {
+            state.pageIndex = index;
+            render();
+          });
+          pageGrid.appendChild(button);
+        });
+      }
+
+      function renderUploads() {
+        uploadList.innerHTML = "";
+        pages[state.pageIndex].panels.forEach((panel, panelIndex) => {
+          const row = document.createElement("label");
+          row.className = "upload-row";
+          row.innerHTML = `<strong>${panelIndex + 1}.</strong><input type="file" accept="image/*" data-upload="${panelIndex}">`;
+          row.querySelector("input").addEventListener("change", (event) => {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.addEventListener("load", () => {
+              state.images[imageKey(state.pageIndex, panelIndex)] = reader.result;
+              localStorage.setItem("komiksLeaImages", JSON.stringify(state.images));
+              render();
+            });
+            reader.readAsDataURL(file);
+          });
+          uploadList.appendChild(row);
+        });
+      }
+
+      function renderTeacherAnswers() {
+        answerList.innerHTML = "";
+        getAllPanels().forEach(({ pageIndex, panelIndex, panel }) => {
+          const item = document.createElement("li");
+          item.textContent = `${pageIndex + 1}.${panelIndex + 1} ${panel.answer}`;
+          answerList.appendChild(item);
+        });
+      }
+
+      function updateStats() {
+        const all = getAllPanels();
+        const filled = all.filter(({ pageIndex, panelIndex }) => state.answers[panelKey(pageIndex, panelIndex)]).length;
+        const score = all.filter(({ pageIndex, panelIndex, panel }) => state.answers[panelKey(pageIndex, panelIndex)] === panel.answer).length;
+        pageStat.textContent = `${state.pageIndex + 1} / ${pages.length}`;
+        filledStat.textContent = `${filled} / ${all.length}`;
+        scoreStat.textContent = `${score} / ${all.length}`;
+        modeStat.textContent = state.teacherVisible ? "Učiteľ" : "Žiak";
+      }
+
+      function renderPrintStack() {
+        const mode = document.getElementById("printMode").value;
+        let indexes = pages.map((_, index) => index);
+        if (mode === "current") indexes = [state.pageIndex];
+        if (mode === "first3") indexes = [0, 1, 2];
+        printStack.innerHTML = "";
+        indexes.forEach((pageIndex) => {
+          const page = document.createElement("article");
+          page.className = "comic-page";
+          renderPage(page, pageIndex, true);
+          printStack.appendChild(page);
+        });
+      }
+
+      function render() {
+        renderPage(comicPage, state.pageIndex);
+        renderPageButtons();
+        renderUploads();
+        renderTeacherAnswers();
+        updateStats();
+        teacherBox.classList.toggle("visible", state.teacherVisible);
+        document.querySelectorAll(".choice").forEach((select) => {
+          select.addEventListener("change", (event) => {
+            const pageIndex = Number(event.target.dataset.page);
+            const panelIndex = Number(event.target.dataset.panel);
+            const key = panelKey(pageIndex, panelIndex);
+            if (event.target.value) {
+              state.answers[key] = event.target.value;
+            } else {
+              delete state.answers[key];
+            }
+            render();
+          });
+        });
+      }
+
+      document.getElementById("checkButton").addEventListener("click", () => {
+        const all = getAllPanels();
+        const score = all.filter(({ pageIndex, panelIndex, panel }) => state.answers[panelKey(pageIndex, panelIndex)] === panel.answer).length;
+        const filled = all.filter(({ pageIndex, panelIndex }) => state.answers[panelKey(pageIndex, panelIndex)]).length;
+        feedback.textContent = `Máš ${score} správnych odpovedí z ${filled} vyplnených.`;
+        updateStats();
+      });
+
+      document.getElementById("teacherButton").addEventListener("click", () => {
+        state.teacherVisible = !state.teacherVisible;
+        render();
+      });
+
+      document.getElementById("resetButton").addEventListener("click", () => {
+        state.answers = {};
+        feedback.textContent = "Výbery sú vynulované.";
+        render();
+      });
+
+      document.getElementById("printButton").addEventListener("click", () => {
+        renderPrintStack();
+        window.print();
+      });
+
+      render();
+    </script>
+  </body>
+</html>

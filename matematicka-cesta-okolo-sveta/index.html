@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="sk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Matematická cesta okolo sveta</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #16212d;
+        --muted: #5c6a75;
+        --paper: rgba(255, 255, 255, 0.92);
+        --paper-strong: #fffaf1;
+        --line: rgba(26, 50, 70, 0.18);
+        --ocean: #0d84a2;
+        --green: #1f8d5a;
+        --red: #d64a3a;
+        --gold: #f3b540;
+        --blue: #2369c9;
+        --shadow: 0 24px 70px rgba(16, 40, 58, 0.22);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Trebuchet MS", "Segoe UI", Arial, sans-serif;
+        color: var(--ink);
+        background: #d8f4ff;
+        overflow-x: hidden;
+      }
+
+      button,
+      input {
+        font: inherit;
+      }
+
+      button {
+        cursor: pointer;
+      }
+
+      .app {
+        min-height: 100vh;
+        background:
+          linear-gradient(90deg, rgba(216, 244, 255, 0.52), rgba(255, 250, 241, 0.34)),
+          url("assets/globe-plane.png") center left / cover no-repeat fixed;
+      }
+
+      header {
+        width: min(1180px, calc(100% - 28px));
+        margin: 0 auto;
+        padding: 22px 0 12px;
+      }
+
+      .topbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        padding: 14px 18px;
+        border: 1px solid rgba(255, 255, 255, 0.75);
+        background: rgba(255, 255, 255, 0.76);
+        backdrop-filter: blur(12px);
+        box-shadow: 0 16px 45px rgba(12, 65, 91, 0.12);
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(1.7rem, 4vw, 3.25rem);
+        letter-spacing: 0;
+      }
+
+      .subtitle {
+        margin: 6px 0 0;
+        max-width: 760px;
+        color: #425666;
+        line-height: 1.45;
+        font-size: clamp(1rem, 2vw, 1.15rem);
+      }
+
+      .reset-button,
+      .primary-button,
+      .ghost-button,
+      .symbol-button,
+      .key-button,
+      .sort-button {
+        border: 0;
+        min-height: 44px;
+        color: #ffffff;
+        background: var(--blue);
+        box-shadow: 0 10px 20px rgba(35, 105, 201, 0.2);
+      }
+
+      .reset-button,
+      .primary-button,
+      .ghost-button {
+        padding: 11px 16px;
+        font-weight: 800;
+      }
+
+      .reset-button {
+        background: #334155;
+        white-space: nowrap;
+      }
+
+      main {
+        width: min(1180px, calc(100% - 28px));
+        margin: 0 auto;
+        padding: 18px 0 30px;
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: minmax(280px, 390px) minmax(0, 1fr);
+        gap: 18px;
+        align-items: start;
+      }
+
+      .panel {
+        border: 1px solid rgba(255, 255, 255, 0.74);
+        background: var(--paper);
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(10px);
+      }
+
+      .map-panel {
+        padding: 18px;
+      }
+
+      .guide {
+        display: grid;
+        grid-template-columns: 58px 1fr;
+        gap: 12px;
+        align-items: center;
+        margin-bottom: 16px;
+        padding: 12px;
+        background: rgba(255, 250, 241, 0.86);
+        border: 1px solid var(--line);
+      }
+
+      .guide-avatar {
+        display: grid;
+        place-items: center;
+        width: 58px;
+        height: 58px;
+        border-radius: 50%;
+        color: #ffffff;
+        background: linear-gradient(135deg, var(--ocean), var(--green));
+        font-size: 1.9rem;
+      }
+
+      .guide p {
+        margin: 0;
+        color: #3a4d5e;
+        line-height: 1.35;
+      }
+
+      .passport {
+        margin: 0 0 16px;
+        padding: 14px;
+        background: #253e7a;
+        color: #ffffff;
+        border: 4px solid #e3bd57;
+      }
+
+      .passport-title {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: center;
+        font-weight: 900;
+        text-transform: uppercase;
+      }
+
+      .stamp-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 8px;
+        margin-top: 12px;
+      }
+
+      .stamp {
+        display: grid;
+        place-items: center;
+        min-height: 54px;
+        border: 2px dashed rgba(255, 255, 255, 0.55);
+        color: rgba(255, 255, 255, 0.62);
+        font-size: 1.25rem;
+        font-weight: 900;
+      }
+
+      .stamp.done {
+        border-style: solid;
+        color: #27325f;
+        background: #ffe087;
+        transform: rotate(-3deg);
+      }
+
+      .country-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .country-card {
+        position: relative;
+        min-height: 112px;
+        padding: 12px;
+        border: 1px solid var(--line);
+        color: var(--ink);
+        background: rgba(255, 255, 255, 0.88);
+        text-align: left;
+        transition: transform 0.18s ease, box-shadow 0.18s ease;
+      }
+
+      .country-card:hover,
+      .country-card:focus-visible {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 24px rgba(15, 66, 92, 0.15);
+      }
+
+      .country-card.active {
+        outline: 4px solid rgba(243, 181, 64, 0.65);
+      }
+
+      .country-card.complete::after {
+        content: "Pečiatka";
+        position: absolute;
+        right: 8px;
+        bottom: 8px;
+        padding: 4px 7px;
+        color: #7a1c12;
+        border: 2px solid #d64a3a;
+        transform: rotate(-8deg);
+        font-size: 0.72rem;
+        font-weight: 900;
+        text-transform: uppercase;
+      }
+
+      .flag {
+        display: block;
+        font-size: 2rem;
+        margin-bottom: 4px;
+      }
+
+      .country-name {
+        display: block;
+        font-size: 1.05rem;
+        font-weight: 900;
+      }
+
+      .country-skill {
+        display: block;
+        margin-top: 3px;
+        color: var(--muted);
+        font-size: 0.9rem;
+        line-height: 1.2;
+      }
+
+      .game-panel {
+        min-height: 650px;
+        padding: 20px;
+      }
+
+      .country-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        gap: 14px;
+        margin-bottom: 14px;
+      }
+
+      .country-kicker {
+        margin: 0 0 4px;
+        color: var(--blue);
+        font-weight: 900;
+        text-transform: uppercase;
+      }
+
+      h2 {
+        margin: 0;
+        font-size: clamp(1.55rem, 3vw, 2.35rem);
+      }
+
+      .progress-pill {
+        min-width: 92px;
+        padding: 10px 12px;
+        color: #ffffff;
+        background: var(--green);
+        text-align: center;
+        font-weight: 900;
+      }
+
+      .fact-box {
+        margin: 0 0 16px;
+        padding: 13px 15px;
+        border-left: 6px solid var(--gold);
+        background: rgba(255, 250, 241, 0.86);
+        color: #3f5060;
+        line-height: 1.42;
+      }
+
+      .question-card {
+        padding: 18px;
+        border: 1px solid var(--line);
+        background: #ffffff;
+      }
+
+      .question-text {
+        margin: 0 0 18px;
+        font-size: clamp(1.2rem, 2.5vw, 1.65rem);
+        line-height: 1.35;
+        font-weight: 900;
+      }
+
+      .answer-area {
+        display: grid;
+        gap: 12px;
+      }
+
+      .numeric-row,
+      .place-row,
+      .symbol-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+      }
+
+      .answer-input {
+        width: min(190px, 100%);
+        min-height: 56px;
+        padding: 10px 12px;
+        border: 2px solid #9ab2c5;
+        background: #f8fcff;
+        color: var(--ink);
+        font-size: 1.35rem;
+        font-weight: 900;
+        text-align: center;
+      }
+
+      .answer-input:focus {
+        outline: 4px solid rgba(35, 105, 201, 0.22);
+        border-color: var(--blue);
+      }
+
+      .place-field {
+        display: grid;
+        gap: 4px;
+      }
+
+      .place-field label {
+        color: var(--muted);
+        font-size: 0.88rem;
+        font-weight: 900;
+      }
+
+      .symbol-button {
+        width: 78px;
+        min-height: 62px;
+        background: #fff4d6;
+        color: #253e7a;
+        border: 2px solid #e0b54f;
+        box-shadow: none;
+        font-size: 2rem;
+        font-weight: 900;
+      }
+
+      .symbol-button.selected {
+        background: var(--gold);
+        color: #1e2738;
+      }
+
+      .sort-list {
+        display: grid;
+        gap: 10px;
+        max-width: 520px;
+      }
+
+      .sort-item {
+        display: grid;
+        grid-template-columns: 1fr auto auto;
+        gap: 8px;
+        align-items: center;
+        min-height: 56px;
+        padding: 8px 10px;
+        border: 2px solid #9ab2c5;
+        background: #f8fcff;
+        touch-action: none;
+      }
+
+      .sort-number {
+        font-size: 1.25rem;
+        font-weight: 900;
+      }
+
+      .sort-button {
+        display: grid;
+        place-items: center;
+        width: 40px;
+        min-height: 40px;
+        background: #2369c9;
+        font-weight: 900;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 16px;
+        align-items: center;
+      }
+
+      .primary-button {
+        background: var(--green);
+      }
+
+      .ghost-button {
+        color: var(--blue);
+        background: #eaf3ff;
+        box-shadow: none;
+      }
+
+      .feedback {
+        min-height: 30px;
+        margin: 12px 0 0;
+        font-size: 1.1rem;
+        font-weight: 900;
+      }
+
+      .feedback.good {
+        color: #167548;
+      }
+
+      .feedback.bad {
+        color: #bd2d20;
+      }
+
+      .keypad {
+        position: sticky;
+        bottom: 0;
+        z-index: 5;
+        display: grid;
+        grid-template-columns: repeat(6, minmax(44px, 1fr));
+        gap: 8px;
+        margin-top: 16px;
+        padding: 10px;
+        border: 1px solid var(--line);
+        background: rgba(22, 33, 45, 0.9);
+      }
+
+      .key-button {
+        min-height: 52px;
+        background: #ffffff;
+        color: var(--ink);
+        box-shadow: none;
+        font-size: 1.25rem;
+        font-weight: 900;
+      }
+
+      .key-button.wide {
+        grid-column: span 2;
+      }
+
+      .completion {
+        display: none;
+        margin-top: 16px;
+        padding: 16px;
+        background: #fff4d6;
+        border: 2px solid #e0b54f;
+      }
+
+      .completion.show {
+        display: block;
+      }
+
+      .completion h3 {
+        margin: 0 0 8px;
+        font-size: 1.5rem;
+      }
+
+      .completion p {
+        margin: 0;
+        color: #4d4331;
+        line-height: 1.42;
+      }
+
+      @media (max-width: 900px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+
+        .game-panel {
+          min-height: auto;
+        }
+      }
+
+      @media (max-width: 620px) {
+        header,
+        main {
+          width: min(100% - 18px, 1180px);
+        }
+
+        .topbar,
+        .country-header {
+          display: grid;
+        }
+
+        .country-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .stamp-grid {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .keypad {
+          grid-template-columns: repeat(4, minmax(44px, 1fr));
+        }
+
+        .game-panel,
+        .map-panel {
+          padding: 14px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <header>
+        <div class="topbar">
+          <div>
+            <h1>Matematická cesta okolo sveta</h1>
+            <p class="subtitle">
+              Vyberte krajinu, splňte 7 úloh a získajte pečiatku do triedneho pasu.
+            </p>
+          </div>
+          <button class="reset-button" type="button" id="resetButton">Nový let</button>
+        </div>
+      </header>
+
+      <main>
+        <div class="layout">
+          <aside class="panel map-panel" aria-label="Mapa krajín">
+            <section class="guide">
+              <div class="guide-avatar" aria-hidden="true">✈</div>
+              <p>
+                Sprievodca hlási: Zem má obvod asi 40 000 km. Dnes ho obletíme
+                matematicky, s pasom, vlajkami a dobrou hlavou na počítanie.
+              </p>
+            </section>
+
+            <section class="passport" aria-label="Pas">
+              <div class="passport-title">
+                <span>Pas expedície</span>
+                <span id="stampCount">0/7</span>
+              </div>
+              <div class="stamp-grid" id="stampGrid"></div>
+            </section>
+
+            <section class="country-grid" id="countryGrid"></section>
+          </aside>
+
+          <section class="panel game-panel" aria-live="polite">
+            <div class="country-header">
+              <div>
+                <p class="country-kicker" id="countryKicker">Štart</p>
+                <h2 id="countryTitle">Vyberte si prvú krajinu</h2>
+              </div>
+              <div class="progress-pill" id="progressPill">0 / 7</div>
+            </div>
+
+            <p class="fact-box" id="factBox">
+              Každá zastávka má vlastný typ úloh. Po pečiatke sa môžete vrátiť
+              na mapu a vybrať inú krajinu.
+            </p>
+
+            <article class="question-card">
+              <p class="question-text" id="questionText">
+                Kliknite na vlajku krajiny v mape a expedícia sa začne.
+              </p>
+              <div class="answer-area" id="answerArea"></div>
+              <div class="actions">
+                <button class="primary-button" type="button" id="checkButton">Skontrolovať</button>
+                <button class="ghost-button" type="button" id="newQuestionButton">Iná úloha</button>
+              </div>
+              <p class="feedback" id="feedback"></p>
+            </article>
+
+            <section class="completion" id="completionBox">
+              <h3>Pečiatka je v pase!</h3>
+              <p>
+                Blok je splnený. Vyberte si ďalšiu vlajku a pokračujte v ceste
+                okolo sveta.
+              </p>
+            </section>
+
+            <section class="keypad" aria-label="Dotyková klávesnica" id="keypad"></section>
+          </section>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      const countries = [
+        {
+          id: "francuzsko",
+          flag: "🇫🇷",
+          name: "Francúzsko",
+          skill: "čísla medzi hodnotami",
+          kicker: "1. zastávka pri Atlantiku",
+          fact: "Francúzsko má pobrežie pri mori aj slávne trhy. Dnes rátame mušle, ryby a lode.",
+          type: "range"
+        },
+        {
+          id: "brazilia",
+          flag: "🇧🇷",
+          name: "Brazília",
+          skill: "porovnávanie čísel",
+          kicker: "2. zastávka v dažďovom pralese",
+          fact: "Brazília je obrovská krajina, kde tečie rieka Amazonka. Čísla budeme porovnávať ako dve silné rieky.",
+          type: "compare"
+        },
+        {
+          id: "novy-zeland",
+          flag: "🇳🇿",
+          name: "Nový Zéland",
+          skill: "zoraďovanie čísel",
+          kicker: "3. zastávka medzi ostrovmi",
+          fact: "Nový Zéland je krajina ostrovov a vysokých hôr. Čísla uložte do správneho turistického radu.",
+          type: "sort"
+        },
+        {
+          id: "nemecko",
+          flag: "🇩🇪",
+          name: "Nemecko",
+          skill: "tisícky, stovky, desiatky, jednotky",
+          kicker: "4. zastávka pri hradoch",
+          fact: "Nemecko je známe hradmi, vlakmi a presnosťou. Rozložte číslo presne na tisícky, stovky, desiatky a jednotky.",
+          type: "decompose"
+        },
+        {
+          id: "kanada",
+          flag: "🇨🇦",
+          name: "Kanada",
+          skill: "násobenie do 100",
+          kicker: "5. zastávka pri jazerách",
+          fact: "Kanada má tisíce jazier a javorový list na vlajke. Násobenie pomôže spočítať výpravy cez lesy.",
+          type: "multiply"
+        },
+        {
+          id: "cina",
+          flag: "🇨🇳",
+          name: "Čína",
+          skill: "delenie do 100",
+          kicker: "6. zastávka pri Veľkom múre",
+          fact: "Veľký čínsky múr je veľmi dlhý. Delením rozdelíme zásoby pre rovnako veľké skupiny cestovateľov.",
+          type: "divide"
+        },
+        {
+          id: "nepal",
+          flag: "🇳🇵",
+          name: "Nepál",
+          skill: "skladanie čísla z rádov",
+          kicker: "7. zastávka pod Himalájami",
+          fact: "V Nepále leží Mount Everest. Vyskladajte číslo z porozhadzovaných tisícok, stoviek, desiatok a jednotiek.",
+          type: "compose"
+        }
+      ];
+
+      const state = {
+        activeCountry: null,
+        currentTask: null,
+        progress: {},
+        completed: {},
+        activeInput: null
+      };
+
+      countries.forEach((country) => {
+        state.progress[country.id] = 0;
+        state.completed[country.id] = false;
+      });
+
+      const countryGrid = document.getElementById("countryGrid");
+      const stampGrid = document.getElementById("stampGrid");
+      const stampCount = document.getElementById("stampCount");
+      const countryKicker = document.getElementById("countryKicker");
+      const countryTitle = document.getElementById("countryTitle");
+      const progressPill = document.getElementById("progressPill");
+      const factBox = document.getElementById("factBox");
+      const questionText = document.getElementById("questionText");
+      const answerArea = document.getElementById("answerArea");
+      const feedback = document.getElementById("feedback");
+      const checkButton = document.getElementById("checkButton");
+      const newQuestionButton = document.getElementById("newQuestionButton");
+      const resetButton = document.getElementById("resetButton");
+      const completionBox = document.getElementById("completionBox");
+      const keypad = document.getElementById("keypad");
+
+      function randomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+      }
+
+      function shuffle(items) {
+        return [...items].sort(() => Math.random() - 0.5);
+      }
+
+      function pick(items) {
+        return items[randomInt(0, items.length - 1)];
+      }
+
+      function renderMap() {
+        countryGrid.innerHTML = "";
+        countries.forEach((country) => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = "country-card";
+          if (state.activeCountry?.id === country.id) button.classList.add("active");
+          if (state.completed[country.id]) button.classList.add("complete");
+          button.innerHTML = `
+            <span class="flag">${country.flag}</span>
+            <span class="country-name">${country.name}</span>
+            <span class="country-skill">${country.skill}</span>
+          `;
+          button.addEventListener("click", () => selectCountry(country.id));
+          countryGrid.appendChild(button);
+        });
+      }
+
+      function renderPassport() {
+        stampGrid.innerHTML = "";
+        countries.forEach((country) => {
+          const stamp = document.createElement("div");
+          stamp.className = "stamp";
+          if (state.completed[country.id]) stamp.classList.add("done");
+          stamp.textContent = state.completed[country.id] ? country.flag : country.flag;
+          stamp.title = country.name;
+          stampGrid.appendChild(stamp);
+        });
+        const doneCount = countries.filter((country) => state.completed[country.id]).length;
+        stampCount.textContent = `${doneCount}/7`;
+      }
+
+      function selectCountry(countryId) {
+        state.activeCountry = countries.find((country) => country.id === countryId);
+        countryKicker.textContent = state.activeCountry.kicker;
+        countryTitle.textContent = `${state.activeCountry.flag} ${state.activeCountry.name}`;
+        factBox.textContent = state.activeCountry.fact;
+        feedback.textContent = "";
+        feedback.className = "feedback";
+        completionBox.classList.remove("show");
+        renderTask();
+        renderMap();
+        updateProgress();
+      }
+
+      function updateProgress() {
+        if (!state.activeCountry) {
+          progressPill.textContent = "0 / 7";
+          return;
+        }
+        progressPill.textContent = `${state.progress[state.activeCountry.id]} / 7`;
+      }
+
+      function makeTask(type) {
+        if (type === "range") {
+          const low = randomInt(42, 96) * 10;
+          const high = low + randomInt(22, 55) * 10;
+          const theme = pick(["mušlí", "rýb", "maľovaných lodičiek", "modrých morských kameňov"]);
+          return {
+            type,
+            low,
+            high,
+            theme,
+            text: `Na francúzskom trhu mal jeden stánok ${low} ${theme} a vedľajší stánok mal ${high} ${theme}. Nájdite 3 rôzne počty pre tretí stánok, ak mal byť počet medzi nimi a číslo malo končiť nulou.`
+          };
+        }
+
+        if (type === "compare") {
+          const left = randomInt(1000, 9999);
+          let right = randomInt(1000, 9999);
+          if (Math.random() < 0.18) right = left;
+          return {
+            type,
+            left,
+            right,
+            answer: left < right ? "<" : left > right ? ">" : "=",
+            text: `Ktorý znak patrí medzi čísla z brazílskej výpravy? ${left} ___ ${right}`
+          };
+        }
+
+        if (type === "sort") {
+          const numbers = [];
+          while (numbers.length < 5) {
+            const value = randomInt(4200, 8999);
+            if (!numbers.includes(value)) numbers.push(value);
+          }
+          const direction = Math.random() < 0.5 ? "vzostupne" : "zostupne";
+          return {
+            type,
+            numbers: shuffle(numbers),
+            direction,
+            text: `Presuňte čísla z novozélandskej trasy do poradia: ${direction}.`
+          };
+        }
+
+        if (type === "decompose") {
+          const number = randomInt(1000, 9999);
+          return {
+            type,
+            number,
+            text: `Nemecký vlak má číslo ${number}. Rozložte ho na tisícky, stovky, desiatky a jednotky.`
+          };
+        }
+
+        if (type === "multiply") {
+          const a = randomInt(2, 10);
+          const b = randomInt(2, 10);
+          return {
+            type,
+            a,
+            b,
+            answer: a * b,
+            text: `V Kanade ide ${a} saní a na každých sedí ${b} cestovateľov. Koľko cestovateľov ide spolu?`
+          };
+        }
+
+        if (type === "divide") {
+          const divisor = randomInt(2, 10);
+          const quotient = randomInt(2, 10);
+          const total = divisor * quotient;
+          return {
+            type,
+            total,
+            divisor,
+            answer: quotient,
+            text: `V Číne rozdelili ${total} lampiónov rovnako do ${divisor} skupín. Koľko lampiónov je v jednej skupine?`
+          };
+        }
+
+        const digits = {
+          t: randomInt(1, 9),
+          h: randomInt(0, 9),
+          z: randomInt(0, 9),
+          j: randomInt(0, 9)
+        };
+        const parts = shuffle([
+          `${digits.h} stoviek`,
+          `${digits.j} jednotiek`,
+          `${digits.t} tisícok`,
+          `${digits.z} desiatok`
+        ]);
+        return {
+          type,
+          digits,
+          answer: digits.t * 1000 + digits.h * 100 + digits.z * 10 + digits.j,
+          text: `V Nepále našli zápis: ${parts.join(", ")}. Aké číslo je ukryté v zápise?`
+        };
+      }
+
+      function renderTask() {
+        if (!state.activeCountry) return;
+        state.currentTask = makeTask(state.activeCountry.type);
+        questionText.textContent = state.currentTask.text;
+        answerArea.innerHTML = "";
+        feedback.textContent = "";
+        feedback.className = "feedback";
+        completionBox.classList.remove("show");
+
+        if (state.currentTask.type === "range") renderRangeInputs();
+        if (state.currentTask.type === "compare") renderCompareInputs();
+        if (state.currentTask.type === "sort") renderSortInputs();
+        if (state.currentTask.type === "decompose") renderDecomposeInputs();
+        if (["multiply", "divide", "compose"].includes(state.currentTask.type)) renderSingleNumberInput();
+      }
+
+      function registerInput(input) {
+        input.inputMode = "none";
+        input.autocomplete = "off";
+        input.addEventListener("focus", () => {
+          state.activeInput = input;
+        });
+        input.addEventListener("click", () => {
+          state.activeInput = input;
+        });
+      }
+
+      function makeInput(id, labelText = "") {
+        const wrap = document.createElement("div");
+        wrap.className = labelText ? "place-field" : "";
+        if (labelText) {
+          const label = document.createElement("label");
+          label.htmlFor = id;
+          label.textContent = labelText;
+          wrap.appendChild(label);
+        }
+        const input = document.createElement("input");
+        input.className = "answer-input";
+        input.id = id;
+        input.type = "text";
+        registerInput(input);
+        wrap.appendChild(input);
+        return wrap;
+      }
+
+      function renderRangeInputs() {
+        const row = document.createElement("div");
+        row.className = "numeric-row";
+        ["Možnosť 1", "Možnosť 2", "Možnosť 3"].forEach((label, index) => {
+          row.appendChild(makeInput(`range-${index}`, label));
+        });
+        answerArea.appendChild(row);
+        focusFirstInput();
+      }
+
+      function renderCompareInputs() {
+        const row = document.createElement("div");
+        row.className = "symbol-row";
+        ["<", "=", ">"].forEach((symbol) => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = "symbol-button";
+          button.textContent = symbol;
+          button.addEventListener("click", () => {
+            document.querySelectorAll(".symbol-button").forEach((item) => item.classList.remove("selected"));
+            button.classList.add("selected");
+          });
+          row.appendChild(button);
+        });
+        answerArea.appendChild(row);
+      }
+
+      function renderSortInputs() {
+        const list = document.createElement("div");
+        list.className = "sort-list";
+        list.id = "sortList";
+        state.currentTask.numbers.forEach((number) => list.appendChild(createSortItem(number)));
+        answerArea.appendChild(list);
+      }
+
+      function createSortItem(number) {
+        const item = document.createElement("div");
+        item.className = "sort-item";
+        item.draggable = true;
+        item.dataset.number = number;
+        item.innerHTML = `
+          <span class="sort-number">${number}</span>
+          <button class="sort-button" type="button" aria-label="Posunúť hore">↑</button>
+          <button class="sort-button" type="button" aria-label="Posunúť dole">↓</button>
+        `;
+        const [up, down] = item.querySelectorAll("button");
+        up.addEventListener("click", () => moveSortItem(item, -1));
+        down.addEventListener("click", () => moveSortItem(item, 1));
+        item.addEventListener("dragstart", (event) => {
+          event.dataTransfer.setData("text/plain", number);
+          item.classList.add("dragging");
+        });
+        item.addEventListener("dragend", () => item.classList.remove("dragging"));
+        item.addEventListener("dragover", (event) => event.preventDefault());
+        item.addEventListener("drop", (event) => {
+          event.preventDefault();
+          const draggedNumber = event.dataTransfer.getData("text/plain");
+          const dragged = document.querySelector(`[data-number="${draggedNumber}"]`);
+          if (dragged && dragged !== item) item.before(dragged);
+        });
+        return item;
+      }
+
+      function moveSortItem(item, direction) {
+        const sibling = direction < 0 ? item.previousElementSibling : item.nextElementSibling;
+        if (!sibling) return;
+        if (direction < 0) sibling.before(item);
+        else sibling.after(item);
+      }
+
+      function renderDecomposeInputs() {
+        const row = document.createElement("div");
+        row.className = "place-row";
+        [
+          ["thousands", "Tisícky"],
+          ["hundreds", "Stovky"],
+          ["tens", "Desiatky"],
+          ["ones", "Jednotky"]
+        ].forEach(([id, label]) => row.appendChild(makeInput(id, label)));
+        answerArea.appendChild(row);
+        focusFirstInput();
+      }
+
+      function renderSingleNumberInput() {
+        const row = document.createElement("div");
+        row.className = "numeric-row";
+        row.appendChild(makeInput("singleAnswer", "Odpoveď"));
+        answerArea.appendChild(row);
+        focusFirstInput();
+      }
+
+      function focusFirstInput() {
+        const first = answerArea.querySelector("input");
+        if (first) {
+          state.activeInput = first;
+          first.focus();
+        }
+      }
+
+      function numberValue(input) {
+        return Number(input.value.trim());
+      }
+
+      function checkAnswer() {
+        if (!state.activeCountry || !state.currentTask) return;
+        const task = state.currentTask;
+        let correct = false;
+
+        if (task.type === "range") {
+          const values = [...answerArea.querySelectorAll("input")].map(numberValue);
+          const uniqueValues = new Set(values);
+          correct = values.every((value) => Number.isInteger(value) && value > task.low && value < task.high && value % 10 === 0) && uniqueValues.size === 3;
+        }
+
+        if (task.type === "compare") {
+          const selected = answerArea.querySelector(".symbol-button.selected");
+          correct = selected?.textContent === task.answer;
+        }
+
+        if (task.type === "sort") {
+          const values = [...answerArea.querySelectorAll(".sort-item")].map((item) => Number(item.dataset.number));
+          const expected = [...values].sort((a, b) => task.direction === "vzostupne" ? a - b : b - a);
+          correct = values.every((value, index) => value === expected[index]);
+        }
+
+        if (task.type === "decompose") {
+          const n = task.number;
+          correct =
+            numberValue(document.getElementById("thousands")) === Math.floor(n / 1000) * 1000 &&
+            numberValue(document.getElementById("hundreds")) === Math.floor((n % 1000) / 100) * 100 &&
+            numberValue(document.getElementById("tens")) === Math.floor((n % 100) / 10) * 10 &&
+            numberValue(document.getElementById("ones")) === n % 10;
+        }
+
+        if (["multiply", "divide", "compose"].includes(task.type)) {
+          correct = numberValue(document.getElementById("singleAnswer")) === task.answer;
+        }
+
+        if (correct) {
+          handleCorrectAnswer();
+        } else {
+          feedback.textContent = "Ešte nie. Skúste opraviť odpoveď a skontrolovať znova.";
+          feedback.className = "feedback bad";
+        }
+      }
+
+      function handleCorrectAnswer() {
+        const id = state.activeCountry.id;
+        if (!state.completed[id]) {
+          state.progress[id] += 1;
+        }
+
+        if (state.progress[id] >= 7) {
+          state.completed[id] = true;
+          state.progress[id] = 7;
+          feedback.textContent = "Výborne! Celý blok je splnený.";
+          completionBox.classList.add("show");
+          renderPassport();
+          renderMap();
+        } else {
+          feedback.textContent = "Správne! Letíme na ďalšiu úlohu v tejto krajine.";
+          window.setTimeout(renderTask, 650);
+        }
+        feedback.className = "feedback good";
+        updateProgress();
+      }
+
+      function renderKeypad() {
+        keypad.innerHTML = "";
+        ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"].forEach((key) => {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = "key-button";
+          button.textContent = key;
+          button.addEventListener("click", () => insertKey(key));
+          keypad.appendChild(button);
+        });
+
+        const back = document.createElement("button");
+        back.type = "button";
+        back.className = "key-button wide";
+        back.textContent = "Mazať";
+        back.addEventListener("click", () => {
+          if (state.activeInput) state.activeInput.value = state.activeInput.value.slice(0, -1);
+        });
+        keypad.appendChild(back);
+
+        const clear = document.createElement("button");
+        clear.type = "button";
+        clear.className = "key-button wide";
+        clear.textContent = "Vymazať";
+        clear.addEventListener("click", () => {
+          if (state.activeInput) state.activeInput.value = "";
+        });
+        keypad.appendChild(clear);
+      }
+
+      function insertKey(key) {
+        if (!state.activeInput) focusFirstInput();
+        if (!state.activeInput) return;
+        state.activeInput.value += key;
+        state.activeInput.focus();
+      }
+
+      function resetGame() {
+        countries.forEach((country) => {
+          state.progress[country.id] = 0;
+          state.completed[country.id] = false;
+        });
+        state.activeCountry = null;
+        state.currentTask = null;
+        countryKicker.textContent = "Štart";
+        countryTitle.textContent = "Vyberte si prvú krajinu";
+        factBox.textContent = "Každá zastávka má vlastný typ úloh. Po pečiatke sa môžete vrátiť na mapu a vybrať inú krajinu.";
+        questionText.textContent = "Kliknite na vlajku krajiny v mape a expedícia sa začne.";
+        answerArea.innerHTML = "";
+        feedback.textContent = "";
+        completionBox.classList.remove("show");
+        renderMap();
+        renderPassport();
+        updateProgress();
+      }
+
+      checkButton.addEventListener("click", checkAnswer);
+      newQuestionButton.addEventListener("click", () => {
+        if (state.activeCountry && !state.completed[state.activeCountry.id]) renderTask();
+      });
+      resetButton.addEventListener("click", resetGame);
+
+      renderMap();
+      renderPassport();
+      renderKeypad();
+    </script>
+  </body>
+</html>
