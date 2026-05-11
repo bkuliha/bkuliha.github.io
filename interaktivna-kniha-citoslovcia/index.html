@@ -1,0 +1,1190 @@
+<!DOCTYPE html>
+<html lang="sk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interaktivna kniha citoslovci</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #202126;
+        --muted: #6b6370;
+        --paper: #fffdf7;
+        --page-edge: #ded1bd;
+        --line: #24242a;
+        --sky: #6daedb;
+        --green: #2f7f68;
+        --yellow: #f4c95d;
+        --red: #c8544b;
+        --blue: #3867b8;
+        --mist: #f3efe7;
+        --shadow: rgba(29, 23, 16, 0.18);
+        --ok: #28764d;
+        --bad: #a9413b;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+        color: var(--ink);
+        background:
+          linear-gradient(90deg, rgba(56, 103, 184, 0.08) 1px, transparent 1px),
+          linear-gradient(rgba(47, 127, 104, 0.08) 1px, transparent 1px),
+          linear-gradient(135deg, #fbf6ec 0%, #e7f1f3 100%);
+        background-size: 34px 34px, 34px 34px, auto;
+      }
+
+      button,
+      select,
+      input,
+      textarea {
+        font: inherit;
+      }
+
+      button {
+        border: 0;
+      }
+
+      .app {
+        width: min(1280px, calc(100% - 28px));
+        margin: 22px auto 48px;
+      }
+
+      .topbar {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 16px;
+        align-items: end;
+        margin-bottom: 16px;
+      }
+
+      .eyebrow {
+        margin: 0 0 5px;
+        color: var(--red);
+        font-size: 0.82rem;
+        font-weight: 900;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(2rem, 5vw, 4.1rem);
+        line-height: 0.95;
+        letter-spacing: 0;
+      }
+
+      .toolbar,
+      .book-actions,
+      .field-row,
+      .blank-tools {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+      }
+
+      .toolbar {
+        justify-content: flex-end;
+      }
+
+      .button,
+      .select,
+      .input,
+      .textarea {
+        min-height: 42px;
+        border: 2px solid var(--line);
+        border-radius: 8px;
+        background: var(--paper);
+        color: var(--ink);
+        box-shadow: 3px 3px 0 rgba(36, 36, 42, 0.82);
+      }
+
+      .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 0 13px;
+        cursor: pointer;
+        font-weight: 900;
+      }
+
+      .button.primary {
+        background: var(--green);
+        color: #fff;
+      }
+
+      .button.yellow {
+        background: var(--yellow);
+      }
+
+      .button.blue {
+        background: var(--blue);
+        color: #fff;
+      }
+
+      .upload-input {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+      }
+
+      .button:active {
+        transform: translate(2px, 2px);
+        box-shadow: 1px 1px 0 rgba(36, 36, 42, 0.82);
+      }
+
+      .select,
+      .input {
+        padding: 0 10px;
+      }
+
+      .textarea {
+        width: 100%;
+        min-height: 150px;
+        padding: 10px;
+        resize: vertical;
+        box-shadow: none;
+        font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+        font-size: 0.85rem;
+      }
+
+      .workspace {
+        display: grid;
+        grid-template-columns: minmax(300px, 1fr) minmax(310px, 390px);
+        gap: 18px;
+        align-items: start;
+      }
+
+      .reader {
+        display: grid;
+        gap: 14px;
+      }
+
+      .book-shell {
+        position: relative;
+        perspective: 1800px;
+        display: grid;
+        justify-items: center;
+        padding: 18px;
+        border: 2px solid rgba(36, 36, 42, 0.18);
+        border-radius: 8px;
+        background:
+          radial-gradient(circle at 50% 16%, rgba(255, 255, 255, 0.88), transparent 36%),
+          linear-gradient(135deg, rgba(109, 174, 219, 0.18), rgba(244, 201, 93, 0.18));
+        overflow: hidden;
+      }
+
+      .book-shadow {
+        position: absolute;
+        inset: auto 8% 8px;
+        height: 34px;
+        border-radius: 50%;
+        background: rgba(29, 23, 16, 0.16);
+        filter: blur(12px);
+      }
+
+      .book {
+        position: relative;
+        width: min(100%, 760px);
+        transform-style: preserve-3d;
+      }
+
+      .page {
+        position: relative;
+        z-index: 1;
+        aspect-ratio: 210 / 297;
+        border: 3px solid var(--line);
+        border-radius: 8px 16px 16px 8px;
+        background: var(--paper);
+        box-shadow:
+          9px 9px 0 var(--page-edge),
+          0 24px 46px var(--shadow);
+        transform-origin: left center;
+        overflow: hidden;
+      }
+
+      .book.turning-next .page {
+        animation: turnNext 520ms ease-in-out;
+      }
+
+      .book.turning-prev .page {
+        animation: turnPrev 520ms ease-in-out;
+      }
+
+      @keyframes turnNext {
+        0% {
+          transform: rotateY(0deg);
+        }
+        48% {
+          transform: rotateY(-72deg) skewY(-1deg);
+          filter: brightness(0.92);
+        }
+        100% {
+          transform: rotateY(0deg);
+        }
+      }
+
+      @keyframes turnPrev {
+        0% {
+          transform: rotateY(0deg);
+        }
+        48% {
+          transform: rotateY(48deg) skewY(1deg);
+          filter: brightness(0.94);
+        }
+        100% {
+          transform: rotateY(0deg);
+        }
+      }
+
+      .page::before {
+        content: "";
+        position: absolute;
+        inset: 0 auto 0 0;
+        width: 26px;
+        background: linear-gradient(90deg, rgba(0, 0, 0, 0.12), transparent);
+        pointer-events: none;
+        z-index: 5;
+      }
+
+      .page-canvas {
+        position: absolute;
+        inset: 22px;
+        background: #fffaf0;
+      }
+
+      .page-image {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+
+      .pdf-stage {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        background: #fff;
+      }
+
+      .pdf-page-image {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+
+      .empty-pdf {
+        display: grid;
+        place-items: center;
+        height: 100%;
+        padding: 28px;
+        text-align: center;
+        border: 3px dashed rgba(36, 36, 42, 0.3);
+        border-radius: 8px;
+        background: rgba(255, 253, 247, 0.86);
+        color: var(--muted);
+        font-weight: 900;
+        line-height: 1.45;
+      }
+
+      .fallback-comic {
+        height: 100%;
+        display: grid;
+        grid-template-rows: auto repeat(3, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .page-heading {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr) auto;
+        gap: 10px;
+        align-items: center;
+        border-bottom: 4px solid var(--line);
+        padding-bottom: 10px;
+      }
+
+      .page-num {
+        display: grid;
+        place-items: center;
+        width: 42px;
+        height: 42px;
+        border: 3px solid var(--line);
+        border-radius: 50%;
+        background: var(--yellow);
+        font-weight: 900;
+      }
+
+      .page-heading h2 {
+        margin: 0;
+        font-size: clamp(1.2rem, 3vw, 2rem);
+        line-height: 1;
+      }
+
+      .page-heading small {
+        justify-self: end;
+        color: var(--muted);
+        font-weight: 900;
+        text-transform: uppercase;
+      }
+
+      .comic-panel {
+        position: relative;
+        min-height: 0;
+        border: 3px solid var(--line);
+        border-radius: 8px;
+        background:
+          radial-gradient(circle at 72% 26%, rgba(244, 201, 93, 0.55), transparent 18%),
+          linear-gradient(135deg, #eef8fb 0%, #fff7dc 100%);
+        overflow: hidden;
+      }
+
+      .comic-panel:nth-child(odd) {
+        background:
+          radial-gradient(circle at 22% 24%, rgba(200, 84, 75, 0.18), transparent 20%),
+          linear-gradient(135deg, #f7f2ff 0%, #e9f7ed 100%);
+      }
+
+      .caption {
+        position: absolute;
+        left: 12px;
+        right: 12px;
+        top: 10px;
+        display: inline-block;
+        width: fit-content;
+        max-width: calc(100% - 24px);
+        padding: 7px 10px;
+        border: 2px solid var(--line);
+        border-radius: 8px;
+        background: rgba(255, 253, 247, 0.94);
+        font-weight: 900;
+      }
+
+      .character {
+        position: absolute;
+        left: 10%;
+        bottom: -2px;
+        width: 86px;
+        height: 110px;
+      }
+
+      .character::before {
+        content: "";
+        position: absolute;
+        left: 22px;
+        top: 0;
+        width: 44px;
+        height: 44px;
+        border: 3px solid var(--line);
+        border-radius: 50%;
+        background: #ffd8ad;
+      }
+
+      .character::after {
+        content: "";
+        position: absolute;
+        left: 9px;
+        bottom: 0;
+        width: 68px;
+        height: 72px;
+        border: 3px solid var(--line);
+        border-radius: 28px 28px 8px 8px;
+        background: var(--sky);
+      }
+
+      .bubble {
+        position: absolute;
+        right: 9%;
+        top: 30%;
+        width: 36%;
+        min-height: 62px;
+        border: 3px solid var(--line);
+        border-radius: 50%;
+        background: #fff;
+      }
+
+      .bubble::after {
+        content: "";
+        position: absolute;
+        left: 12%;
+        bottom: -16px;
+        width: 22px;
+        height: 22px;
+        border: 3px solid var(--line);
+        border-top: 0;
+        border-left: 0;
+        background: #fff;
+        transform: rotate(28deg);
+      }
+
+      .blank {
+        position: absolute;
+        left: calc(var(--x) * 1%);
+        top: calc(var(--y) * 1%);
+        transform: translate(-50%, -50%);
+        z-index: 8;
+        display: grid;
+        gap: 3px;
+        width: clamp(104px, 18%, 158px);
+      }
+
+      .blank-label {
+        justify-self: start;
+        padding: 2px 7px;
+        border: 2px solid var(--line);
+        border-radius: 999px;
+        background: var(--yellow);
+        font-size: 0.72rem;
+        font-weight: 900;
+      }
+
+      .blank select {
+        width: 100%;
+        min-height: 36px;
+        border: 3px solid var(--line);
+        border-radius: 8px;
+        background: #fff;
+        font-weight: 900;
+        box-shadow: 3px 3px 0 rgba(36, 36, 42, 0.72);
+      }
+
+      .blank.correct select {
+        border-color: var(--ok);
+        background: #effaf3;
+      }
+
+      .blank.wrong select {
+        border-color: var(--bad);
+        background: #fff0ee;
+      }
+
+      .blank.active {
+        outline: 4px solid rgba(56, 103, 184, 0.34);
+        outline-offset: 4px;
+        border-radius: 10px;
+      }
+
+      .teacher-mode .page-canvas {
+        cursor: crosshair;
+      }
+
+      .teacher-mode .blank::after {
+        content: attr(data-coords);
+        justify-self: center;
+        padding: 2px 5px;
+        border-radius: 5px;
+        background: rgba(32, 33, 38, 0.86);
+        color: #fff;
+        font-size: 0.68rem;
+        font-weight: 800;
+      }
+
+      .book-actions {
+        justify-content: center;
+      }
+
+      .progress {
+        min-width: 150px;
+        text-align: center;
+        font-weight: 900;
+      }
+
+      .side-panel {
+        display: grid;
+        gap: 12px;
+      }
+
+      .panel {
+        border: 2px solid var(--line);
+        border-radius: 8px;
+        background: rgba(255, 253, 247, 0.94);
+        box-shadow: 5px 5px 0 rgba(36, 36, 42, 0.14);
+        padding: 14px;
+      }
+
+      .panel h2 {
+        margin: 0 0 10px;
+        font-size: 1.15rem;
+      }
+
+      .status-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .stat {
+        min-height: 70px;
+        padding: 10px;
+        border: 2px solid var(--line);
+        border-radius: 8px;
+        background: #fff;
+      }
+
+      .stat span {
+        display: block;
+        color: var(--muted);
+        font-size: 0.74rem;
+        font-weight: 900;
+        text-transform: uppercase;
+      }
+
+      .stat strong {
+        display: block;
+        margin-top: 4px;
+        font-size: 1.4rem;
+      }
+
+      .field {
+        display: grid;
+        gap: 5px;
+        margin-top: 10px;
+      }
+
+      .field label {
+        color: var(--muted);
+        font-size: 0.78rem;
+        font-weight: 900;
+        text-transform: uppercase;
+      }
+
+      .field-row .field {
+        flex: 1 1 90px;
+      }
+
+      .hint {
+        margin: 10px 0 0;
+        color: var(--muted);
+        line-height: 1.45;
+        font-size: 0.94rem;
+      }
+
+      .feedback {
+        min-height: 28px;
+        margin: 0;
+        font-weight: 900;
+      }
+
+      .feedback.ok {
+        color: var(--ok);
+      }
+
+      .feedback.bad {
+        color: var(--bad);
+      }
+
+      .toast {
+        position: fixed;
+        left: 50%;
+        bottom: 20px;
+        z-index: 20;
+        transform: translateX(-50%) translateY(120px);
+        max-width: min(520px, calc(100% - 28px));
+        padding: 12px 16px;
+        border: 2px solid var(--line);
+        border-radius: 8px;
+        background: var(--ink);
+        color: #fff;
+        font-weight: 900;
+        box-shadow: 0 18px 34px rgba(0, 0, 0, 0.22);
+        transition: transform 180ms ease;
+      }
+
+      .toast.show {
+        transform: translateX(-50%) translateY(0);
+      }
+
+      @media (max-width: 980px) {
+        .topbar,
+        .workspace {
+          grid-template-columns: 1fr;
+        }
+
+        .toolbar {
+          justify-content: flex-start;
+        }
+
+        .side-panel {
+          order: -1;
+        }
+      }
+
+      @media (max-width: 620px) {
+        .app {
+          width: min(100% - 16px, 1280px);
+          margin-top: 12px;
+        }
+
+        .book-shell {
+          padding: 8px;
+        }
+
+        .page-canvas {
+          inset: 12px;
+        }
+
+        .page-heading {
+          grid-template-columns: auto minmax(0, 1fr);
+        }
+
+        .page-heading small {
+          display: none;
+        }
+
+        .blank {
+          width: clamp(92px, 24%, 128px);
+        }
+
+        .blank select {
+          min-height: 32px;
+          font-size: 0.82rem;
+        }
+
+        .status-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="app" id="app">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Komiks s citoslovciami</p>
+          <h1>Interaktivna kniha</h1>
+        </div>
+        <div class="toolbar" aria-label="Nastroje">
+          <label class="button blue" for="pdf-upload">Nahrat PDF</label>
+          <input class="upload-input" id="pdf-upload" type="file" accept="application/pdf" />
+          <button class="button yellow" id="teacher-toggle" type="button">Rezim umiestnovania</button>
+          <button class="button" id="reset-button" type="button">Vycistit odpovede</button>
+          <button class="button primary" id="check-button" type="button">Skontrolovat</button>
+        </div>
+      </header>
+
+      <section class="workspace">
+        <div class="reader">
+          <div class="book-shell">
+            <div class="book-shadow" aria-hidden="true"></div>
+            <div class="book" id="book">
+              <article class="page" aria-live="polite">
+                <div class="page-canvas" id="page-canvas"></div>
+              </article>
+            </div>
+          </div>
+          <nav class="book-actions" aria-label="Listovanie">
+            <button class="button" id="prev-button" type="button">Predosla strana</button>
+            <span class="progress" id="page-progress"></span>
+            <button class="button blue" id="next-button" type="button">Dalsia strana</button>
+          </nav>
+        </div>
+
+        <aside class="side-panel">
+          <section class="panel" aria-label="Vysledok">
+            <h2>Stav knihy</h2>
+            <div class="status-grid">
+              <div class="stat">
+                <span>Vyplnene</span>
+                <strong id="filled-count">0/0</strong>
+              </div>
+              <div class="stat">
+                <span>Spravne</span>
+                <strong id="correct-count">0</strong>
+              </div>
+              <div class="stat">
+                <span>Strana</span>
+                <strong id="side-page">1</strong>
+              </div>
+            </div>
+            <p class="feedback" id="feedback"></p>
+          </section>
+
+          <section class="panel" id="teacher-panel" hidden>
+            <h2>Nastavenie miest</h2>
+            <div class="field">
+              <label for="blank-picker">Chybajuce miesto</label>
+              <select class="select" id="blank-picker"></select>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label for="x-input">X %</label>
+                <input class="input" id="x-input" type="number" min="0" max="100" step="0.1" />
+              </div>
+              <div class="field">
+                <label for="y-input">Y %</label>
+                <input class="input" id="y-input" type="number" min="0" max="100" step="0.1" />
+              </div>
+            </div>
+            <div class="field">
+              <label for="options-input">Tri moznosti</label>
+              <input class="input" id="options-input" type="text" />
+            </div>
+            <div class="field">
+              <label for="answer-input">Spravna odpoved</label>
+              <input class="input" id="answer-input" type="text" />
+            </div>
+            <div class="blank-tools">
+              <button class="button yellow" id="apply-blank" type="button">Ulozit miesto</button>
+              <button class="button" id="copy-config" type="button">Kopirovat konfiguraciu</button>
+            </div>
+            <p class="hint">V rezime umiestnovania vyberte miesto a kliknite priamo na stranu. Suradnice su v percentach, takze ostanu spravne aj pri zmene velkosti obrazovky.</p>
+            <div class="field">
+              <label for="config-output">Konfiguracia aktualnej strany</label>
+              <textarea class="textarea" id="config-output" readonly></textarea>
+            </div>
+          </section>
+
+          <section class="panel">
+            <h2>Praca s PDF</h2>
+            <p class="hint">Kliknite na <strong>Nahrat PDF</strong>. Po nacitani vznikne pre kazdu stranu knihy trojica rozbalovacich ponuk. V rezime umiestnovania vyberiete miesto, kliknete na PDF stranu a zadate tri moznosti aj spravnu odpoved.</p>
+          </section>
+        </aside>
+      </section>
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+      let bookPages = [
+        {
+          title: "Rano v skole",
+          image: null,
+          panels: ["Dvere sa otvorili", "Trieda sa zlakla", "Krieda spadla na zem"],
+          blanks: [
+            { id: "1A", x: 68, y: 23, answer: "buch", options: ["buch", "mnam", "hop"] },
+            { id: "1B", x: 37, y: 51, answer: "ach", options: ["ach", "tik-tak", "bum"] },
+            { id: "1C", x: 72, y: 78, answer: "cink", options: ["haf", "cink", "fuj"] }
+          ]
+        },
+        {
+          title: "Na chodbe",
+          image: null,
+          panels: ["Lopta odskocila", "Deti sa smeju", "Zvoncek vola vsetkych spat"],
+          blanks: [
+            { id: "2A", x: 66, y: 24, answer: "hop", options: ["hop", "brr", "au"] },
+            { id: "2B", x: 32, y: 51, answer: "haha", options: ["haha", "bum", "paf"] },
+            { id: "2C", x: 70, y: 79, answer: "crrn", options: ["mnam", "crrn", "fu"] }
+          ]
+        },
+        {
+          title: "Velka prestavka",
+          image: null,
+          panels: ["Desiata vonia", "Dzban sa vylial", "Miska ochutnala citron"],
+          blanks: [
+            { id: "3A", x: 69, y: 24, answer: "mnam", options: ["mnam", "au", "klop"] },
+            { id: "3B", x: 36, y: 51, answer: "splash", options: ["jaj", "splash", "haha"] },
+            { id: "3C", x: 72, y: 79, answer: "kys", options: ["kys", "buch", "tik-tak"] }
+          ]
+        },
+        {
+          title: "Cesta domov",
+          image: null,
+          panels: ["Vietor zafukal", "Auto zatrubilo", "Dvere sa potichu zavreli"],
+          blanks: [
+            { id: "4A", x: 68, y: 24, answer: "fuu", options: ["fuu", "mnam", "pif"] },
+            { id: "4B", x: 34, y: 51, answer: "tutuu", options: ["ha", "tutuu", "ach"] },
+            { id: "4C", x: 72, y: 79, answer: "klik", options: ["klik", "bum", "jaj"] }
+          ]
+        }
+      ];
+
+      const answers = {};
+      let currentPage = 0;
+      let teacherMode = false;
+      let selectedBlankId = bookPages[0].blanks[0].id;
+      let checked = false;
+      let pdfDocument = null;
+      let renderedPdfPages = new Map();
+      let renderToken = 0;
+
+      const app = document.getElementById("app");
+      const book = document.getElementById("book");
+      const pageCanvas = document.getElementById("page-canvas");
+      const pageProgress = document.getElementById("page-progress");
+      const prevButton = document.getElementById("prev-button");
+      const nextButton = document.getElementById("next-button");
+      const checkButton = document.getElementById("check-button");
+      const resetButton = document.getElementById("reset-button");
+      const pdfUpload = document.getElementById("pdf-upload");
+      const teacherToggle = document.getElementById("teacher-toggle");
+      const teacherPanel = document.getElementById("teacher-panel");
+      const blankPicker = document.getElementById("blank-picker");
+      const xInput = document.getElementById("x-input");
+      const yInput = document.getElementById("y-input");
+      const optionsInput = document.getElementById("options-input");
+      const answerInput = document.getElementById("answer-input");
+      const applyBlank = document.getElementById("apply-blank");
+      const copyConfig = document.getElementById("copy-config");
+      const configOutput = document.getElementById("config-output");
+      const filledCount = document.getElementById("filled-count");
+      const correctCount = document.getElementById("correct-count");
+      const sidePage = document.getElementById("side-page");
+      const feedback = document.getElementById("feedback");
+      const toast = document.getElementById("toast");
+
+      function showToast(message) {
+        toast.textContent = message;
+        toast.classList.add("show");
+        window.clearTimeout(showToast.timer);
+        showToast.timer = window.setTimeout(() => toast.classList.remove("show"), 1800);
+      }
+
+      function currentData() {
+        return bookPages[currentPage];
+      }
+
+      function allBlanks() {
+        return bookPages.flatMap((page) => page.blanks);
+      }
+
+      function selectedBlank() {
+        return currentData().blanks.find((blank) => blank.id === selectedBlankId) || currentData().blanks[0];
+      }
+
+      function firstBlankId(page) {
+        return page.blanks[0]?.id || "";
+      }
+
+      function createDefaultBlanks(pageNumber, totalPages) {
+        if (pageNumber === 1 || pageNumber === totalPages) {
+          return [];
+        }
+
+        return [
+          { id: `${pageNumber}A`, x: 34, y: 28, answer: "buch", options: ["buch", "bum", "ach"] },
+          { id: `${pageNumber}B`, x: 50, y: 52, answer: "bum", options: ["bum", "mnam", "hop"] },
+          { id: `${pageNumber}C`, x: 66, y: 76, answer: "ach", options: ["ach", "cink", "fuu"] }
+        ];
+      }
+
+      function resetAnswers() {
+        Object.keys(answers).forEach((key) => delete answers[key]);
+        checked = false;
+      }
+
+      function renderPdfPlaceholder(page) {
+        if (!page.pdfPageNumber) {
+          return "";
+        }
+
+        const cachedImage = renderedPdfPages.get(page.pdfPageNumber);
+        if (cachedImage) {
+          return `<div class="pdf-stage"><img class="pdf-page-image" src="${cachedImage}" alt="PDF strana ${page.pdfPageNumber}" /></div>`;
+        }
+
+        return `<div class="pdf-stage"><div class="empty-pdf">Nacitavam PDF stranu ${page.pdfPageNumber}...</div></div>`;
+      }
+
+      async function renderPdfPage(page, token) {
+        if (!pdfDocument || !page.pdfPageNumber || renderedPdfPages.has(page.pdfPageNumber)) {
+          return;
+        }
+
+        const pdfPage = await pdfDocument.getPage(page.pdfPageNumber);
+        const viewport = pdfPage.getViewport({ scale: 2 });
+        const canvas = document.createElement("canvas");
+        const context = canvas.getContext("2d");
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+
+        await pdfPage.render({ canvasContext: context, viewport }).promise;
+        renderedPdfPages.set(page.pdfPageNumber, canvas.toDataURL("image/png"));
+
+        if (token === renderToken && currentData().pdfPageNumber === page.pdfPageNumber) {
+          renderPage();
+        }
+      }
+
+      async function loadPdf(file) {
+        if (!window.pdfjsLib) {
+          showToast("PDF kniznica sa nenacitala. Skontrolujte pripojenie na internet.");
+          return;
+        }
+
+        window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+          "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+
+        showToast("Nacitavam PDF...");
+        const data = await file.arrayBuffer();
+        pdfDocument = await window.pdfjsLib.getDocument({ data }).promise;
+        renderedPdfPages = new Map();
+        resetAnswers();
+
+        bookPages = Array.from({ length: pdfDocument.numPages }, (_, index) => {
+          const pageNumber = index + 1;
+          return {
+            title: `Strana ${pageNumber}`,
+            image: null,
+            pdfPageNumber: pageNumber,
+            panels: [],
+            blanks: createDefaultBlanks(pageNumber, pdfDocument.numPages)
+          };
+        });
+
+        currentPage = 0;
+        selectedBlankId = firstBlankId(bookPages[0]);
+        renderPage();
+        showToast(`PDF je nacitane: ${pdfDocument.numPages} stran. Prva a posledna strana su bez doplnania.`);
+      }
+
+      function renderFallback(page) {
+        if (page.pdfPageNumber) {
+          return renderPdfPlaceholder(page);
+        }
+
+        const panels = page.panels
+          .map(
+            (caption) => `
+              <section class="comic-panel">
+                <span class="caption">${caption}</span>
+                <span class="character" aria-hidden="true"></span>
+                <span class="bubble" aria-hidden="true"></span>
+              </section>
+            `
+          )
+          .join("");
+
+        return `
+          <div class="fallback-comic">
+            <header class="page-heading">
+              <span class="page-num">${currentPage + 1}</span>
+              <h2>${page.title}</h2>
+              <small>Citoslovcia</small>
+            </header>
+            ${panels}
+          </div>
+        `;
+      }
+
+      function renderBlank(blank) {
+        const value = answers[blank.id] || "";
+        const statusClass = checked && value ? (value === blank.answer ? "correct" : "wrong") : "";
+        const options = ['<option value="">Vyber</option>']
+          .concat(blank.options.map((option) => `<option value="${option}" ${value === option ? "selected" : ""}>${option}</option>`))
+          .join("");
+
+        return `
+          <label class="blank ${statusClass} ${blank.id === selectedBlankId ? "active" : ""}" style="--x: ${blank.x}; --y: ${blank.y}" data-id="${blank.id}" data-coords="x ${blank.x}, y ${blank.y}">
+            <span class="blank-label">${blank.id}</span>
+            <select aria-label="Citoslovce ${blank.id}" data-answer-id="${blank.id}">
+              ${options}
+            </select>
+          </label>
+        `;
+      }
+
+      function renderPage() {
+        const page = currentData();
+        const token = ++renderToken;
+        pageCanvas.innerHTML = `
+          ${page.image ? `<img class="page-image" src="${page.image}" alt="Strana komiksu ${currentPage + 1}" />` : renderFallback(page)}
+          ${page.blanks.map(renderBlank).join("")}
+        `;
+
+        renderPdfPage(page, token).catch(() => {
+          if (token === renderToken) {
+            pageCanvas.querySelector(".pdf-stage").innerHTML = '<div class="empty-pdf">PDF stranu sa nepodarilo nacitat.</div>';
+          }
+        });
+
+        pageCanvas.querySelectorAll("select[data-answer-id]").forEach((select) => {
+          select.addEventListener("change", (event) => {
+            answers[event.target.dataset.answerId] = event.target.value;
+            checked = false;
+            renderPage();
+            updateStats();
+          });
+        });
+
+        pageCanvas.querySelectorAll(".blank").forEach((blankEl) => {
+          blankEl.addEventListener("click", () => {
+            selectedBlankId = blankEl.dataset.id;
+            syncTeacherFields();
+            renderPage();
+          });
+        });
+
+        pageProgress.textContent = `Strana ${currentPage + 1} / ${bookPages.length}`;
+        prevButton.disabled = currentPage === 0;
+        nextButton.disabled = currentPage === bookPages.length - 1;
+        sidePage.textContent = currentPage + 1;
+        renderBlankPicker();
+        syncTeacherFields();
+        updateStats();
+      }
+
+      function renderBlankPicker() {
+        const blanks = currentData().blanks;
+        blankPicker.disabled = blanks.length === 0;
+        blankPicker.innerHTML = blanks.length === 0
+          ? '<option value="">Na tejto strane nie su citoslovcia</option>'
+          : blanks
+          .map((blank) => `<option value="${blank.id}" ${blank.id === selectedBlankId ? "selected" : ""}>${blank.id}</option>`)
+          .join("");
+      }
+
+      function syncTeacherFields() {
+        const blank = selectedBlank();
+        const hasBlank = Boolean(blank);
+        xInput.disabled = !hasBlank;
+        yInput.disabled = !hasBlank;
+        optionsInput.disabled = !hasBlank;
+        answerInput.disabled = !hasBlank;
+        applyBlank.disabled = !hasBlank;
+
+        if (!blank) {
+          selectedBlankId = "";
+          xInput.value = "";
+          yInput.value = "";
+          optionsInput.value = "";
+          answerInput.value = "";
+          configOutput.value = JSON.stringify(currentData(), null, 2);
+          return;
+        }
+
+        selectedBlankId = blank.id;
+        blankPicker.value = blank.id;
+        xInput.value = blank.x;
+        yInput.value = blank.y;
+        optionsInput.value = blank.options.join(", ");
+        answerInput.value = blank.answer;
+        configOutput.value = JSON.stringify(currentData(), null, 2);
+      }
+
+      function updateStats() {
+        const blanks = allBlanks();
+        const filled = blanks.filter((blank) => answers[blank.id]).length;
+        const correct = blanks.filter((blank) => answers[blank.id] === blank.answer).length;
+        filledCount.textContent = `${filled}/${blanks.length}`;
+        correctCount.textContent = correct;
+
+        if (!checked) {
+          feedback.className = "feedback";
+          feedback.textContent = "";
+        }
+      }
+
+      function turnTo(pageIndex, direction) {
+        if (pageIndex < 0 || pageIndex >= bookPages.length || pageIndex === currentPage) return;
+        book.classList.remove("turning-next", "turning-prev");
+        book.classList.add(direction === "prev" ? "turning-prev" : "turning-next");
+        window.setTimeout(() => {
+          currentPage = pageIndex;
+          selectedBlankId = firstBlankId(currentData());
+          renderPage();
+        }, 230);
+        window.setTimeout(() => book.classList.remove("turning-next", "turning-prev"), 560);
+      }
+
+      function checkAnswers() {
+        checked = true;
+        renderPage();
+        const blanks = allBlanks();
+        const correct = blanks.filter((blank) => answers[blank.id] === blank.answer).length;
+        const filled = blanks.filter((blank) => answers[blank.id]).length;
+        feedback.className = correct === blanks.length ? "feedback ok" : "feedback bad";
+        feedback.textContent =
+          blanks.length === 0
+            ? "V tejto knihe zatial nie su ziadne miesta na doplnanie."
+            : correct === blanks.length
+            ? "Vsetky citoslovcia su spravne."
+            : `Spravne je ${correct} z ${blanks.length}. Vyplnene je ${filled}.`;
+      }
+
+      function applyTeacherFields() {
+        const blank = selectedBlank();
+        if (!blank) return;
+        blank.x = Number.parseFloat(xInput.value) || blank.x;
+        blank.y = Number.parseFloat(yInput.value) || blank.y;
+        blank.options = optionsInput.value
+          .split(",")
+          .map((item) => item.trim())
+          .filter(Boolean)
+          .slice(0, 3);
+        blank.answer = answerInput.value.trim() || blank.answer;
+        if (!blank.options.includes(blank.answer)) {
+          blank.options[0] = blank.answer;
+        }
+        checked = false;
+        renderPage();
+        showToast("Miesto a odpovede su nastavene.");
+      }
+
+      pageCanvas.addEventListener("click", (event) => {
+        if (!teacherMode) return;
+        if (event.target.closest(".blank select")) return;
+        if (!selectedBlank()) {
+          showToast("Na tejto strane nie su miesta na doplnanie.");
+          return;
+        }
+        const rect = pageCanvas.getBoundingClientRect();
+        const x = Math.max(0, Math.min(100, ((event.clientX - rect.left) / rect.width) * 100));
+        const y = Math.max(0, Math.min(100, ((event.clientY - rect.top) / rect.height) * 100));
+        xInput.value = x.toFixed(1);
+        yInput.value = y.toFixed(1);
+        applyTeacherFields();
+      });
+
+      prevButton.addEventListener("click", () => turnTo(currentPage - 1, "prev"));
+      nextButton.addEventListener("click", () => turnTo(currentPage + 1, "next"));
+      checkButton.addEventListener("click", checkAnswers);
+      pdfUpload.addEventListener("change", (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+        loadPdf(file).catch(() => showToast("PDF sa nepodarilo nacitat."));
+      });
+      resetButton.addEventListener("click", () => {
+        resetAnswers();
+        renderPage();
+        showToast("Odpovede su vycistene.");
+      });
+
+      teacherToggle.addEventListener("click", () => {
+        teacherMode = !teacherMode;
+        app.classList.toggle("teacher-mode", teacherMode);
+        teacherPanel.hidden = !teacherMode;
+        teacherToggle.classList.toggle("primary", teacherMode);
+        teacherToggle.textContent = teacherMode ? "Ukoncit umiestnovanie" : "Rezim umiestnovania";
+        renderPage();
+      });
+
+      blankPicker.addEventListener("change", () => {
+        selectedBlankId = blankPicker.value;
+        syncTeacherFields();
+        renderPage();
+      });
+
+      applyBlank.addEventListener("click", applyTeacherFields);
+      copyConfig.addEventListener("click", async () => {
+        syncTeacherFields();
+        try {
+          await navigator.clipboard.writeText(configOutput.value);
+          showToast("Konfiguracia strany je skopirovana.");
+        } catch (error) {
+          configOutput.select();
+          document.execCommand("copy");
+          showToast("Konfiguracia strany je skopirovana.");
+        }
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "ArrowLeft") turnTo(currentPage - 1, "prev");
+        if (event.key === "ArrowRight") turnTo(currentPage + 1, "next");
+      });
+
+      renderPage();
+    </script>
+  </body>
+</html>
