@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="sk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Generator skupin</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #17202a;
+        --muted: #65727e;
+        --soft: #f7f1e7;
+        --paper: rgba(255, 255, 255, 0.88);
+        --line: rgba(23, 32, 42, 0.13);
+        --rose: #e8517c;
+        --rose-dark: #bf315b;
+        --teal: #0c8b8f;
+        --teal-dark: #08666a;
+        --sun: #f4b83f;
+        --leaf: #5aa95a;
+        --violet: #7467d4;
+        --shadow: 0 22px 55px rgba(28, 42, 57, 0.16);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Trebuchet MS", "Segoe UI", Arial, sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at 12% 12%, rgba(232, 81, 124, 0.25), transparent 25%),
+          radial-gradient(circle at 90% 8%, rgba(244, 184, 63, 0.28), transparent 24%),
+          radial-gradient(circle at 70% 92%, rgba(12, 139, 143, 0.2), transparent 30%),
+          linear-gradient(135deg, #fff8ec 0%, #edf8f8 47%, #f7edf9 100%);
+      }
+
+      button,
+      input,
+      select,
+      textarea {
+        font: inherit;
+      }
+
+      button {
+        border: 0;
+      }
+
+      .shell {
+        width: min(1180px, calc(100% - 28px));
+        margin: 0 auto;
+        padding: 28px 0 44px;
+      }
+
+      header {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 18px;
+        align-items: end;
+        padding: 26px;
+        border: 1px solid rgba(255, 255, 255, 0.7);
+        border-radius: 26px;
+        background: rgba(255, 255, 255, 0.68);
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(14px);
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(2rem, 5vw, 4.2rem);
+        line-height: 0.98;
+        letter-spacing: 0;
+      }
+
+      header p {
+        max-width: 680px;
+        margin: 14px 0 0;
+        color: var(--muted);
+        font-size: 1.05rem;
+        line-height: 1.55;
+      }
+
+      .save-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        min-height: 42px;
+        padding: 10px 14px;
+        border-radius: 999px;
+        background: #173449;
+        color: #fff;
+        font-weight: 800;
+        white-space: nowrap;
+      }
+
+      .save-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--leaf);
+        box-shadow: 0 0 0 5px rgba(90, 169, 90, 0.22);
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
+        gap: 18px;
+        margin-top: 18px;
+      }
+
+      .panel {
+        border: 1px solid rgba(255, 255, 255, 0.7);
+        border-radius: 18px;
+        background: var(--paper);
+        box-shadow: 0 16px 38px rgba(28, 42, 57, 0.1);
+        overflow: hidden;
+      }
+
+      .panel-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 18px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      h2,
+      h3 {
+        margin: 0;
+        letter-spacing: 0;
+      }
+
+      h2 {
+        font-size: 1.18rem;
+      }
+
+      h3 {
+        font-size: 1rem;
+      }
+
+      .panel-body {
+        padding: 18px;
+      }
+
+      .stack {
+        display: grid;
+        gap: 12px;
+      }
+
+      .field {
+        display: grid;
+        gap: 7px;
+      }
+
+      label {
+        color: #394958;
+        font-size: 0.9rem;
+        font-weight: 800;
+      }
+
+      input,
+      select,
+      textarea {
+        width: 100%;
+        border: 1px solid rgba(23, 32, 42, 0.16);
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.82);
+        color: var(--ink);
+        outline: none;
+      }
+
+      input,
+      select {
+        min-height: 44px;
+        padding: 10px 12px;
+      }
+
+      textarea {
+        min-height: 105px;
+        resize: vertical;
+        padding: 12px;
+        line-height: 1.45;
+      }
+
+      input:focus,
+      select:focus,
+      textarea:focus {
+        border-color: var(--teal);
+        box-shadow: 0 0 0 4px rgba(12, 139, 143, 0.14);
+      }
+
+      .button-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-height: 42px;
+        padding: 10px 13px;
+        border-radius: 12px;
+        background: #e9eef2;
+        color: #1d2a35;
+        cursor: pointer;
+        font-weight: 900;
+        transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
+      }
+
+      .btn:hover,
+      .btn:focus-visible {
+        transform: translateY(-1px);
+        box-shadow: 0 9px 18px rgba(28, 42, 57, 0.14);
+      }
+
+      .btn svg {
+        width: 18px;
+        height: 18px;
+        stroke: currentColor;
+        stroke-width: 2.3;
+        fill: none;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        flex: 0 0 auto;
+      }
+
+      .primary {
+        background: var(--teal);
+        color: #fff;
+      }
+
+      .primary:hover,
+      .primary:focus-visible {
+        background: var(--teal-dark);
+      }
+
+      .hot {
+        background: var(--rose);
+        color: #fff;
+      }
+
+      .hot:hover,
+      .hot:focus-visible {
+        background: var(--rose-dark);
+      }
+
+      .warn {
+        background: #fff3d2;
+        color: #61400a;
+      }
+
+      .ghost {
+        background: rgba(255, 255, 255, 0.66);
+        border: 1px solid rgba(23, 32, 42, 0.13);
+      }
+
+      .danger {
+        color: #a42039;
+      }
+
+      .class-list {
+        display: grid;
+        gap: 9px;
+      }
+
+      .class-card {
+        width: 100%;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center;
+        gap: 8px;
+        padding: 12px;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.72);
+        cursor: pointer;
+        text-align: left;
+      }
+
+      .class-card.active {
+        border-color: rgba(12, 139, 143, 0.55);
+        background: linear-gradient(135deg, rgba(12, 139, 143, 0.12), rgba(244, 184, 63, 0.14));
+        box-shadow: inset 4px 0 0 var(--teal);
+      }
+
+      .class-card strong,
+      .student-chip span,
+      .group-member {
+        overflow-wrap: anywhere;
+      }
+
+      .class-card small {
+        display: block;
+        margin-top: 4px;
+        color: var(--muted);
+        font-weight: 700;
+      }
+
+      .mini-actions {
+        display: inline-flex;
+        gap: 6px;
+      }
+
+      .icon-btn {
+        width: 36px;
+        height: 36px;
+        padding: 0;
+        border-radius: 10px;
+      }
+
+      .empty {
+        padding: 18px;
+        border: 1px dashed rgba(23, 32, 42, 0.24);
+        border-radius: 14px;
+        color: var(--muted);
+        line-height: 1.5;
+        background: rgba(255, 255, 255, 0.5);
+      }
+
+      .work-area {
+        display: grid;
+        gap: 18px;
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .stat {
+        min-height: 88px;
+        padding: 15px;
+        border-radius: 16px;
+        color: #fff;
+        display: grid;
+        align-content: center;
+        gap: 4px;
+      }
+
+      .stat:nth-child(1) {
+        background: linear-gradient(135deg, var(--teal), #37b2a6);
+      }
+
+      .stat:nth-child(2) {
+        background: linear-gradient(135deg, var(--rose), #f07a73);
+      }
+
+      .stat:nth-child(3) {
+        background: linear-gradient(135deg, var(--violet), #4d9ee8);
+      }
+
+      .stat b {
+        font-size: 2rem;
+        line-height: 1;
+      }
+
+      .stat span {
+        font-weight: 900;
+      }
+
+      .student-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 9px;
+      }
+
+      .student-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        max-width: 100%;
+        padding: 8px 8px 8px 12px;
+        border-radius: 999px;
+        background: #fff;
+        border: 1px solid var(--line);
+        box-shadow: 0 6px 14px rgba(28, 42, 57, 0.08);
+        animation: pop 180ms ease both;
+      }
+
+      .student-chip button {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        background: #fee4eb;
+        color: #a42039;
+        cursor: pointer;
+        font-weight: 900;
+      }
+
+      .generator {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+        align-items: end;
+      }
+
+      .groups {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+        gap: 12px;
+      }
+
+      .group-card {
+        min-height: 154px;
+        padding: 14px;
+        border-radius: 16px;
+        background: #fff;
+        border: 1px solid var(--line);
+        box-shadow: 0 12px 24px rgba(28, 42, 57, 0.09);
+        animation: rise 220ms ease both;
+      }
+
+      .group-card:nth-child(5n + 1) {
+        border-top: 6px solid var(--teal);
+      }
+
+      .group-card:nth-child(5n + 2) {
+        border-top: 6px solid var(--rose);
+      }
+
+      .group-card:nth-child(5n + 3) {
+        border-top: 6px solid var(--sun);
+      }
+
+      .group-card:nth-child(5n + 4) {
+        border-top: 6px solid var(--leaf);
+      }
+
+      .group-card:nth-child(5n + 5) {
+        border-top: 6px solid var(--violet);
+      }
+
+      .group-card h3 {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 12px;
+      }
+
+      .group-count {
+        color: var(--muted);
+        font-size: 0.82rem;
+      }
+
+      .group-member {
+        padding: 8px 0;
+        border-top: 1px solid rgba(23, 32, 42, 0.09);
+        font-weight: 800;
+      }
+
+      .file-input {
+        position: absolute;
+        inline-size: 1px;
+        block-size: 1px;
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .toast {
+        position: fixed;
+        left: 50%;
+        bottom: 20px;
+        z-index: 3;
+        transform: translateX(-50%) translateY(18px);
+        padding: 12px 16px;
+        border-radius: 999px;
+        background: #17202a;
+        color: #fff;
+        font-weight: 900;
+        box-shadow: var(--shadow);
+        opacity: 0;
+        transition: opacity 180ms ease, transform 180ms ease;
+        pointer-events: none;
+      }
+
+      .toast.show {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+
+      @keyframes pop {
+        from {
+          opacity: 0;
+          transform: scale(0.94);
+        }
+      }
+
+      @keyframes rise {
+        from {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+      }
+
+      @media (max-width: 900px) {
+        header,
+        .layout,
+        .generator {
+          grid-template-columns: 1fr;
+        }
+
+        header {
+          align-items: start;
+        }
+
+        .save-pill {
+          justify-self: start;
+        }
+      }
+
+      @media (max-width: 640px) {
+        .shell {
+          width: min(100% - 18px, 1180px);
+          padding-top: 10px;
+        }
+
+        header,
+        .panel {
+          border-radius: 16px;
+        }
+
+        header,
+        .panel-head,
+        .panel-body {
+          padding: 14px;
+        }
+
+        .stats {
+          grid-template-columns: 1fr;
+        }
+
+        .button-row .btn {
+          flex: 1 1 145px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <header>
+        <div>
+          <h1>Generator skupin</h1>
+          <p>Uloz triedy, pridaj ziakov, premiesaj ich do skupin a kedykolvek sa vrat k ulozenym udajom v tomto prehliadaci.</p>
+        </div>
+        <div class="save-pill" aria-live="polite"><span class="save-dot"></span><span id="save-status">Automaticky ulozene</span></div>
+      </header>
+
+      <section class="layout" aria-label="Sprava tried a generator skupin">
+        <aside class="panel">
+          <div class="panel-head">
+            <h2>Triedy</h2>
+            <button class="btn icon-btn primary" type="button" id="add-class-shortcut" aria-label="Pridat triedu" title="Pridat triedu">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+            </button>
+          </div>
+          <div class="panel-body stack">
+            <form class="stack" id="class-form">
+              <div class="field">
+                <label for="class-name">Nazov triedy</label>
+                <input id="class-name" autocomplete="off" placeholder="napr. 4. B" />
+              </div>
+              <button class="btn primary" type="submit">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+                Pridat triedu
+              </button>
+            </form>
+            <div class="class-list" id="class-list"></div>
+            <div class="button-row">
+              <button class="btn ghost" type="button" id="export-data">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 19h16"/></svg>
+                Export
+              </button>
+              <button class="btn ghost" type="button" id="import-trigger">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21V9m0 0 4 4m-4-4-4 4M4 5h16"/></svg>
+                Import
+              </button>
+              <input class="file-input" id="import-data" type="file" accept="application/json,.json" />
+            </div>
+          </div>
+        </aside>
+
+        <section class="work-area">
+          <div class="stats" aria-label="Prehlad">
+            <div class="stat"><b id="stat-classes">0</b><span>tried</span></div>
+            <div class="stat"><b id="stat-students">0</b><span>ziakov</span></div>
+            <div class="stat"><b id="stat-groups">0</b><span>skupin</span></div>
+          </div>
+
+          <section class="panel">
+            <div class="panel-head">
+              <div>
+                <h2 id="active-title">Vyber alebo vytvor triedu</h2>
+              </div>
+              <button class="btn ghost danger" type="button" id="delete-class">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2m-9 0 1 15h8l1-15M10 11v6M14 11v6"/></svg>
+                Zmazat triedu
+              </button>
+            </div>
+            <div class="panel-body stack" id="class-tools">
+              <form class="stack" id="student-form">
+                <div class="field">
+                  <label for="student-name">Pridat ziaka</label>
+                  <input id="student-name" autocomplete="off" placeholder="Meno a priezvisko" />
+                </div>
+                <button class="btn hot" type="submit">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                  Pridat ziaka
+                </button>
+              </form>
+
+              <form class="stack" id="bulk-form">
+                <div class="field">
+                  <label for="bulk-students">Pridat viac ziakov naraz</label>
+                  <textarea id="bulk-students" placeholder="Kazde meno na novy riadok"></textarea>
+                </div>
+                <button class="btn warn" type="submit">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
+                  Pridat zoznam
+                </button>
+              </form>
+
+              <div>
+                <h3>Ziaci v triede</h3>
+                <div class="student-grid" id="student-list"></div>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="panel-head">
+              <h2>Miesanie do skupin</h2>
+              <button class="btn ghost" type="button" id="copy-groups">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 8h12v12H8zM4 4h12v12H4z"/></svg>
+                Kopirovat
+              </button>
+            </div>
+            <div class="panel-body stack">
+              <div class="generator">
+                <div class="field">
+                  <label for="group-mode">Sposob delenia</label>
+                  <select id="group-mode">
+                    <option value="count">Pocet skupin</option>
+                    <option value="size">Pocet ziakov v skupine</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="group-value" id="group-value-label">Pocet skupin</label>
+                  <input id="group-value" type="number" min="1" value="4" />
+                </div>
+                <button class="btn primary" type="button" id="generate-groups">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>
+                  Vytvorit skupiny
+                </button>
+              </div>
+              <div class="groups" id="groups"></div>
+            </div>
+          </section>
+        </section>
+      </section>
+    </main>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script>
+      const STORAGE_KEY = "generator-skupin-v1";
+      const emptyState = () => ({ classes: [], activeClassId: null, groups: [] });
+      let state = loadState();
+
+      const els = {
+        classForm: document.getElementById("class-form"),
+        className: document.getElementById("class-name"),
+        addClassShortcut: document.getElementById("add-class-shortcut"),
+        classList: document.getElementById("class-list"),
+        activeTitle: document.getElementById("active-title"),
+        deleteClass: document.getElementById("delete-class"),
+        classTools: document.getElementById("class-tools"),
+        studentForm: document.getElementById("student-form"),
+        studentName: document.getElementById("student-name"),
+        bulkForm: document.getElementById("bulk-form"),
+        bulkStudents: document.getElementById("bulk-students"),
+        studentList: document.getElementById("student-list"),
+        groupMode: document.getElementById("group-mode"),
+        groupValue: document.getElementById("group-value"),
+        groupValueLabel: document.getElementById("group-value-label"),
+        generateGroups: document.getElementById("generate-groups"),
+        groups: document.getElementById("groups"),
+        copyGroups: document.getElementById("copy-groups"),
+        exportData: document.getElementById("export-data"),
+        importTrigger: document.getElementById("import-trigger"),
+        importData: document.getElementById("import-data"),
+        statClasses: document.getElementById("stat-classes"),
+        statStudents: document.getElementById("stat-students"),
+        statGroups: document.getElementById("stat-groups"),
+        saveStatus: document.getElementById("save-status"),
+        toast: document.getElementById("toast")
+      };
+
+      function loadState() {
+        try {
+          const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+          if (!saved || !Array.isArray(saved.classes)) return emptyState();
+          return {
+            classes: saved.classes.map((classItem) => ({
+              id: classItem.id || createId(),
+              name: classItem.name || "Trieda",
+              students: Array.isArray(classItem.students) ? classItem.students : []
+            })),
+            activeClassId: saved.activeClassId || null,
+            groups: Array.isArray(saved.groups) ? saved.groups : []
+          };
+        } catch (error) {
+          return emptyState();
+        }
+      }
+
+      function createId() {
+        if (window.crypto && typeof window.crypto.randomUUID === "function") {
+          return window.crypto.randomUUID();
+        }
+        return `id-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+      }
+
+      function saveState() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        els.saveStatus.textContent = "Automaticky ulozene";
+      }
+
+      function getActiveClass() {
+        return state.classes.find((classItem) => classItem.id === state.activeClassId) || null;
+      }
+
+      function cleanName(value) {
+        return value.trim().replace(/\s+/g, " ");
+      }
+
+      function showToast(message) {
+        els.toast.textContent = message;
+        els.toast.classList.add("show");
+        window.clearTimeout(showToast.timer);
+        showToast.timer = window.setTimeout(() => els.toast.classList.remove("show"), 1700);
+      }
+
+      function persistAndRender(message) {
+        saveState();
+        render();
+        if (message) showToast(message);
+      }
+
+      function addClass(name) {
+        const cleaned = cleanName(name);
+        if (!cleaned) return showToast("Dopln nazov triedy");
+        const newClass = { id: createId(), name: cleaned, students: [] };
+        state.classes.push(newClass);
+        state.activeClassId = newClass.id;
+        state.groups = [];
+        els.className.value = "";
+        persistAndRender("Trieda pridana");
+      }
+
+      function addStudents(names) {
+        const activeClass = getActiveClass();
+        if (!activeClass) return showToast("Najprv vyber triedu");
+        const existing = new Set(activeClass.students.map((name) => name.toLocaleLowerCase("sk")));
+        const additions = names.map(cleanName).filter(Boolean).filter((name) => {
+          const key = name.toLocaleLowerCase("sk");
+          if (existing.has(key)) return false;
+          existing.add(key);
+          return true;
+        });
+        if (!additions.length) return showToast("Nenasla som nove mena");
+        activeClass.students.push(...additions);
+        state.groups = [];
+        els.studentName.value = "";
+        els.bulkStudents.value = "";
+        persistAndRender(additions.length === 1 ? "Ziak pridany" : "Ziaci pridani");
+      }
+
+      function removeStudent(index) {
+        const activeClass = getActiveClass();
+        if (!activeClass) return;
+        activeClass.students.splice(index, 1);
+        state.groups = [];
+        persistAndRender("Ziak zmazany");
+      }
+
+      function deleteActiveClass() {
+        const activeClass = getActiveClass();
+        if (!activeClass) return;
+        const confirmed = window.confirm(`Naozaj zmazat triedu "${activeClass.name}" aj so ziakmi?`);
+        if (!confirmed) return;
+        state.classes = state.classes.filter((classItem) => classItem.id !== activeClass.id);
+        state.activeClassId = state.classes[0]?.id || null;
+        state.groups = [];
+        persistAndRender("Trieda zmazana");
+      }
+
+      function shuffle(items) {
+        const copy = [...items];
+        for (let index = copy.length - 1; index > 0; index -= 1) {
+          const swapIndex = Math.floor(Math.random() * (index + 1));
+          [copy[index], copy[swapIndex]] = [copy[swapIndex], copy[index]];
+        }
+        return copy;
+      }
+
+      function createGroups() {
+        const activeClass = getActiveClass();
+        if (!activeClass || activeClass.students.length < 2) return showToast("Pridaj aspon dvoch ziakov");
+        const value = Math.max(1, Number.parseInt(els.groupValue.value, 10) || 1);
+        const students = shuffle(activeClass.students);
+        const groupCount = els.groupMode.value === "size"
+          ? Math.ceil(students.length / value)
+          : Math.min(value, students.length);
+        const groups = Array.from({ length: groupCount }, () => []);
+        students.forEach((student, index) => groups[index % groupCount].push(student));
+        state.groups = groups.map((members, index) => ({ name: `Skupina ${index + 1}`, members }));
+        persistAndRender("Skupiny su hotove");
+      }
+
+      async function copyGroups() {
+        if (!state.groups.length) return showToast("Najprv vytvor skupiny");
+        const text = state.groups
+          .map((group) => `${group.name}: ${group.members.join(", ")}`)
+          .join("\n");
+        try {
+          await navigator.clipboard.writeText(text);
+          showToast("Skupiny skopirovane");
+        } catch (error) {
+          showToast("Kopirovanie nie je dostupne");
+        }
+      }
+
+      function exportData() {
+        const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "generator-skupin-data.json";
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(url);
+        showToast("Subor pripraveny");
+      }
+
+      function importData(file) {
+        const reader = new FileReader();
+        reader.addEventListener("load", () => {
+          try {
+            const imported = JSON.parse(reader.result);
+            if (!imported || !Array.isArray(imported.classes)) throw new Error("Invalid file");
+            state = {
+              classes: imported.classes.map((classItem) => ({
+                id: classItem.id || createId(),
+                name: cleanName(classItem.name || "Trieda"),
+                students: Array.isArray(classItem.students) ? classItem.students.map(cleanName).filter(Boolean) : []
+              })),
+              activeClassId: imported.activeClassId || imported.classes[0]?.id || null,
+              groups: Array.isArray(imported.groups) ? imported.groups : []
+            };
+            if (!state.classes.some((classItem) => classItem.id === state.activeClassId)) {
+              state.activeClassId = state.classes[0]?.id || null;
+            }
+            persistAndRender("Udaje importovane");
+          } catch (error) {
+            showToast("Subor sa nepodarilo nacitat");
+          }
+        });
+        reader.readAsText(file);
+      }
+
+      function renderClasses() {
+        els.classList.innerHTML = "";
+        if (!state.classes.length) {
+          els.classList.innerHTML = '<div class="empty">Zatial tu nie je ziadna trieda. Pridaj prvu a mozes zacat.</div>';
+          return;
+        }
+        state.classes.forEach((classItem) => {
+          const button = document.createElement("button");
+          button.className = `class-card${classItem.id === state.activeClassId ? " active" : ""}`;
+          button.type = "button";
+          button.innerHTML = `
+            <span>
+              <strong>${escapeHtml(classItem.name)}</strong>
+              <small>${classItem.students.length} ziakov</small>
+            </span>
+            <span class="mini-actions" aria-hidden="true">&gt;</span>
+          `;
+          button.addEventListener("click", () => {
+            state.activeClassId = classItem.id;
+            state.groups = [];
+            persistAndRender();
+          });
+          els.classList.appendChild(button);
+        });
+      }
+
+      function renderStudents(activeClass) {
+        els.studentList.innerHTML = "";
+        if (!activeClass) {
+          els.studentList.innerHTML = '<div class="empty">Vyber triedu a zobrazia sa tu jej ziaci.</div>';
+          return;
+        }
+        if (!activeClass.students.length) {
+          els.studentList.innerHTML = '<div class="empty">Tato trieda este nema ziakov. Pridaj ich jednotlivo alebo vloz cely zoznam.</div>';
+          return;
+        }
+        activeClass.students.forEach((student, index) => {
+          const chip = document.createElement("span");
+          chip.className = "student-chip";
+          chip.innerHTML = `<span>${escapeHtml(student)}</span><button type="button" aria-label="Zmazat ${escapeHtml(student)}">x</button>`;
+          chip.querySelector("button").addEventListener("click", () => removeStudent(index));
+          els.studentList.appendChild(chip);
+        });
+      }
+
+      function renderGroups() {
+        els.groups.innerHTML = "";
+        if (!state.groups.length) {
+          els.groups.innerHTML = '<div class="empty">Po kliknuti na vytvorenie skupin sa vysledok zobrazi tu.</div>';
+          return;
+        }
+        state.groups.forEach((group) => {
+          const card = document.createElement("article");
+          card.className = "group-card";
+          card.innerHTML = `
+            <h3>${escapeHtml(group.name)} <span class="group-count">${group.members.length}</span></h3>
+            ${group.members.map((member) => `<div class="group-member">${escapeHtml(member)}</div>`).join("")}
+          `;
+          els.groups.appendChild(card);
+        });
+      }
+
+      function renderStats() {
+        const activeClass = getActiveClass();
+        els.statClasses.textContent = state.classes.length;
+        els.statStudents.textContent = activeClass ? activeClass.students.length : 0;
+        els.statGroups.textContent = state.groups.length;
+      }
+
+      function render() {
+        const activeClass = getActiveClass();
+        renderClasses();
+        renderStudents(activeClass);
+        renderGroups();
+        renderStats();
+        els.activeTitle.textContent = activeClass ? activeClass.name : "Vyber alebo vytvor triedu";
+        els.deleteClass.disabled = !activeClass;
+        els.studentForm.querySelector("button").disabled = !activeClass;
+        els.bulkForm.querySelector("button").disabled = !activeClass;
+        els.generateGroups.disabled = !activeClass;
+        els.copyGroups.disabled = !state.groups.length;
+      }
+
+      function escapeHtml(value) {
+        return String(value)
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#039;");
+      }
+
+      els.classForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        addClass(els.className.value);
+      });
+
+      els.addClassShortcut.addEventListener("click", () => els.className.focus());
+
+      els.studentForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        addStudents([els.studentName.value]);
+      });
+
+      els.bulkForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        addStudents(els.bulkStudents.value.split(/\n+/));
+      });
+
+      els.deleteClass.addEventListener("click", deleteActiveClass);
+      els.generateGroups.addEventListener("click", createGroups);
+      els.copyGroups.addEventListener("click", copyGroups);
+      els.exportData.addEventListener("click", exportData);
+      els.importTrigger.addEventListener("click", () => els.importData.click());
+      els.importData.addEventListener("change", () => {
+        const [file] = els.importData.files;
+        if (file) importData(file);
+        els.importData.value = "";
+      });
+
+      els.groupMode.addEventListener("change", () => {
+        const bySize = els.groupMode.value === "size";
+        els.groupValueLabel.textContent = bySize ? "Ziacov v skupine" : "Pocet skupin";
+        els.groupValue.value = bySize ? "4" : "4";
+      });
+
+      render();
+      saveState();
+    </script>
+  </body>
+</html>

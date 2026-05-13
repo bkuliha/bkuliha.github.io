@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="sk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bludiská slovných druhov</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #1d2327;
+        --muted: #59656f;
+        --paper: #fffdf8;
+        --line: #263238;
+        --soft-line: #c9d1d6;
+        --accent: #176b87;
+        --accent-dark: #0f5066;
+        --accent-2: #c2410c;
+        --good: #1f7a4d;
+        --bad: #b42318;
+        --path: #f7d154;
+        --selected: #b9e6d3;
+        --screen-bg: #eaf4f6;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: Arial, "Segoe UI", sans-serif;
+        color: var(--ink);
+        background:
+          linear-gradient(90deg, rgba(23, 107, 135, 0.08) 1px, transparent 1px),
+          linear-gradient(rgba(23, 107, 135, 0.08) 1px, transparent 1px),
+          var(--screen-bg);
+        background-size: 28px 28px;
+      }
+
+      button,
+      select {
+        font: inherit;
+      }
+
+      .screen-toolbar {
+        position: sticky;
+        top: 0;
+        z-index: 4;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+        padding: 12px;
+        background: rgba(255, 253, 248, 0.96);
+        border-bottom: 1px solid var(--soft-line);
+        backdrop-filter: blur(8px);
+      }
+
+      .screen-toolbar button,
+      .screen-toolbar select {
+        border: 2px solid var(--accent);
+        border-radius: 8px;
+        min-height: 42px;
+        padding: 8px 12px;
+        color: var(--accent-dark);
+        background: #fff;
+        font-weight: 700;
+      }
+
+      .screen-toolbar button {
+        cursor: pointer;
+      }
+
+      .screen-toolbar button.primary,
+      .screen-toolbar button.active {
+        color: #fff;
+        background: var(--accent);
+      }
+
+      .page {
+        width: min(1000px, calc(100% - 28px));
+        margin: 24px auto;
+        padding: 26px;
+        background: var(--paper);
+        border: 1px solid var(--soft-line);
+        box-shadow: 0 24px 60px rgba(38, 50, 56, 0.16);
+      }
+
+      .worksheet-header {
+        display: grid;
+        grid-template-columns: 1fr minmax(210px, 0.7fr);
+        gap: 20px;
+        align-items: start;
+        border-bottom: 3px solid var(--line);
+        padding-bottom: 15px;
+      }
+
+      .eyebrow {
+        margin: 0 0 8px;
+        color: var(--accent-2);
+        font-size: 0.86rem;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(2rem, 5vw, 4.25rem);
+        line-height: 0.95;
+      }
+
+      .subtitle {
+        max-width: 720px;
+        margin: 12px 0 0;
+        color: var(--muted);
+        font-size: 1.04rem;
+        line-height: 1.4;
+      }
+
+      .student-box {
+        display: grid;
+        gap: 12px;
+        padding: 14px;
+        border: 2px solid var(--line);
+        background: #fff;
+      }
+
+      .write-line {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 8px;
+        align-items: end;
+        font-weight: 700;
+      }
+
+      .line {
+        min-height: 28px;
+        border-bottom: 2px solid var(--line);
+      }
+
+      .task-strip {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(220px, 0.45fr);
+        gap: 16px;
+        align-items: stretch;
+        margin: 16px 0;
+      }
+
+      .task,
+      .legend,
+      .online-panel,
+      .teacher-key {
+        padding: 13px 15px;
+        border: 2px solid var(--line);
+        background: #fff;
+      }
+
+      .task strong,
+      .legend strong {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 1.02rem;
+      }
+
+      .task p,
+      .legend p,
+      .teacher-key p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.36;
+      }
+
+      .online-panel {
+        display: grid;
+        grid-template-columns: 1fr auto auto;
+        gap: 10px;
+        align-items: center;
+        margin-bottom: 16px;
+        border-color: var(--soft-line);
+      }
+
+      .status {
+        margin: 0;
+        color: var(--muted);
+        font-weight: 700;
+      }
+
+      .status.good {
+        color: var(--good);
+      }
+
+      .status.bad {
+        color: var(--bad);
+      }
+
+      .online-panel button {
+        border: 2px solid var(--accent);
+        border-radius: 8px;
+        padding: 8px 12px;
+        color: var(--accent-dark);
+        background: #fff;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .online-panel button.primary {
+        color: #fff;
+        background: var(--accent);
+      }
+
+      .maze-wrap {
+        display: grid;
+        grid-template-columns: 1fr;
+        justify-items: center;
+      }
+
+      .maze {
+        display: grid;
+        grid-template-columns: repeat(9, 1fr);
+        width: min(100%, 860px);
+        border: 3px solid var(--line);
+        background: var(--line);
+      }
+
+      .cell {
+        position: relative;
+        display: grid;
+        place-items: center;
+        aspect-ratio: 1 / 1;
+        min-width: 0;
+        border: 1px solid var(--line);
+        background: #fff;
+        text-align: center;
+        font-size: clamp(0.58rem, 1.42vw, 0.98rem);
+        font-weight: 800;
+        line-height: 1.05;
+        white-space: nowrap;
+        overflow-wrap: normal;
+        word-break: normal;
+        padding: 5px;
+        cursor: pointer;
+      }
+
+      .cell::after {
+        position: absolute;
+        top: 4px;
+        left: 5px;
+        color: #5b6770;
+        font-size: 0.58rem;
+        font-weight: 700;
+      }
+
+      .cell.start::after {
+        content: "ŠTART";
+      }
+
+      .cell.finish::after {
+        content: "CIEĽ";
+      }
+
+      .cell.selected {
+        background: var(--selected);
+        box-shadow: inset 0 0 0 3px var(--good);
+      }
+
+      .show-solution .cell[data-path="true"] {
+        background: var(--path);
+        box-shadow: inset 0 0 0 3px #8a5b00;
+      }
+
+      .answer-lines {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px 20px;
+        margin-top: 16px;
+      }
+
+      .answer-line {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 8px;
+        align-items: end;
+        min-height: 34px;
+        font-weight: 700;
+      }
+
+      .teacher-key {
+        display: none;
+        margin-top: 16px;
+        border-style: dashed;
+        border-color: var(--accent);
+        background: #f3fbfd;
+      }
+
+      .show-solution .teacher-key {
+        display: block;
+      }
+
+      .teacher-key h2 {
+        margin: 0 0 6px;
+        font-size: 1.08rem;
+      }
+
+      footer {
+        margin-top: 14px;
+        color: var(--muted);
+        font-size: 0.9rem;
+        text-align: center;
+      }
+
+      @media (max-width: 760px) {
+        .worksheet-header,
+        .task-strip,
+        .answer-lines,
+        .online-panel {
+          grid-template-columns: 1fr;
+        }
+
+        .page {
+          padding: 18px;
+        }
+
+        .cell {
+          font-size: clamp(0.44rem, 2.3vw, 0.78rem);
+          padding: 3px;
+        }
+      }
+
+      @page {
+        size: A4 portrait;
+        margin: 7mm;
+      }
+
+      @media print {
+        body {
+          background: #fff;
+        }
+
+        .screen-toolbar,
+        .online-panel,
+        .teacher-key,
+        .show-solution .teacher-key,
+        footer {
+          display: none;
+        }
+
+        .page {
+          width: auto;
+          margin: 0;
+          padding: 0;
+          border: 0;
+          box-shadow: none;
+        }
+
+        .worksheet-header {
+          grid-template-columns: 1fr 55mm;
+          gap: 8mm;
+          padding-bottom: 5mm;
+          border-bottom-width: 2px;
+        }
+
+        .eyebrow {
+          margin-bottom: 3mm;
+          font-size: 8pt;
+        }
+
+        h1 {
+          font-size: 28pt;
+          line-height: 0.95;
+        }
+
+        .subtitle {
+          margin-top: 3mm;
+          font-size: 9.5pt;
+          line-height: 1.25;
+        }
+
+        .student-box {
+          gap: 4mm;
+          padding: 4mm;
+          border-width: 1.5px;
+        }
+
+        .write-line {
+          font-size: 9.5pt;
+        }
+
+        .line {
+          min-height: 18px;
+          border-bottom-width: 1.5px;
+        }
+
+        .subtitle,
+        .task p,
+        .legend p {
+          color: #111;
+        }
+
+        .task-strip {
+          grid-template-columns: 1fr 54mm;
+          gap: 5mm;
+          margin: 5mm 0;
+        }
+
+        .task,
+        .legend {
+          padding: 3mm 4mm;
+          border-width: 1.5px;
+        }
+
+        .task strong,
+        .legend strong {
+          margin-bottom: 1mm;
+          font-size: 9.5pt;
+        }
+
+        .task p,
+        .legend p {
+          font-size: 8.7pt;
+          line-height: 1.22;
+        }
+
+        .maze {
+          width: 170mm;
+          max-width: 100%;
+          page-break-inside: avoid;
+          border-width: 2px;
+        }
+
+        .cell {
+          border-width: 0.8px;
+          font-size: 8.7pt;
+          padding: 2px;
+          cursor: default;
+        }
+
+        .cell::after {
+          top: 2px;
+          left: 3px;
+          font-size: 5.5pt;
+        }
+
+        .cell.selected,
+        .show-solution .cell[data-path="true"] {
+          background: #fff;
+          box-shadow: none;
+        }
+
+        .answer-lines {
+          gap: 5mm;
+          margin-top: 5mm;
+        }
+
+        .answer-line {
+          min-height: 22px;
+          font-size: 9pt;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="screen-toolbar" aria-label="Nástroje">
+      <button class="active" id="inflexibleGroup" type="button">Neohybné slovné druhy</button>
+      <button id="flexibleGroup" type="button">Ohybné slovné druhy</button>
+      <select id="worksheetSelect" aria-label="Výber pracovného listu"></select>
+      <button class="primary" type="button" onclick="window.print()">Tlačiť tento list</button>
+      <button id="solutionButton" type="button">Zobraziť riešenie</button>
+    </nav>
+
+    <main class="page" id="worksheet">
+      <header class="worksheet-header">
+        <div>
+          <p class="eyebrow" id="eyebrow">Slovenský jazyk - slovné druhy</p>
+          <h1 id="title">Bludisko neohybných slov</h1>
+          <p class="subtitle" id="subtitle"></p>
+        </div>
+        <div class="student-box" aria-label="Údaje žiaka">
+          <div class="write-line"><span>Meno:</span><span class="line"></span></div>
+          <div class="write-line"><span>Dátum:</span><span class="line"></span></div>
+        </div>
+      </header>
+
+      <section class="task-strip">
+        <div class="task">
+          <strong>Úloha</strong>
+          <p id="taskText"></p>
+        </div>
+        <div class="legend">
+          <strong>Pomôcka</strong>
+          <p id="hintText"></p>
+        </div>
+      </section>
+
+      <section class="online-panel" aria-label="Online riešenie">
+        <p class="status" id="statusText">Klikni na ŠTART a pokračuj po správnych slovách.</p>
+        <button class="primary" id="checkButton" type="button">Skontrolovať</button>
+        <button id="resetButton" type="button">Vymazať cestu</button>
+      </section>
+
+      <section class="maze-wrap" aria-label="Bludisko zo slov">
+        <div class="maze" id="maze"></div>
+      </section>
+
+      <section class="answer-lines" aria-label="Odpovede">
+        <div class="answer-line"><span>Našiel/našla som</span><span class="line"></span></div>
+        <div class="answer-line"><span>Najťažšie slovo bolo</span><span class="line"></span></div>
+      </section>
+
+      <section class="teacher-key" aria-label="Riešenie pre učiteľa">
+        <h2>Riešenie pre učiteľa</h2>
+        <p id="solutionText"></p>
+      </section>
+
+      <footer>Pri tlači sa skryjú ovládacie prvky, online označenie aj riešenie.</footer>
+    </main>
+
+    <script>
+      const size = 9;
+      const groups = {
+        inflexible: {
+          label: "Neohybné slovné druhy",
+          titleBase: "Bludisko neohybných slov",
+          subtitle:
+            "Prejdi zo štartu do cieľa iba cez slová, ktoré patria medzi neohybné slovné druhy.",
+          task:
+            "Pohybuj sa vodorovne alebo zvisle. Správne políčka obsahujú príslovky, predložky, spojky, častice alebo citoslovcia.",
+          hint: "Neohybné slovné druhy sa neskloňujú ani nečasujú.",
+          targetWords: [
+            "dnes", "bez", "lebo", "tu", "nad", "bum", "pri", "a", "vonku", "už",
+            "ale", "dolu", "za", "hoci", "tam", "ach", "pod", "ani", "včera", "cez",
+            "potom", "hore", "vedľa", "keď", "veru", "nech", "okolo", "preto", "ticho", "ešte",
+            "iba", "nuž", "joj", "medzi", "kde", "kým", "áno", "nie", "spolu", "ráno",
+            "po", "do", "od", "pred", "s", "ak", "alebo", "už-už", "mimo", "zrazu",
+            "sem", "preč", "len", "či", "nechže", "hop", "aha", "oproti", "hneď", "vždy",
+            "nikdy", "pretože", "so", "ku", "počas", "fíha", "aj", "no", "skoro", "celkom"
+          ],
+          distractorWords: [
+            "dom", "pekný", "maľujem", "ona", "päť", "kniha", "stôl", "malý", "bežíme", "ten",
+            "prvá", "učiteľ", "zelená", "spieva", "my", "druhý", "auto", "veselý", "píšem", "sestra",
+            "nové", "oni", "sedem", "čítaš", "les", "rýchly", "ideme", "moja", "tretí", "lopta",
+            "pes", "biely", "skáče", "tvoje", "osem", "mesto", "dobrá", "kreslí", "rieka", "silný",
+            "varíme", "vy", "štvrtý", "okno", "škola", "modrý", "hráme", "jeho", "desať", "vlak",
+            "milá", "nesiem", "žena", "teplý", "volám", "naše", "šiesty", "hrad", "jasná", "pláva"
+          ]
+        },
+        flexible: {
+          label: "Ohybné slovné druhy",
+          titleBase: "Bludisko ohybných slov",
+          subtitle:
+            "Prejdi zo štartu do cieľa iba cez slová, ktoré patria medzi ohybné slovné druhy.",
+          task:
+            "Pohybuj sa vodorovne alebo zvisle. Správne políčka obsahujú podstatné mená, prídavné mená, zámená, číslovky alebo slovesá.",
+          hint: "Ohybné slovné druhy menia svoj tvar: skloňujú sa alebo časujú.",
+          targetWords: [
+            "dom", "pekný", "maľujem", "ona", "päť", "kniha", "stôl", "malý", "bežíme", "ten",
+            "prvá", "učiteľ", "zelená", "spieva", "my", "druhý", "auto", "veselý", "píšem", "sestra",
+            "nové", "oni", "sedem", "čítaš", "les", "rýchly", "ideme", "moja", "tretí", "lopta",
+            "pes", "biely", "skáče", "tvoje", "osem", "mesto", "dobrá", "kreslí", "rieka", "silný",
+            "varíme", "vy", "štvrtý", "okno", "škola", "modrý", "hráme", "jeho", "desať", "vlak",
+            "milá", "nesiem", "žena", "teplý", "volám", "naše", "šiesty", "hrad", "jasná", "pláva",
+            "slnko", "mladá", "deväť", "utekám", "vyhrali", "tento", "šikovná", "kamaráti", "tretia", "pracuje"
+          ],
+          distractorWords: [
+            "dnes", "bez", "lebo", "tu", "nad", "bum", "pri", "a", "vonku", "už",
+            "ale", "dolu", "za", "hoci", "tam", "ach", "pod", "ani", "včera", "cez",
+            "potom", "hore", "vedľa", "keď", "veru", "nech", "okolo", "preto", "ticho", "ešte",
+            "iba", "nuž", "joj", "medzi", "kde", "kým", "áno", "nie", "spolu", "ráno",
+            "po", "do", "od", "pred", "s", "ak", "alebo", "mimo", "zrazu", "sem",
+            "preč", "len", "či", "nechže", "hop", "aha", "oproti", "hneď", "vždy", "nikdy"
+          ]
+        }
+      };
+
+      const shapes = [
+        "DDDDRRRRDDDDRRRR",
+        "RRRRDDDDRRRRDDDD",
+        "DRDRDRDRDRDRDRDR",
+        "DDRRDDRRDDRRDDRR",
+        "RRDDRRDDRRDDRRDD",
+        "DDDDDDDDRRRRRRRR",
+        "RRRRRRRRDDDDDDDD",
+        "DDRRRRDDDDRRDDRR",
+        "RRDDDDRRRRDDRRDD",
+        "DRRRDDDRRRDDDRRD"
+      ];
+
+      const state = {
+        groupKey: "inflexible",
+        sheetIndex: 0,
+        selected: []
+      };
+
+      const worksheet = document.getElementById("worksheet");
+      const maze = document.getElementById("maze");
+      const title = document.getElementById("title");
+      const eyebrow = document.getElementById("eyebrow");
+      const subtitle = document.getElementById("subtitle");
+      const taskText = document.getElementById("taskText");
+      const hintText = document.getElementById("hintText");
+      const statusText = document.getElementById("statusText");
+      const solutionText = document.getElementById("solutionText");
+      const solutionButton = document.getElementById("solutionButton");
+      const checkButton = document.getElementById("checkButton");
+      const resetButton = document.getElementById("resetButton");
+      const worksheetSelect = document.getElementById("worksheetSelect");
+      const inflexibleGroup = document.getElementById("inflexibleGroup");
+      const flexibleGroup = document.getElementById("flexibleGroup");
+
+      function pathFromMoves(moves) {
+        const path = [[0, 0]];
+        let row = 0;
+        let col = 0;
+
+        for (const move of moves) {
+          if (move === "D") row += 1;
+          if (move === "U") row -= 1;
+          if (move === "R") col += 1;
+          if (move === "L") col -= 1;
+          path.push([row, col]);
+        }
+
+        return path;
+      }
+
+      function keyOf(row, col) {
+        return `${row},${col}`;
+      }
+
+      function wordAt(pool, index) {
+        return pool[index % pool.length];
+      }
+
+      function currentGroup() {
+        return groups[state.groupKey];
+      }
+
+      function currentPath() {
+        return pathFromMoves(shapes[state.sheetIndex]);
+      }
+
+      function currentGrid() {
+        const group = currentGroup();
+        const path = currentPath();
+        const pathMap = new Map(path.map((coord, index) => [keyOf(coord[0], coord[1]), index]));
+        let distractorIndex = state.sheetIndex * 31;
+
+        return Array.from({ length: size * size }, (_, cellIndex) => {
+          const row = Math.floor(cellIndex / size);
+          const col = cellIndex % size;
+          const pathIndex = pathMap.get(keyOf(row, col));
+          const isPath = pathIndex !== undefined;
+          const word = isPath
+            ? wordAt(group.targetWords, state.sheetIndex * 23 + pathIndex)
+            : wordAt(group.distractorWords, distractorIndex++);
+
+          return { row, col, word, isPath, pathIndex };
+        });
+      }
+
+      function populateSelect() {
+        worksheetSelect.innerHTML = "";
+        for (let index = 0; index < 10; index += 1) {
+          const option = document.createElement("option");
+          option.value = String(index);
+          option.textContent = `Pracovný list ${index + 1}`;
+          worksheetSelect.append(option);
+        }
+        worksheetSelect.value = String(state.sheetIndex);
+      }
+
+      function render() {
+        const group = currentGroup();
+        const path = currentPath();
+        const grid = currentGrid();
+        const selectedKeys = new Set(state.selected.map((coord) => keyOf(coord[0], coord[1])));
+
+        worksheet.classList.remove("show-solution");
+        solutionButton.textContent = "Zobraziť riešenie";
+        inflexibleGroup.classList.toggle("active", state.groupKey === "inflexible");
+        flexibleGroup.classList.toggle("active", state.groupKey === "flexible");
+        worksheetSelect.value = String(state.sheetIndex);
+
+        eyebrow.textContent = `${group.label} - pracovný list ${state.sheetIndex + 1}`;
+        title.textContent = `${group.titleBase} ${state.sheetIndex + 1}`;
+        subtitle.textContent = group.subtitle;
+        taskText.textContent = group.task;
+        hintText.textContent = group.hint;
+
+        maze.innerHTML = "";
+        for (const cell of grid) {
+          const button = document.createElement("button");
+          button.className = "cell";
+          button.type = "button";
+          button.textContent = cell.word;
+          button.dataset.row = String(cell.row);
+          button.dataset.col = String(cell.col);
+          button.dataset.path = String(cell.isPath);
+
+          if (cell.pathIndex === 0) button.classList.add("start");
+          if (cell.pathIndex === path.length - 1) button.classList.add("finish");
+          if (selectedKeys.has(keyOf(cell.row, cell.col))) button.classList.add("selected");
+
+          button.addEventListener("click", () => selectCell(cell));
+          maze.append(button);
+        }
+
+        const solutionWords = path.map(([row, col]) => {
+          const cell = grid.find((item) => item.row === row && item.col === col);
+          return cell.word;
+        });
+        solutionText.textContent = `Cesta: ${solutionWords.join(", ")}.`;
+        updateStatus();
+      }
+
+      function selectCell(cell) {
+        const path = currentPath();
+        const selected = state.selected;
+        const cellKey = keyOf(cell.row, cell.col);
+
+        if (selected.length > 1) {
+          const previous = selected[selected.length - 2];
+          if (cellKey === keyOf(previous[0], previous[1])) {
+            selected.pop();
+            renderSelectedOnly();
+            setStatus("Vrátil/a si sa o jedno políčko späť.", "");
+            return;
+          }
+        }
+
+        const expected = path[selected.length];
+        if (!expected || cell.row !== expected[0] || cell.col !== expected[1]) {
+          setStatus("Toto políčko nie je ďalší správny krok. Skús iné susedné slovo.", "bad");
+          return;
+        }
+
+        selected.push([cell.row, cell.col]);
+        renderSelectedOnly();
+        updateStatus();
+      }
+
+      function renderSelectedOnly() {
+        const selectedKeys = new Set(state.selected.map((coord) => keyOf(coord[0], coord[1])));
+        document.querySelectorAll(".cell").forEach((cell) => {
+          const cellKey = keyOf(Number(cell.dataset.row), Number(cell.dataset.col));
+          cell.classList.toggle("selected", selectedKeys.has(cellKey));
+        });
+      }
+
+      function setStatus(message, tone) {
+        statusText.textContent = message;
+        statusText.className = `status ${tone}`.trim();
+      }
+
+      function updateStatus() {
+        const pathLength = currentPath().length;
+        if (state.selected.length === 0) {
+          setStatus("Klikni na ŠTART a pokračuj po správnych slovách.", "");
+          return;
+        }
+
+        if (state.selected.length === pathLength) {
+          setStatus("Výborne, cesta je kompletná.", "good");
+          return;
+        }
+
+        setStatus(`Pokračuj: ${state.selected.length} / ${pathLength} políčok.`, "");
+      }
+
+      function checkAnswer() {
+        if (state.selected.length === currentPath().length) {
+          setStatus("Správne. Celé bludisko je vyriešené.", "good");
+          return;
+        }
+
+        setStatus("Cesta ešte nie je dokončená. Pokračuj po správnych slovných druhoch.", "bad");
+      }
+
+      function resetPath() {
+        state.selected = [];
+        renderSelectedOnly();
+        updateStatus();
+      }
+
+      function switchGroup(groupKey) {
+        state.groupKey = groupKey;
+        state.sheetIndex = 0;
+        state.selected = [];
+        render();
+      }
+
+      populateSelect();
+      render();
+
+      worksheetSelect.addEventListener("change", () => {
+        state.sheetIndex = Number(worksheetSelect.value);
+        state.selected = [];
+        render();
+      });
+
+      inflexibleGroup.addEventListener("click", () => switchGroup("inflexible"));
+      flexibleGroup.addEventListener("click", () => switchGroup("flexible"));
+      resetButton.addEventListener("click", resetPath);
+      checkButton.addEventListener("click", checkAnswer);
+
+      solutionButton.addEventListener("click", () => {
+        const isVisible = worksheet.classList.toggle("show-solution");
+        solutionButton.textContent = isVisible ? "Skryť riešenie" : "Zobraziť riešenie";
+      });
+    </script>
+  </body>
+</html>
