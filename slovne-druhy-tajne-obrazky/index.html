@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="sk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Slovné druhy: tajné obrázky</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f6f3ed;
+        --paper: #fffdf8;
+        --ink: #1c1d1b;
+        --muted: #64645f;
+        --line: #d8d1c3;
+        --accent: #23635a;
+        --accent-dark: #174942;
+        --ok: #26784f;
+        --bad: #b44439;
+        --noun: #4ea3d9;
+        --adjective: #67b567;
+        --verb: #e65f56;
+        --pronoun: #f0cf55;
+        --numeral: #9b73d9;
+        --adverb: #ee9b49;
+        --uncolored: #ffffff;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Segoe UI", "Trebuchet MS", Arial, sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at 8% 12%, rgba(35, 99, 90, 0.16), transparent 28%),
+          radial-gradient(circle at 92% 4%, rgba(238, 155, 73, 0.18), transparent 26%),
+          linear-gradient(180deg, #fbfaf7 0%, var(--bg) 100%);
+      }
+
+      button,
+      select {
+        font: inherit;
+      }
+
+      .app {
+        width: min(1180px, calc(100% - 28px));
+        margin: 28px auto 44px;
+      }
+
+      .topbar {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 18px;
+        align-items: end;
+        padding: 24px 0;
+      }
+
+      .eyebrow {
+        margin: 0 0 8px;
+        color: var(--accent);
+        font-size: 0.82rem;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(2rem, 5vw, 4.3rem);
+        line-height: 0.98;
+        letter-spacing: 0;
+      }
+
+      .intro {
+        max-width: 760px;
+        margin: 14px 0 0;
+        color: var(--muted);
+        font-size: 1.08rem;
+        line-height: 1.55;
+      }
+
+      .toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 10px;
+      }
+
+      .button,
+      .select-wrap {
+        min-height: 42px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        background: var(--paper);
+        color: var(--ink);
+      }
+
+      .button {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 14px;
+        cursor: pointer;
+        font-weight: 800;
+      }
+
+      .button.primary {
+        border-color: var(--accent);
+        background: var(--accent);
+        color: #fff;
+      }
+
+      .button:hover,
+      .button:focus-visible {
+        border-color: var(--accent-dark);
+        box-shadow: 0 0 0 3px rgba(35, 99, 90, 0.16);
+      }
+
+      .select-wrap {
+        padding: 0 10px;
+      }
+
+      .select-wrap select {
+        height: 40px;
+        border: 0;
+        background: transparent;
+        color: inherit;
+        font-weight: 800;
+        outline: 0;
+      }
+
+      .workspace {
+        display: grid;
+        grid-template-columns: 300px minmax(0, 1fr);
+        gap: 18px;
+        align-items: start;
+      }
+
+      .sidebar,
+      .sheet {
+        background: rgba(255, 253, 248, 0.94);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+      }
+
+      .sidebar {
+        position: sticky;
+        top: 16px;
+        padding: 14px;
+      }
+
+      .sheet-list {
+        display: grid;
+        gap: 8px;
+      }
+
+      .sheet-tab {
+        display: grid;
+        grid-template-columns: 38px minmax(0, 1fr);
+        gap: 10px;
+        width: 100%;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 8px;
+        background: #fff;
+        color: var(--ink);
+        text-align: left;
+        cursor: pointer;
+      }
+
+      .sheet-tab.active {
+        border-color: var(--accent);
+        box-shadow: inset 4px 0 0 var(--accent);
+      }
+
+      .sheet-tab strong {
+        display: block;
+        line-height: 1.2;
+      }
+
+      .sheet-tab span {
+        color: var(--muted);
+        font-size: 0.84rem;
+      }
+
+      .mini-picture {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        width: 38px;
+        height: 38px;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        border-radius: 4px;
+      }
+
+      .mini-picture i {
+        display: block;
+      }
+
+      .sheet {
+        padding: clamp(14px, 2.4vw, 26px);
+      }
+
+      .sheet-head {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 14px;
+        align-items: start;
+        border-bottom: 2px solid var(--ink);
+        padding-bottom: 14px;
+        margin-bottom: 16px;
+      }
+
+      .sheet-number {
+        margin: 0 0 4px;
+        color: var(--muted);
+        font-weight: 800;
+      }
+
+      h2 {
+        margin: 0;
+        font-size: clamp(1.55rem, 3vw, 2.45rem);
+        line-height: 1.05;
+        letter-spacing: 0;
+      }
+
+      .score-box {
+        min-width: 150px;
+        border: 1px solid var(--ink);
+        border-radius: 8px;
+        padding: 10px;
+        background: #fff;
+      }
+
+      .score-box span {
+        display: block;
+        color: var(--muted);
+        font-size: 0.84rem;
+        font-weight: 800;
+      }
+
+      .score-box strong {
+        font-size: 1.7rem;
+      }
+
+      .instructions {
+        display: grid;
+        gap: 12px;
+        margin-bottom: 16px;
+      }
+
+      .task,
+      .story {
+        margin: 0;
+        line-height: 1.55;
+      }
+
+      .task {
+        font-weight: 800;
+      }
+
+      .legend {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .legend button,
+      .legend-item {
+        min-height: 42px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 8px 10px;
+        background: #fff;
+        color: var(--ink);
+        text-align: left;
+        font-weight: 800;
+      }
+
+      .legend button {
+        cursor: pointer;
+      }
+
+      .legend button.active {
+        border-color: var(--ink);
+        box-shadow: inset 0 -4px 0 currentColor;
+      }
+
+      .swatch {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        margin-right: 8px;
+        border: 1px solid rgba(0, 0, 0, 0.25);
+        vertical-align: -3px;
+      }
+
+      .grid-wrap {
+        display: grid;
+        place-items: center;
+        margin: 18px 0;
+      }
+
+      .word-grid {
+        display: grid;
+        grid-template-columns: repeat(12, minmax(42px, 1fr));
+        width: min(100%, 760px);
+        aspect-ratio: 1;
+        border: 2px solid var(--ink);
+        background: var(--ink);
+        gap: 1px;
+      }
+
+      .cell {
+        min-width: 0;
+        border: 0;
+        padding: 2px;
+        background: var(--uncolored);
+        color: #171717;
+        cursor: pointer;
+        font-size: clamp(0.52rem, 1.08vw, 0.82rem);
+        font-weight: 800;
+        line-height: 1.05;
+        overflow-wrap: anywhere;
+        text-align: center;
+      }
+
+      .cell:focus-visible {
+        outline: 3px solid var(--ink);
+        outline-offset: -4px;
+      }
+
+      .cell[data-painted="noun"] { background: var(--noun); }
+      .cell[data-painted="adjective"] { background: var(--adjective); }
+      .cell[data-painted="verb"] { background: var(--verb); }
+      .cell[data-painted="pronoun"] { background: var(--pronoun); }
+      .cell[data-painted="numeral"] { background: var(--numeral); }
+      .cell[data-painted="adverb"] { background: var(--adverb); }
+      .cell.correct { box-shadow: inset 0 0 0 3px rgba(38, 120, 79, 0.75); }
+      .cell.wrong { box-shadow: inset 0 0 0 3px rgba(180, 68, 57, 0.85); }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+      }
+
+      .status {
+        min-height: 28px;
+        color: var(--muted);
+        font-weight: 800;
+      }
+
+      .status.good {
+        color: var(--ok);
+      }
+
+      .status.bad {
+        color: var(--bad);
+      }
+
+      .print-stack {
+        display: none;
+      }
+
+      @media (max-width: 880px) {
+        .topbar,
+        .workspace,
+        .sheet-head {
+          grid-template-columns: 1fr;
+        }
+
+        .toolbar {
+          justify-content: flex-start;
+        }
+
+        .sidebar {
+          position: static;
+        }
+
+        .legend {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .word-grid {
+          grid-template-columns: repeat(12, minmax(24px, 1fr));
+        }
+
+        .cell {
+          font-size: 0.48rem;
+        }
+      }
+
+      @media print {
+        @page {
+          size: A4 portrait;
+          margin: 9mm;
+        }
+
+        body {
+          background: #fff;
+        }
+
+        .app {
+          width: auto;
+          margin: 0;
+        }
+
+        .topbar,
+        .workspace {
+          display: none;
+        }
+
+        .print-stack {
+          display: block;
+        }
+
+        .print-sheet {
+          break-after: page;
+          padding: 0;
+        }
+
+        .print-sheet:last-child {
+          break-after: auto;
+        }
+
+        .sheet-head {
+          grid-template-columns: 1fr 120px;
+          margin-bottom: 10px;
+          padding-bottom: 8px;
+        }
+
+        h2 {
+          font-size: 24px;
+        }
+
+        .score-box {
+          min-width: 0;
+          padding: 8px;
+        }
+
+        .instructions {
+          gap: 7px;
+          margin-bottom: 8px;
+        }
+
+        .task,
+        .story {
+          font-size: 12px;
+          line-height: 1.35;
+        }
+
+        .legend {
+          grid-template-columns: repeat(3, 1fr);
+          gap: 4px;
+        }
+
+        .legend-item {
+          min-height: 0;
+          padding: 5px 7px;
+          font-size: 11px;
+        }
+
+        .grid-wrap {
+          margin: 8px 0 0;
+        }
+
+        .word-grid {
+          width: min(100%, 184mm);
+          gap: 1px;
+        }
+
+        .cell {
+          background: #fff !important;
+          color: #111 !important;
+          box-shadow: none !important;
+          font-size: 8px;
+          cursor: default;
+        }
+
+        .actions,
+        .status {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="app">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">tlačiteľné aj online</p>
+          <h1>Slovné druhy: tajné obrázky</h1>
+          <p class="intro">
+            Desať slovenských pracovných listov. Žiaci čítajú krátky text, hľadajú slová v štvorcovej
+            sieti a farbia ich podľa slovného druhu. Pri správnom vyfarbení sa ukáže obrázok.
+          </p>
+        </div>
+        <div class="toolbar" aria-label="Nástroje">
+          <label class="select-wrap">
+            <select id="sheetSelect" aria-label="Vybrať pracovný list"></select>
+          </label>
+          <button class="button" type="button" id="resetButton">Vyčistiť</button>
+          <button class="button" type="button" id="answerButton">Riešenie</button>
+          <button class="button primary" type="button" id="printButton">Tlačiť 10 listov</button>
+        </div>
+      </header>
+
+      <section class="workspace">
+        <aside class="sidebar">
+          <div class="sheet-list" id="sheetList" aria-label="Zoznam pracovných listov"></div>
+        </aside>
+
+        <section class="sheet" id="activeSheet" aria-live="polite"></section>
+      </section>
+
+      <section class="print-stack" id="printStack" aria-label="Tlačové pracovné listy"></section>
+    </main>
+
+    <script>
+      const parts = [
+        { id: "noun", mark: "P", label: "podstatné meno", color: "var(--noun)" },
+        { id: "adjective", mark: "A", label: "prídavné meno", color: "var(--adjective)" },
+        { id: "verb", mark: "S", label: "sloveso", color: "var(--verb)" },
+        { id: "pronoun", mark: "Z", label: "zámeno", color: "var(--pronoun)" },
+        { id: "numeral", mark: "C", label: "číslovka", color: "var(--numeral)" },
+        { id: "adverb", mark: "R", label: "príslovka", color: "var(--adverb)" }
+      ];
+
+      const markToPart = Object.fromEntries(parts.map((part) => [part.mark, part.id]));
+      const partById = Object.fromEntries(parts.map((part) => [part.id, part]));
+
+      const globalWords = {
+        noun: ["lúka", "vták", "škola", "strom", "dom", "rieka", "kniha", "okno", "mesto", "oblak", "záhrada", "most"],
+        adjective: ["tichý", "zelený", "malý", "veselý", "modrý", "rýchly", "jasný", "teplý", "nový", "sladký", "hladký", "šikovný"],
+        verb: ["beží", "spieva", "rastie", "číta", "kreslí", "letí", "svieti", "nesie", "hľadá", "stavia", "pláva", "skáče"],
+        pronoun: ["ja", "ty", "my", "vy", "ona", "on", "oni", "ten", "toto", "náš", "váš", "svoj"],
+        numeral: ["jeden", "dva", "tri", "štyri", "päť", "šesť", "sedem", "osem", "deväť", "desať", "prvý", "druhý"],
+        adverb: ["dnes", "zajtra", "rýchlo", "pomaly", "ticho", "veselo", "hore", "dolu", "spolu", "blízko", "ďaleko", "hneď"]
+      };
+
+      const worksheets = [
+        {
+          title: "Jarný tulipán",
+          picture: "tulipán",
+          story: "Na jar sme išli do školskej záhrady. Zelený tulipán rástol pri plote a my sme ho ticho pozorovali. Dve deti kreslili kvet do zošita, pani učiteľka veselo rozprávala a slnko dnes svietilo veľmi jasne.",
+          words: {
+            noun: ["jar", "záhrada", "tulipán", "plot", "deti", "kvet", "zošit", "učiteľka", "slnko", "škola"],
+            adjective: ["zelený", "školský", "jarný", "jasný", "maličký", "farebný"],
+            verb: ["išli", "rástol", "pozorovali", "kreslili", "rozprávala", "svietilo"],
+            pronoun: ["my", "ho", "ona", "nás", "jej"],
+            numeral: ["dve", "jeden", "tri", "prvý"],
+            adverb: ["ticho", "veselo", "dnes", "jasne", "veľmi"]
+          },
+          pattern: [
+            "RRRRCCCCRRRR",
+            "RRRCPPPPCRRR",
+            "RRCPPPPPPCRR",
+            "RCPPPPPPPPCR",
+            "RCPPPPPPPPCR",
+            "RRCPPPPPPCRR",
+            "RRRCPPPPCRRR",
+            "RRRRASSARRRR",
+            "RRRRASSARRRR",
+            "RRRAASSSARRR",
+            "RRAAASSSAAAR",
+            "AAAAAAAAAAAA"
+          ]
+        },
+        {
+          title: "Farebný motýľ",
+          picture: "motýľ",
+          story: "Pri lese letel farebný motýľ. On sa pomaly vznášal nad lúkou, kým tri dievčatá zbierali kvety. Malé krídla sa ligotali a deti ho dnes pozorne sledovali.",
+          words: {
+            noun: ["les", "motýľ", "lúka", "dievčatá", "kvety", "krídla", "deti"],
+            adjective: ["farebný", "malé", "jemný", "ľahký", "zlatý", "modrý"],
+            verb: ["letel", "vznášal", "zbierali", "ligotali", "sledovali", "sadali"],
+            pronoun: ["on", "sa", "ho", "oni", "ich"],
+            numeral: ["tri", "jeden", "štyri", "druhý"],
+            adverb: ["pomaly", "dnes", "pozorne", "ľahko", "ticho", "spolu"]
+          },
+          pattern: [
+            "CCRRRRRRRRCC",
+            "CPPRRRRRRPPC",
+            "PPPPCRRCPPPP",
+            "PPPPPZZPPPPP",
+            "APPPPZZPPPPA",
+            "AAPPSZZSPPAA",
+            "AAPPSZZSPPAA",
+            "APPPPZZPPPPA",
+            "PPPPPZZPPPPP",
+            "PPPPCRRCPPPP",
+            "CPPRRRRRRPPC",
+            "CCRRRRRRRRCC"
+          ]
+        },
+        {
+          title: "Raketa na štarte",
+          picture: "raketa",
+          story: "Na ihrisku stála strieborná raketa. My sme počítali päť sekúnd a kapitán hlasno zvolal. Raketa rýchlo vyletela hore, kým malí vedci zapisovali prvý pokus.",
+          words: {
+            noun: ["ihrisko", "raketa", "sekúnd", "kapitán", "vedci", "pokus", "štart", "obloha"],
+            adjective: ["strieborná", "malí", "lesklá", "rýchla", "vesmírna", "odvážna"],
+            verb: ["stála", "počítali", "zvolal", "vyletela", "zapisovali", "horieť"],
+            pronoun: ["my", "ona", "nás", "svoj", "jej"],
+            numeral: ["päť", "jeden", "tri", "prvý", "dva"],
+            adverb: ["hlasno", "rýchlo", "hore", "dnes", "spolu"]
+          },
+          pattern: [
+            "RRRRRCCRRRRR",
+            "RRRRCPPCRRRR",
+            "RRRCPPPPCRRR",
+            "RRCPZZZZPCRR",
+            "RRCPZZZZPCRR",
+            "RRCPPPPPPCRR",
+            "RRCPPPPPPCRR",
+            "RRCPPPPPPCRR",
+            "RACPPPPPPSSR",
+            "AACPPPPPPSSA",
+            "AAARRSSSRSAA",
+            "AARRRSSSRRAA"
+          ]
+        },
+        {
+          title: "Ryba v jazere",
+          picture: "ryba",
+          story: "V čistom jazere plávala modrá ryba. Ona sa rýchlo otočila pri kameni a dve deti ju ticho pozorovali z brehu. Voda dnes pokojne žblnkala.",
+          words: {
+            noun: ["jazero", "ryba", "kameň", "deti", "breh", "voda", "vlna", "chvost"],
+            adjective: ["čistom", "modrá", "pokojná", "hladká", "mokrá", "dlhá"],
+            verb: ["plávala", "otočila", "pozorovali", "žblnkala", "mihla", "skryla"],
+            pronoun: ["ona", "sa", "ju", "oni", "ich"],
+            numeral: ["dve", "jeden", "tri", "prvý"],
+            adverb: ["rýchlo", "ticho", "dnes", "pokojne", "blízko"]
+          },
+          pattern: [
+            "RRRRRRRRRRRR",
+            "RRRCCCCCCRRR",
+            "RRCPPPPPPCRR",
+            "RCPPPPPPPPCR",
+            "CPPPPPPPPPSC",
+            "CPPPZZPPPSSC",
+            "CPPPZZPPPSSC",
+            "CPPPPPPPPPSC",
+            "RCPPPPPPPPCR",
+            "RRCPPPPPPCRR",
+            "RRRCCCCCCRRR",
+            "RRRRRRRRRRRR"
+          ]
+        },
+        {
+          title: "Domček pri lese",
+          picture: "domček",
+          story: "Za dedinou stojí malý domček. Jeho červená strecha sa ligocala, tri okná svietili a pes veselo behal okolo plota. Dnes tam všetci pracovali usilovne.",
+          words: {
+            noun: ["dedina", "domček", "strecha", "okná", "pes", "plot", "les", "dvor"],
+            adjective: ["malý", "červená", "drevený", "teplý", "tichý", "nový"],
+            verb: ["stojí", "ligotala", "svietili", "behal", "pracovali", "otvoril"],
+            pronoun: ["jeho", "sa", "oni", "všetci", "svoj"],
+            numeral: ["tri", "jeden", "dve", "prvý"],
+            adverb: ["veselo", "dnes", "usilovne", "okolo", "blízko"]
+          },
+          pattern: [
+            "RRRRRRRRRRRR",
+            "RRRRCCRRRRRR",
+            "RRRCPPCCRRRR",
+            "RRCPPPPCCRRR",
+            "RCPPPPPPCCRR",
+            "CPPPPPPPPCCR",
+            "AAAAAAAAAAAA",
+            "APPPZZPPPZPA",
+            "APPPZZPPPZPA",
+            "APPPPPPPPPPA",
+            "APPPSSSPPPPA",
+            "AAAAAAAAAAAA"
+          ]
+        },
+        {
+          title: "Jabloň v sade",
+          picture: "strom",
+          story: "V starom sade rástla vysoká jabloň. Na konároch viselo desať jabĺk a my sme ich opatrne počítali. Vtáky hore spievali, lebo deň bol veľmi teplý.",
+          words: {
+            noun: ["sad", "jabloň", "konáre", "jablká", "vtáky", "deň", "list", "kmeň"],
+            adjective: ["starom", "vysoká", "teplý", "zelené", "sladké", "silný"],
+            verb: ["rástla", "viselo", "počítali", "spievali", "bol", "padalo"],
+            pronoun: ["my", "ich", "ona", "nás", "jej"],
+            numeral: ["desať", "jeden", "tri", "päť", "prvý"],
+            adverb: ["opatrne", "hore", "veľmi", "dnes", "pomaly"]
+          },
+          pattern: [
+            "RRRCCCCCCRRR",
+            "RRCPPPPPPCRR",
+            "RCPPPPPPPPCR",
+            "CPPPPPPZPPPC",
+            "CPPPZPPPPPPC",
+            "RCPPPPPPZPCR",
+            "RRCPPPPPPCRR",
+            "RRRCCSSCCRRR",
+            "RRRRRSSRRRRR",
+            "RRRRRSSRRRRR",
+            "RAAAASSAAAAR",
+            "AAAAAAAAAAAA"
+          ]
+        },
+        {
+          title: "Múdra sova",
+          picture: "sova",
+          story: "Na starej vetve sedela múdra sova. Ona v noci ticho sledovala školský dvor a dve mačky pomaly prešli popod strom. Jej veľké oči jasne svietili.",
+          words: {
+            noun: ["vetva", "sova", "noc", "dvor", "mačky", "strom", "oči", "škola"],
+            adjective: ["starej", "múdra", "školský", "veľké", "hnedá", "tichá"],
+            verb: ["sedela", "sledovala", "prešli", "svietili", "húkala", "čakala"],
+            pronoun: ["ona", "jej", "sa", "ich", "ten"],
+            numeral: ["dve", "jeden", "štyri", "prvý"],
+            adverb: ["ticho", "pomaly", "jasne", "nočne", "dnes"]
+          },
+          pattern: [
+            "RRCCCCCCCCRR",
+            "RCPPPPPPPPCR",
+            "CPPPPPPPPPPC",
+            "CPPZZPPZZPPC",
+            "CPPZZPPZZPPC",
+            "CPPPPPPPPPPC",
+            "RCPPSSSSPPCR",
+            "RRCPPSSPPCRR",
+            "RRRCPPPPCRRR",
+            "RRRACSSCARAR",
+            "RRAAACCCAAAR",
+            "AAAAAAAAAAAA"
+          ]
+        },
+        {
+          title: "Slnko za oblakom",
+          picture: "slnko a oblak",
+          story: "Ráno vyšlo jasné slnko, ale za ním sa pomaly posúval biely oblak. My sme dnes videli štyri lúče a trieda veselo otvorila okná.",
+          words: {
+            noun: ["deň", "slnko", "oblak", "lúče", "trieda", "okná", "nebo", "vietor"],
+            adjective: ["jasné", "biely", "teplý", "zlatý", "modré", "svieži"],
+            verb: ["vyšlo", "posúval", "videli", "otvorila", "svietilo", "fúkal"],
+            pronoun: ["ním", "sa", "my", "ho", "nás"],
+            numeral: ["štyri", "jeden", "dva", "prvý"],
+            adverb: ["pomaly", "dnes", "veselo", "ráno", "hore"]
+          },
+          pattern: [
+            "RRRRCCCCRRRR",
+            "RRRCPPPPCRRR",
+            "RRCPPPPPPCRR",
+            "RCPPPPPPPPCR",
+            "RCPPPPPPPPCR",
+            "RRCPPPPPPCCR",
+            "RRRCCPPPPCCC",
+            "RRRZZCCCCCCC",
+            "RRZZZZZZZCCR",
+            "RZZZZZZZZZCR",
+            "RRZZZZZZZRRR",
+            "RRRZZZZZRRRR"
+          ]
+        },
+        {
+          title: "Auto na výlete",
+          picture: "auto",
+          story: "Na ceste stálo nové auto. Jeho štyri kolesá sa pomaly otočili a rodina veselo vyrazila do mesta. Vodič dnes opatrne zastavil pri moste.",
+          words: {
+            noun: ["cesta", "auto", "kolesá", "rodina", "mesto", "vodič", "most", "výlet"],
+            adjective: ["nové", "lesklé", "rýchle", "červené", "dlhá", "bezpečná"],
+            verb: ["stálo", "otočili", "vyrazila", "zastavil", "trúbilo", "čakalo"],
+            pronoun: ["jeho", "sa", "ona", "ich", "nás"],
+            numeral: ["štyri", "jeden", "dve", "prvý"],
+            adverb: ["pomaly", "veselo", "dnes", "opatrne", "blízko"]
+          },
+          pattern: [
+            "RRRRRRRRRRRR",
+            "RRRRRRRRRRRR",
+            "RRRCCCCCCRRR",
+            "RRCPPPPPPCRR",
+            "RCPPPPPPPPCR",
+            "CPPPPPPPPPPC",
+            "CPPPPPPPPPPC",
+            "CCCCCCCCCCCC",
+            "RAAZZAAAAZAR",
+            "RAAZZAAAAZAR",
+            "RRRAAAAARRRR",
+            "RRRRRRRRRRRR"
+          ]
+        },
+        {
+          title: "Hrad na kopci",
+          picture: "hrad",
+          story: "Na vysokom kopci stál starý hrad. Tri veže sa hrdo týčili nad mestom a turisti ho dnes zvedavo obzerali. V bráne potichu čakal sprievodca.",
+          words: {
+            noun: ["kopec", "hrad", "veže", "mesto", "turisti", "brána", "sprievodca", "kameň"],
+            adjective: ["vysokom", "starý", "hrdý", "kamenný", "veľký", "tajný"],
+            verb: ["stál", "týčili", "obzerali", "čakal", "otvoril", "kráčal"],
+            pronoun: ["sa", "ho", "oni", "ten", "nás"],
+            numeral: ["tri", "jeden", "dve", "prvý"],
+            adverb: ["hrdo", "dnes", "zvedavo", "potichu", "hore"]
+          },
+          pattern: [
+            "CCRRCCRRCCRR",
+            "PPCCPPCCPPCR",
+            "PPPPPPPPPPPR",
+            "PZZPPZZPPZZP",
+            "PZZPPZZPPZZP",
+            "PPPPPPPPPPPP",
+            "PPPPPPPPPPPP",
+            "PPPPSSSSPPPP",
+            "PPPPSSSSPPPP",
+            "PPPPSSSSPPPP",
+            "AAAAAAAAAAAA",
+            "AAAAAAAAAAAA"
+          ]
+        }
+      ];
+
+      const state = {
+        activeIndex: 0,
+        selectedPart: "noun",
+        painted: new Map(),
+        showingAnswer: false
+      };
+
+      const sheetSelect = document.getElementById("sheetSelect");
+      const sheetList = document.getElementById("sheetList");
+      const activeSheet = document.getElementById("activeSheet");
+      const printStack = document.getElementById("printStack");
+      const resetButton = document.getElementById("resetButton");
+      const answerButton = document.getElementById("answerButton");
+      const printButton = document.getElementById("printButton");
+
+      function partIdFromMark(mark) {
+        return markToPart[mark] || "noun";
+      }
+
+      function wordFor(sheet, partId, index) {
+        const bank = [...(sheet.words[partId] || []), ...globalWords[partId]];
+        return bank[index % bank.length];
+      }
+
+      function cellsFor(sheet) {
+        const counts = Object.fromEntries(parts.map((part) => [part.id, 0]));
+        return sheet.pattern.flatMap((row, rowIndex) =>
+          [...row].map((mark, columnIndex) => {
+            const partId = partIdFromMark(mark);
+            const word = wordFor(sheet, partId, counts[partId]++);
+            return { rowIndex, columnIndex, partId, word };
+          })
+        );
+      }
+
+      function renderLegend(asButtons = true) {
+        return `<div class="legend">${parts.map((part) => {
+          const content = `<span class="swatch" style="background:${part.color}"></span>${part.label}`;
+          return asButtons
+            ? `<button type="button" data-part="${part.id}" class="${state.selectedPart === part.id ? "active" : ""}">${content}</button>`
+            : `<div class="legend-item">${content}</div>`;
+        }).join("")}</div>`;
+      }
+
+      function renderGrid(sheet, mode = "play") {
+        const cells = cellsFor(sheet);
+        return `<div class="grid-wrap"><div class="word-grid" role="grid" aria-label="Slovná sieť">${cells.map((cell, index) => {
+          const saved = state.painted.get(index);
+          const painted = mode === "answer" ? cell.partId : saved || "";
+          const buttonAttrs = mode === "print"
+            ? `class="cell" tabindex="-1"`
+            : `class="cell" type="button" data-index="${index}" data-answer="${cell.partId}" data-painted="${painted}"`;
+          return `<button ${buttonAttrs}>${cell.word}</button>`;
+        }).join("")}</div></div>`;
+      }
+
+      function sheetTemplate(sheet, index, mode = "play") {
+        return `
+          <article class="${mode === "print" ? "print-sheet" : ""}">
+            <header class="sheet-head">
+              <div>
+                <p class="sheet-number">Pracovný list ${index + 1} z 10</p>
+                <h2>${sheet.title}</h2>
+              </div>
+              <div class="score-box">
+                <span>Meno / skóre</span>
+                <strong>____ / 144</strong>
+              </div>
+            </header>
+            <section class="instructions">
+              <p class="task">Úloha: Prečítaj text. V sieti vyfarbi každé slovo podľa slovného druhu. Ak vyfarbíš správne, vznikne obrázok: ${sheet.picture}.</p>
+              <p class="story">${sheet.story}</p>
+              ${renderLegend(mode !== "print")}
+            </section>
+            ${renderGrid(sheet, mode === "answer" ? "answer" : mode)}
+            ${mode === "play" ? `<div class="actions">
+              <button class="button primary" type="button" id="checkButton">Skontrolovať</button>
+              <button class="button" type="button" id="clearSheetButton">Vymazať tento list</button>
+              <p class="status" id="statusText">Vyber slovný druh vo farebnej legende a klikaj na políčka.</p>
+            </div>` : ""}
+          </article>
+        `;
+      }
+
+      function renderSheetList() {
+        sheetSelect.innerHTML = worksheets.map((sheet, index) => `<option value="${index}">${index + 1}. ${sheet.title}</option>`).join("");
+        sheetSelect.value = String(state.activeIndex);
+        sheetList.innerHTML = worksheets.map((sheet, index) => {
+          const sampleCells = cellsFor(sheet).filter((_, cellIndex) => cellIndex % 2 === 0).slice(0, 36);
+          return `
+            <button class="sheet-tab ${index === state.activeIndex ? "active" : ""}" type="button" data-sheet="${index}">
+              <span class="mini-picture" aria-hidden="true">
+                ${sampleCells.map((cell) => `<i style="background:${partById[cell.partId].color}"></i>`).join("")}
+              </span>
+              <span><strong>${index + 1}. ${sheet.title}</strong><span>${sheet.picture}</span></span>
+            </button>
+          `;
+        }).join("");
+      }
+
+      function renderActiveSheet() {
+        const sheet = worksheets[state.activeIndex];
+        answerButton.textContent = state.showingAnswer ? "Späť k hre" : "Riešenie";
+        activeSheet.innerHTML = sheetTemplate(sheet, state.activeIndex, state.showingAnswer ? "answer" : "play");
+        bindSheetControls();
+      }
+
+      function bindSheetControls() {
+        activeSheet.querySelectorAll(".legend button").forEach((button) => {
+          button.addEventListener("click", () => {
+            state.selectedPart = button.dataset.part;
+            state.showingAnswer = false;
+            renderActiveSheet();
+          });
+        });
+
+        activeSheet.querySelectorAll(".cell[data-index]").forEach((cell) => {
+          cell.addEventListener("click", () => {
+            state.showingAnswer = false;
+            const index = Number(cell.dataset.index);
+            const current = state.painted.get(index);
+            if (current === state.selectedPart) {
+              state.painted.delete(index);
+              cell.dataset.painted = "";
+            } else {
+              state.painted.set(index, state.selectedPart);
+              cell.dataset.painted = state.selectedPart;
+            }
+            saveCurrentSheet();
+            cell.classList.remove("correct", "wrong");
+            const status = document.getElementById("statusText");
+            if (status) {
+              status.className = "status";
+              status.textContent = `Vybraná farba: ${partById[state.selectedPart].label}.`;
+            }
+          });
+        });
+
+        const checkButton = document.getElementById("checkButton");
+        if (checkButton) {
+          checkButton.addEventListener("click", checkAnswers);
+        }
+
+        const clearSheetButton = document.getElementById("clearSheetButton");
+        if (clearSheetButton) {
+          clearSheetButton.addEventListener("click", () => {
+            clearCurrentSheet();
+            renderActiveSheet();
+          });
+        }
+      }
+
+      function storageKey() {
+        return `sheet-${state.activeIndex}`;
+      }
+
+      function saveCurrentSheet() {
+        localStorage.setItem(storageKey(), JSON.stringify([...state.painted.entries()]));
+      }
+
+      function loadCurrentSheet() {
+        try {
+          state.painted = new Map(JSON.parse(localStorage.getItem(storageKey()) || "[]"));
+        } catch (error) {
+          state.painted = new Map();
+        }
+      }
+
+      function clearCurrentSheet() {
+        state.painted.clear();
+        localStorage.removeItem(storageKey());
+        state.showingAnswer = false;
+      }
+
+      function setActiveSheet(index) {
+        saveCurrentSheet();
+        state.activeIndex = index;
+        state.showingAnswer = false;
+        loadCurrentSheet();
+        renderSheetList();
+        renderActiveSheet();
+      }
+
+      function checkAnswers() {
+        let correct = 0;
+        const cells = activeSheet.querySelectorAll(".cell[data-index]");
+        cells.forEach((cell) => {
+          const answer = cell.dataset.answer;
+          const painted = state.painted.get(Number(cell.dataset.index));
+          cell.classList.toggle("correct", painted === answer);
+          cell.classList.toggle("wrong", painted !== answer);
+          if (painted === answer) correct += 1;
+        });
+        saveCurrentSheet();
+        const status = document.getElementById("statusText");
+        if (status) {
+          status.className = `status ${correct === cells.length ? "good" : "bad"}`;
+          status.textContent = correct === cells.length
+            ? "Výborne, celý obrázok je vyfarbený správne."
+            : `Správne je ${correct} zo ${cells.length} políčok. Oprav políčka s červeným rámikom.`;
+        }
+      }
+
+      function renderPrintStack() {
+        printStack.innerHTML = worksheets.map((sheet, index) => sheetTemplate(sheet, index, "print")).join("");
+      }
+
+      sheetList.addEventListener("click", (event) => {
+        const tab = event.target.closest("[data-sheet]");
+        if (tab) {
+          setActiveSheet(Number(tab.dataset.sheet));
+        }
+      });
+
+      sheetSelect.addEventListener("change", () => {
+        setActiveSheet(Number(sheetSelect.value));
+      });
+
+      resetButton.addEventListener("click", () => {
+        clearCurrentSheet();
+        renderActiveSheet();
+      });
+
+      answerButton.addEventListener("click", () => {
+        state.showingAnswer = !state.showingAnswer;
+        answerButton.textContent = state.showingAnswer ? "Späť k hre" : "Riešenie";
+        renderActiveSheet();
+      });
+
+      printButton.addEventListener("click", () => {
+        renderPrintStack();
+        window.print();
+      });
+
+      loadCurrentSheet();
+      renderSheetList();
+      renderActiveSheet();
+      renderPrintStack();
+    </script>
+  </body>
+</html>
