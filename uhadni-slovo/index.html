@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="sk">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Uhádni slovo</title>
+    <style>
+      #us-app {
+        --us-bg: #f6f7fb;
+        --us-panel: #ffffff;
+        --us-text: #15202b;
+        --us-muted: #5f6b7a;
+        --us-line: #d8e1ec;
+        --us-primary: #2166d1;
+        --us-primary-dark: #174a9b;
+        --us-green: #2f8f5b;
+        --us-yellow: #c79018;
+        --us-gray: #667085;
+        --us-red: #c2413f;
+        --us-cyan: #dff7fb;
+        --us-mint: #e8f8ee;
+        --us-gold: #fff3cc;
+        --us-lavender: #eee9ff;
+        color: var(--us-text);
+        font-family: "Segoe UI", "Trebuchet MS", Arial, sans-serif;
+        line-height: 1.45;
+      }
+
+      #us-app,
+      #us-app * {
+        box-sizing: border-box;
+      }
+
+      #us-app button,
+      #us-app input,
+      #us-app select {
+        font: inherit;
+      }
+
+      #us-app .us-shell {
+        width: min(1180px, calc(100% - 24px));
+        margin: 24px auto;
+        padding: clamp(16px, 3vw, 32px);
+        border-radius: 28px;
+        background:
+          radial-gradient(circle at 12% 8%, rgba(255, 213, 79, 0.36), transparent 24%),
+          radial-gradient(circle at 88% 12%, rgba(93, 211, 186, 0.32), transparent 22%),
+          linear-gradient(135deg, #f8fbff 0%, #eef7ff 48%, #fff8e8 100%);
+        box-shadow: 0 26px 70px rgba(45, 72, 105, 0.16);
+      }
+
+      #us-app .us-header {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 16px;
+        align-items: start;
+        margin-bottom: 18px;
+      }
+
+      #us-app .us-kicker {
+        margin: 0 0 6px;
+        color: var(--us-primary-dark);
+        font-size: 0.95rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+
+      #us-app .us-title {
+        margin: 0;
+        font-size: clamp(2rem, 5vw, 4rem);
+        line-height: 1.05;
+      }
+
+      #us-app .us-subtitle {
+        max-width: 760px;
+        margin: 10px 0 0;
+        color: var(--us-muted);
+        font-size: clamp(1rem, 2vw, 1.18rem);
+      }
+
+      #us-app .us-pill {
+        display: inline-flex;
+        align-items: center;
+        min-height: 42px;
+        padding: 8px 14px;
+        border: 1px solid rgba(33, 102, 209, 0.16);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.78);
+        color: var(--us-primary-dark);
+        font-weight: 700;
+        white-space: nowrap;
+      }
+
+      #us-app .us-layout {
+        display: grid;
+        grid-template-columns: minmax(290px, 380px) minmax(0, 1fr);
+        gap: 18px;
+        align-items: start;
+      }
+
+      #us-app .us-panel {
+        border: 1px solid rgba(216, 225, 236, 0.95);
+        border-radius: 22px;
+        background: rgba(255, 255, 255, 0.92);
+        box-shadow: 0 14px 34px rgba(32, 56, 85, 0.1);
+      }
+
+      #us-app .us-settings {
+        padding: 18px;
+      }
+
+      #us-app .us-settings.us-hidden-for-play {
+        display: none;
+      }
+
+      #us-app .us-game {
+        min-height: 620px;
+        padding: clamp(16px, 3vw, 24px);
+      }
+
+      #us-app .us-panel-head {
+        display: flex;
+        gap: 12px;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 14px;
+      }
+
+      #us-app .us-panel-title {
+        margin: 0;
+        font-size: 1.25rem;
+      }
+
+      #us-app .us-field {
+        display: grid;
+        gap: 7px;
+        margin: 0 0 14px;
+      }
+
+      #us-app .us-label {
+        color: #283646;
+        font-weight: 700;
+      }
+
+      #us-app .us-help {
+        color: var(--us-muted);
+        font-size: 0.92rem;
+      }
+
+      #us-app .us-input-row {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 8px;
+      }
+
+      #us-app .us-input,
+      #us-app .us-select {
+        width: 100%;
+        min-height: 48px;
+        border: 2px solid var(--us-line);
+        border-radius: 14px;
+        padding: 10px 12px;
+        background: #fff;
+        color: var(--us-text);
+        outline-color: var(--us-primary);
+      }
+
+      #us-app .us-input:disabled {
+        background: #eef2f7;
+        color: #5d6978;
+      }
+
+      #us-app .us-check {
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
+        margin: 10px 0 16px;
+        padding: 12px;
+        border-radius: 16px;
+        background: var(--us-cyan);
+      }
+
+      #us-app .us-check input {
+        width: 22px;
+        height: 22px;
+        margin-top: 1px;
+        accent-color: var(--us-primary);
+      }
+
+      #us-app .us-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      #us-app .us-button {
+        min-height: 48px;
+        border: 0;
+        border-radius: 15px;
+        padding: 12px 16px;
+        background: #e7edf5;
+        color: #1d2d3d;
+        cursor: pointer;
+        font-weight: 800;
+        box-shadow: 0 6px 0 rgba(31, 45, 61, 0.12);
+        transition:
+          transform 140ms ease,
+          box-shadow 140ms ease,
+          background 140ms ease;
+      }
+
+      #us-app .us-button:hover,
+      #us-app .us-button:focus-visible {
+        transform: translateY(-1px);
+      }
+
+      #us-app .us-button:active {
+        transform: translateY(2px);
+        box-shadow: 0 3px 0 rgba(31, 45, 61, 0.12);
+      }
+
+      #us-app .us-button:disabled {
+        cursor: not-allowed;
+        opacity: 0.62;
+        transform: none;
+      }
+
+      #us-app .us-button-primary {
+        background: var(--us-primary);
+        color: #fff;
+      }
+
+      #us-app .us-button-danger {
+        background: #ffe1dd;
+        color: #8e2f2c;
+      }
+
+      #us-app .us-button-compact {
+        min-height: 48px;
+        padding: 10px 13px;
+      }
+
+      #us-app .us-alert {
+        display: none;
+        margin-top: 12px;
+        padding: 12px;
+        border-radius: 15px;
+        background: #fff4d7;
+        color: #5f4309;
+        font-weight: 700;
+      }
+
+      #us-app .us-alert.us-visible {
+        display: block;
+      }
+
+      #us-app .us-game-top {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+      }
+
+      #us-app .us-status-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      #us-app .us-status {
+        min-height: 38px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: var(--us-lavender);
+        color: #382b78;
+        font-weight: 800;
+      }
+
+      #us-app .us-board-wrap {
+        display: grid;
+        justify-items: center;
+        margin: 8px 0 20px;
+      }
+
+      #us-app .us-board {
+        display: grid;
+        gap: clamp(6px, 1vw, 9px);
+        width: min(100%, 720px);
+      }
+
+      #us-app .us-row {
+        display: grid;
+        gap: clamp(6px, 1vw, 9px);
+      }
+
+      #us-app .us-tile {
+        position: relative;
+        display: grid;
+        place-items: center;
+        aspect-ratio: 1;
+        min-width: 0;
+        border: 2px solid #cbd6e3;
+        border-radius: clamp(10px, 2vw, 17px);
+        background: rgba(255, 255, 255, 0.94);
+        color: var(--us-text);
+        font-size: clamp(1.35rem, 5vw, 2.65rem);
+        font-weight: 900;
+        text-transform: uppercase;
+        box-shadow: inset 0 -5px 0 rgba(30, 48, 72, 0.07);
+        transform-style: preserve-3d;
+      }
+
+      #us-app .us-tile.us-filled {
+        border-color: var(--us-primary);
+        animation: us-pop 120ms ease-out;
+      }
+
+      #us-app .us-tile.us-revealing {
+        animation: us-reveal 520ms ease both;
+      }
+
+      #us-app .us-tile.us-correct {
+        border-color: var(--us-green);
+        background: var(--us-green);
+        color: #fff;
+      }
+
+      #us-app .us-tile.us-present {
+        border-color: var(--us-yellow);
+        background: var(--us-yellow);
+        color: #231705;
+      }
+
+      #us-app .us-tile.us-absent {
+        border-color: var(--us-gray);
+        background: var(--us-gray);
+        color: #fff;
+      }
+
+      #us-app .us-tile-symbol {
+        position: absolute;
+        right: 6px;
+        bottom: 3px;
+        font-size: clamp(0.76rem, 2.3vw, 1rem);
+        font-weight: 900;
+        line-height: 1;
+      }
+
+      #us-app .us-message {
+        min-height: 58px;
+        margin: 0 0 16px;
+        padding: 14px 16px;
+        border-radius: 18px;
+        background: #eef5ff;
+        color: #173867;
+        font-size: 1.08rem;
+        font-weight: 800;
+      }
+
+      #us-app .us-message.us-success {
+        background: var(--us-mint);
+        color: #175f3a;
+      }
+
+      #us-app .us-message.us-fail {
+        background: #ffe8e6;
+        color: #8e2f2c;
+      }
+
+      #us-app .us-message.us-note {
+        background: var(--us-gold);
+        color: #62450b;
+      }
+
+      #us-app .us-legend {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+        margin-bottom: 16px;
+      }
+
+      #us-app .us-legend-item {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        min-height: 44px;
+        padding: 8px 10px;
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.74);
+        color: #253546;
+        font-size: 0.92rem;
+        font-weight: 700;
+      }
+
+      #us-app .us-mark {
+        display: inline-grid;
+        place-items: center;
+        flex: 0 0 28px;
+        width: 28px;
+        height: 28px;
+        border-radius: 9px;
+        font-weight: 900;
+      }
+
+      #us-app .us-mark-correct {
+        background: var(--us-green);
+        color: #fff;
+      }
+
+      #us-app .us-mark-present {
+        background: var(--us-yellow);
+        color: #231705;
+      }
+
+      #us-app .us-mark-absent {
+        background: var(--us-gray);
+        color: #fff;
+      }
+
+      #us-app .us-keyboard {
+        display: grid;
+        gap: 8px;
+        user-select: none;
+      }
+
+      #us-app .us-key-row {
+        display: flex;
+        gap: 6px;
+        justify-content: center;
+      }
+
+      #us-app .us-key {
+        position: relative;
+        min-width: 0;
+        min-height: 48px;
+        flex: 1 1 0;
+        border: 0;
+        border-radius: 12px;
+        padding: 6px 4px;
+        background: #dfe8f2;
+        color: #1c2d3f;
+        cursor: pointer;
+        font-weight: 900;
+        box-shadow: 0 4px 0 rgba(44, 64, 88, 0.14);
+      }
+
+      #us-app .us-key-wide {
+        flex: 1.7 1 0;
+        font-size: 0.92rem;
+      }
+
+      #us-app .us-key.us-correct {
+        background: var(--us-green);
+        color: #fff;
+      }
+
+      #us-app .us-key.us-present {
+        background: var(--us-yellow);
+        color: #231705;
+      }
+
+      #us-app .us-key.us-absent {
+        background: var(--us-gray);
+        color: #fff;
+      }
+
+      #us-app .us-key span {
+        display: block;
+        font-size: 0.7rem;
+        line-height: 1;
+      }
+
+      #us-app .us-sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+
+      @keyframes us-pop {
+        50% {
+          transform: scale(1.06);
+        }
+      }
+
+      @keyframes us-reveal {
+        0% {
+          transform: rotateX(0deg);
+        }
+        45% {
+          transform: rotateX(90deg);
+        }
+        55% {
+          transform: rotateX(90deg);
+        }
+        100% {
+          transform: rotateX(0deg);
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        #us-app .us-button,
+        #us-app .us-tile {
+          transition: none;
+          animation: none !important;
+        }
+      }
+
+      @media (max-width: 900px) {
+        #us-app .us-header,
+        #us-app .us-layout {
+          grid-template-columns: 1fr;
+        }
+
+        #us-app .us-game {
+          min-height: 0;
+        }
+      }
+
+      @media (max-width: 620px) {
+        #us-app .us-shell {
+          width: min(100%, calc(100% - 12px));
+          margin: 8px auto;
+          border-radius: 18px;
+        }
+
+        #us-app .us-legend {
+          grid-template-columns: 1fr;
+        }
+
+        #us-app .us-key-row {
+          gap: 4px;
+        }
+
+        #us-app .us-key {
+          min-height: 44px;
+          border-radius: 10px;
+          font-size: 0.9rem;
+        }
+
+        #us-app .us-key-wide {
+          font-size: 0.78rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main id="us-app">
+      <div class="us-shell">
+        <header class="us-header">
+          <div>
+            <p class="us-kicker">Slovenská slovná hra</p>
+            <h1 class="us-title">Uhádni slovo</h1>
+            <p class="us-subtitle">
+              Učiteľ pripraví tajné slovo a žiaci ho hádajú po písmenách. Každý pokus ukáže, ktoré písmená sú na správnom mieste.
+            </p>
+          </div>
+          <div class="us-pill" aria-live="polite" id="us-ready-pill">Pripravené pre triedu</div>
+        </header>
+
+        <div class="us-layout">
+          <section class="us-panel us-settings" id="us-settings-panel" aria-labelledby="us-settings-title">
+            <div class="us-panel-head">
+              <h2 class="us-panel-title" id="us-settings-title">Nastavenia učiteľa</h2>
+            </div>
+
+            <div class="us-field">
+              <label class="us-label" for="us-secret-word">Tajné slovo</label>
+              <div class="us-input-row">
+                <input class="us-input" id="us-secret-word" type="text" autocomplete="off" spellcheck="false" maxlength="10" />
+                <button class="us-button us-button-compact" id="us-toggle-secret" type="button" aria-pressed="false">Skryť</button>
+              </div>
+              <div class="us-help">Použi slovenské písmená. Slovo musí mať 3 až 10 písmen.</div>
+            </div>
+
+            <div class="us-field">
+              <label class="us-label" for="us-word-length">Dĺžka slova</label>
+              <select class="us-select" id="us-word-length"></select>
+            </div>
+
+            <div class="us-field">
+              <label class="us-label" for="us-attempts">Počet pokusov</label>
+              <select class="us-select" id="us-attempts"></select>
+            </div>
+
+            <label class="us-check" for="us-hide-settings">
+              <input id="us-hide-settings" type="checkbox" />
+              <span>
+                <strong>Po spustení skryť nastavenia</strong><br />
+                <span class="us-help">V režime hry zostane pre žiakov čistá tabuľa.</span>
+              </span>
+            </label>
+
+            <div class="us-actions">
+              <button class="us-button us-button-primary" id="us-start" type="button">Spustiť hru</button>
+              <button class="us-button" id="us-new-game" type="button">Nová hra</button>
+              <button class="us-button us-button-danger" id="us-reset" type="button">Obnoviť pôvodné nastavenia</button>
+            </div>
+            <div class="us-alert" id="us-settings-error" role="alert"></div>
+          </section>
+
+          <section class="us-panel us-game" aria-labelledby="us-game-title">
+            <div class="us-game-top">
+              <h2 class="us-panel-title" id="us-game-title">Režim hry</h2>
+              <button class="us-button" id="us-new-game-play" type="button">Nová hra</button>
+              <div class="us-status-group" aria-live="polite">
+                <div class="us-status" id="us-length-status">Slovo: 5 písmen</div>
+                <div class="us-status" id="us-attempt-status">Pokusy: 0 / 6</div>
+              </div>
+            </div>
+
+            <div class="us-message" id="us-message" role="status" aria-live="polite">
+              Zadaj slovo v nastaveniach a stlač „Spustiť hru“.
+            </div>
+
+            <div class="us-legend" aria-label="Vysvetlivky hodnotenia písmen">
+              <div class="us-legend-item"><span class="us-mark us-mark-correct">✓</span> správne miesto</div>
+              <div class="us-legend-item"><span class="us-mark us-mark-present">↔</span> iné miesto</div>
+              <div class="us-legend-item"><span class="us-mark us-mark-absent">×</span> v slove nie je</div>
+            </div>
+
+            <div class="us-board-wrap">
+              <div class="us-board" id="us-board" aria-label="Hracia mriežka"></div>
+            </div>
+
+            <div class="us-keyboard" id="us-keyboard" aria-label="Slovenská virtuálna klávesnica"></div>
+            <p class="us-sr-only" id="us-live" aria-live="assertive"></p>
+          </section>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      (() => {
+        "use strict";
+
+        const root = document.getElementById("us-app");
+        if (!root) return;
+
+        const storageKey = "uhadniSlovoSettingsV1";
+        const alphabet = "AÁÄBCČDĎEÉFGHIÍJKLĹĽMNŇOÓÔPQRŔSŠTŤUÚVWXYÝZŽ";
+        const keyboardRows = [
+          ["Q", "W", "E", "É", "R", "Ŕ", "T", "Ť", "Y", "Ý", "U", "Ú", "I", "Í", "O", "Ó"],
+          ["A", "Á", "Ä", "S", "Š", "D", "Ď", "F", "G", "H", "J", "K", "L", "Ĺ", "Ľ"],
+          ["ENTER", "Z", "Ž", "X", "C", "Č", "V", "B", "N", "Ň", "M", "Ô", "DEL"]
+        ];
+        const defaultSettings = {
+          secret: "ŠKOLA",
+          length: 5,
+          attempts: 6,
+          hideSettings: true
+        };
+        const rank = { absent: 1, present: 2, correct: 3 };
+        const symbols = { correct: "✓", present: "↔", absent: "×" };
+        const labels = {
+          correct: "správne písmeno na správnom mieste",
+          present: "správne písmeno na inom mieste",
+          absent: "písmeno sa v slove nenachádza"
+        };
+
+        const els = {
+          settingsPanel: root.querySelector("#us-settings-panel"),
+          secret: root.querySelector("#us-secret-word"),
+          toggleSecret: root.querySelector("#us-toggle-secret"),
+          length: root.querySelector("#us-word-length"),
+          attempts: root.querySelector("#us-attempts"),
+          hideSettings: root.querySelector("#us-hide-settings"),
+          start: root.querySelector("#us-start"),
+          newGame: root.querySelector("#us-new-game"),
+          newGamePlay: root.querySelector("#us-new-game-play"),
+          reset: root.querySelector("#us-reset"),
+          error: root.querySelector("#us-settings-error"),
+          readyPill: root.querySelector("#us-ready-pill"),
+          lengthStatus: root.querySelector("#us-length-status"),
+          attemptStatus: root.querySelector("#us-attempt-status"),
+          message: root.querySelector("#us-message"),
+          board: root.querySelector("#us-board"),
+          keyboard: root.querySelector("#us-keyboard"),
+          live: root.querySelector("#us-live")
+        };
+
+        let state = {
+          settings: { ...defaultSettings },
+          secret: "",
+          row: 0,
+          col: 0,
+          guesses: [],
+          gameActive: false,
+          inputLocked: false,
+          keyStates: {}
+        };
+
+        function normalizeWord(value) {
+          return value
+            .trim()
+            .toLocaleUpperCase("sk-SK")
+            .replace(/[^AÁÄBCČDĎEÉFGHIÍJKLĹĽMNŇOÓÔPQRŔSŠTŤUÚVWXYÝZŽ]/g, "");
+        }
+
+        function loadSettings() {
+          try {
+            const saved = JSON.parse(localStorage.getItem(storageKey));
+            if (!saved || typeof saved !== "object") return { ...defaultSettings };
+            return {
+              secret: normalizeWord(saved.secret || defaultSettings.secret) || defaultSettings.secret,
+              length: clampNumber(saved.length, 3, 10, defaultSettings.length),
+              attempts: clampNumber(saved.attempts, 3, 10, defaultSettings.attempts),
+              hideSettings: Boolean(saved.hideSettings)
+            };
+          } catch (error) {
+            return { ...defaultSettings };
+          }
+        }
+
+        function saveSettings() {
+          try {
+            localStorage.setItem(storageKey, JSON.stringify(state.settings));
+          } catch (error) {
+            showError("Nastavenia sa nepodarilo uložiť. Hra však môže pokračovať.");
+          }
+        }
+
+        function clampNumber(value, min, max, fallback) {
+          const number = Number(value);
+          if (!Number.isFinite(number)) return fallback;
+          return Math.min(max, Math.max(min, Math.round(number)));
+        }
+
+        function fillSelects() {
+          for (let i = 3; i <= 10; i += 1) {
+            const option = document.createElement("option");
+            option.value = String(i);
+            option.textContent = `${i} písmen`;
+            els.length.appendChild(option);
+          }
+          for (let i = 3; i <= 10; i += 1) {
+            const option = document.createElement("option");
+            option.value = String(i);
+            option.textContent = `${i} pokusov`;
+            els.attempts.appendChild(option);
+          }
+        }
+
+        function syncSettingsToInputs() {
+          els.secret.value = state.settings.secret;
+          els.length.value = String(state.settings.length);
+          els.attempts.value = String(state.settings.attempts);
+          els.hideSettings.checked = state.settings.hideSettings;
+          updateSecretVisibility();
+        }
+
+        function readInputsToSettings() {
+          state.settings.secret = normalizeWord(els.secret.value);
+          state.settings.length = clampNumber(els.length.value, 3, 10, defaultSettings.length);
+          state.settings.attempts = clampNumber(els.attempts.value, 3, 10, defaultSettings.attempts);
+          state.settings.hideSettings = els.hideSettings.checked;
+        }
+
+        function validateSettings() {
+          const word = normalizeWord(els.secret.value);
+          const requestedLength = clampNumber(els.length.value, 3, 10, defaultSettings.length);
+          if (word.length < 3 || word.length > 10) {
+            return "Tajné slovo musí mať 3 až 10 písmen.";
+          }
+          if (word.length !== requestedLength) {
+            return `Dĺžka slova je ${word.length}, ale v nastavení je zvolených ${requestedLength}.`;
+          }
+          if (![...word].every((letter) => alphabet.includes(letter))) {
+            return "Použi iba slovenské písmená bez medzier, číslic a znamienok.";
+          }
+          return "";
+        }
+
+        function showError(text) {
+          els.error.textContent = text;
+          els.error.classList.toggle("us-visible", Boolean(text));
+        }
+
+        function setMessage(text, kind = "") {
+          els.message.textContent = text;
+          els.message.className = `us-message${kind ? ` us-${kind}` : ""}`;
+          els.live.textContent = text;
+        }
+
+        function updateSecretVisibility() {
+          const hidden = els.secret.type === "password";
+          els.toggleSecret.textContent = hidden ? "Zobraziť" : "Skryť";
+          els.toggleSecret.setAttribute("aria-pressed", hidden ? "true" : "false");
+        }
+
+        function buildBoard() {
+          els.board.innerHTML = "";
+          els.board.style.gridTemplateRows = `repeat(${state.settings.attempts}, auto)`;
+          for (let row = 0; row < state.settings.attempts; row += 1) {
+            const rowEl = document.createElement("div");
+            rowEl.className = "us-row";
+            rowEl.style.gridTemplateColumns = `repeat(${state.settings.length}, minmax(0, 1fr))`;
+            rowEl.setAttribute("role", "group");
+            rowEl.setAttribute("aria-label", `Pokus ${row + 1}`);
+            for (let col = 0; col < state.settings.length; col += 1) {
+              const tile = document.createElement("div");
+              tile.className = "us-tile";
+              tile.dataset.row = String(row);
+              tile.dataset.col = String(col);
+              tile.setAttribute("aria-label", `Prázdne políčko ${col + 1} v pokuse ${row + 1}`);
+              rowEl.appendChild(tile);
+            }
+            els.board.appendChild(rowEl);
+          }
+        }
+
+        function buildKeyboard() {
+          els.keyboard.innerHTML = "";
+          keyboardRows.forEach((letters) => {
+            const row = document.createElement("div");
+            row.className = "us-key-row";
+            letters.forEach((letter) => {
+              const button = document.createElement("button");
+              button.type = "button";
+              button.className = `us-key${letter.length > 1 ? " us-key-wide" : ""}`;
+              button.dataset.key = letter;
+              button.textContent = letter === "DEL" ? "Zmazať" : letter === "ENTER" ? "Odoslať" : letter;
+              button.setAttribute("aria-label", button.textContent);
+              button.addEventListener("click", () => handleKey(letter));
+              row.appendChild(button);
+            });
+            els.keyboard.appendChild(row);
+          });
+        }
+
+        function getTile(row, col) {
+          return els.board.querySelector(`[data-row="${row}"][data-col="${col}"]`);
+        }
+
+        function updateStatuses() {
+          const currentGuess = state.guesses[state.row] || [];
+          const finishedCurrent = currentGuess.filter(Boolean).length === state.settings.length;
+          const completedAttempts = Math.min(state.settings.attempts, state.row + (finishedCurrent ? 1 : 0));
+          els.lengthStatus.textContent = `Slovo: ${state.settings.length} písmen`;
+          els.attemptStatus.textContent = `Pokusy: ${completedAttempts} / ${state.settings.attempts}`;
+          els.readyPill.textContent = state.gameActive ? "Hra je spustená" : "Pripravené pre triedu";
+        }
+
+        function startGame() {
+          if (state.inputLocked) return;
+          readInputsToSettings();
+          const validationMessage = validateSettings();
+          if (validationMessage) {
+            showError(validationMessage);
+            setMessage("Skontroluj nastavenia a potom spusti hru.", "note");
+            return;
+          }
+          showError("");
+          saveSettings();
+          state.secret = state.settings.secret;
+          state.row = 0;
+          state.col = 0;
+          state.guesses = Array.from({ length: state.settings.attempts }, () => []);
+          state.gameActive = true;
+          state.inputLocked = false;
+          state.keyStates = {};
+          buildBoard();
+          updateKeyboardStates();
+          updateStatuses();
+          setMessage(`Hra začala. Zadaj slovo s dĺžkou ${state.settings.length} písmen.`, "");
+          els.settingsPanel.classList.toggle("us-hidden-for-play", state.settings.hideSettings);
+        }
+
+        function resetDefaults() {
+          state.settings = { ...defaultSettings };
+          state.secret = "";
+          state.row = 0;
+          state.col = 0;
+          state.guesses = [];
+          state.gameActive = false;
+          state.inputLocked = false;
+          state.keyStates = {};
+          try {
+            localStorage.removeItem(storageKey);
+          } catch (error) {
+            showError("Uložené nastavenia sa nepodarilo vymazať.");
+          }
+          syncSettingsToInputs();
+          buildBoard();
+          updateKeyboardStates();
+          updateStatuses();
+          els.settingsPanel.classList.remove("us-hidden-for-play");
+          setMessage("Pôvodné nastavenia sú obnovené. Môžeš spustiť novú hru.", "note");
+        }
+
+        function handleKey(rawKey) {
+          if (!state.gameActive || state.inputLocked) return;
+          const key = normalizePhysicalKey(rawKey);
+          if (key === "ENTER") {
+            submitGuess();
+            return;
+          }
+          if (key === "DEL" || key === "BACKSPACE") {
+            removeLetter();
+            return;
+          }
+          if (key.length === 1 && alphabet.includes(key)) {
+            addLetter(key);
+          }
+        }
+
+        function normalizePhysicalKey(rawKey) {
+          if (rawKey === "Backspace") return "BACKSPACE";
+          if (rawKey === "Enter") return "ENTER";
+          if (rawKey === "DEL") return "DEL";
+          return normalizeWord(String(rawKey)).slice(0, 1);
+        }
+
+        function addLetter(letter) {
+          if (state.col >= state.settings.length) return;
+          state.guesses[state.row][state.col] = letter;
+          const tile = getTile(state.row, state.col);
+          tile.textContent = letter;
+          tile.classList.add("us-filled");
+          tile.setAttribute("aria-label", `Písmeno ${letter}, pozícia ${state.col + 1}`);
+          state.col += 1;
+        }
+
+        function removeLetter() {
+          if (state.col <= 0) return;
+          state.col -= 1;
+          state.guesses[state.row][state.col] = "";
+          const tile = getTile(state.row, state.col);
+          tile.textContent = "";
+          tile.className = "us-tile";
+          tile.setAttribute("aria-label", `Prázdne políčko ${state.col + 1} v pokuse ${state.row + 1}`);
+        }
+
+        function submitGuess() {
+          if (state.col < state.settings.length) {
+            setMessage(`Doplň ešte ${state.settings.length - state.col} písmeno/písmená.`, "note");
+            return;
+          }
+
+          const guess = state.guesses[state.row].join("");
+          const result = evaluateGuess(guess, state.secret);
+          state.inputLocked = true;
+          revealResult(result, () => {
+            updateKeyStates(guess, result);
+            updateKeyboardStates();
+            if (guess === state.secret) {
+              state.gameActive = false;
+              setMessage(`Výborne! Tajné slovo bolo uhádnuté na ${state.row + 1}. pokus.`, "success");
+            } else if (state.row + 1 >= state.settings.attempts) {
+              state.gameActive = false;
+              setMessage("Tentoraz to nevyšlo. Učiteľ môže slovo prezradiť alebo spustiť novú hru.", "fail");
+            } else {
+              state.row += 1;
+              state.col = 0;
+              setMessage("Skús ďalší pokus. Sleduj značky v políčkach.", "");
+            }
+            state.inputLocked = false;
+            updateStatuses();
+          });
+        }
+
+        function evaluateGuess(guess, secret) {
+          const guessLetters = [...guess];
+          const secretLetters = [...secret];
+          const result = Array.from({ length: guessLetters.length }, () => "absent");
+          const remaining = new Map();
+
+          guessLetters.forEach((letter, index) => {
+            if (letter === secretLetters[index]) {
+              result[index] = "correct";
+            } else {
+              remaining.set(secretLetters[index], (remaining.get(secretLetters[index]) || 0) + 1);
+            }
+          });
+
+          guessLetters.forEach((letter, index) => {
+            if (result[index] === "correct") return;
+            const count = remaining.get(letter) || 0;
+            if (count > 0) {
+              result[index] = "present";
+              remaining.set(letter, count - 1);
+            }
+          });
+
+          return result;
+        }
+
+        function revealResult(result, done) {
+          let completed = 0;
+          result.forEach((status, index) => {
+            const tile = getTile(state.row, index);
+            window.setTimeout(() => {
+              tile.classList.add("us-revealing");
+              window.setTimeout(() => {
+                tile.classList.add(`us-${status}`);
+                const symbol = document.createElement("span");
+                symbol.className = "us-tile-symbol";
+                symbol.textContent = symbols[status];
+                symbol.setAttribute("aria-hidden", "true");
+                tile.appendChild(symbol);
+                tile.setAttribute("aria-label", `${tile.firstChild.textContent}: ${labels[status]}`);
+                completed += 1;
+                if (completed === result.length) done();
+              }, 245);
+            }, index * 170);
+          });
+        }
+
+        function updateKeyStates(guess, result) {
+          [...guess].forEach((letter, index) => {
+            const status = result[index];
+            const current = state.keyStates[letter];
+            if (!current || rank[status] > rank[current]) {
+              state.keyStates[letter] = status;
+            }
+          });
+        }
+
+        function updateKeyboardStates() {
+          els.keyboard.querySelectorAll(".us-key").forEach((button) => {
+            const key = button.dataset.key;
+            button.classList.remove("us-correct", "us-present", "us-absent");
+            const status = state.keyStates[key];
+            if (status) {
+              button.classList.add(`us-${status}`);
+              button.innerHTML = `${key}<span aria-hidden="true">${symbols[status]}</span>`;
+              button.setAttribute("aria-label", `${key}: ${labels[status]}`);
+            } else if (key === "ENTER") {
+              button.textContent = "Odoslať";
+              button.setAttribute("aria-label", "Odoslať pokus");
+            } else if (key === "DEL") {
+              button.textContent = "Zmazať";
+              button.setAttribute("aria-label", "Zmazať písmeno");
+            } else {
+              button.textContent = key;
+              button.setAttribute("aria-label", `Písmeno ${key}`);
+            }
+          });
+        }
+
+        function bindEvents() {
+          els.secret.addEventListener("input", () => {
+            const normalized = normalizeWord(els.secret.value);
+            if (els.secret.value !== normalized) els.secret.value = normalized;
+            els.length.value = String(clampNumber(normalized.length || els.length.value, 3, 10, defaultSettings.length));
+            readInputsToSettings();
+            saveSettings();
+            updateStatuses();
+          });
+
+          els.length.addEventListener("change", () => {
+            readInputsToSettings();
+            saveSettings();
+            updateStatuses();
+          });
+
+          els.attempts.addEventListener("change", () => {
+            readInputsToSettings();
+            saveSettings();
+            if (!state.gameActive) buildBoard();
+            updateStatuses();
+          });
+
+          els.hideSettings.addEventListener("change", () => {
+            readInputsToSettings();
+            saveSettings();
+          });
+
+          els.toggleSecret.addEventListener("click", () => {
+            els.secret.type = els.secret.type === "password" ? "text" : "password";
+            updateSecretVisibility();
+          });
+
+          els.start.addEventListener("click", startGame);
+          els.newGame.addEventListener("click", startGame);
+          els.newGamePlay.addEventListener("click", startGame);
+          els.reset.addEventListener("click", resetDefaults);
+
+          document.addEventListener("keydown", (event) => {
+            const active = document.activeElement;
+            const isTypingInSettings = active === els.secret || active === els.length || active === els.attempts;
+            if (isTypingInSettings) return;
+            const accepted = event.key === "Enter" || event.key === "Backspace" || normalizeWord(event.key).length === 1;
+            if (!accepted) return;
+            event.preventDefault();
+            handleKey(event.key);
+          });
+        }
+
+        function init() {
+          state.settings = loadSettings();
+          fillSelects();
+          syncSettingsToInputs();
+          buildBoard();
+          buildKeyboard();
+          updateKeyboardStates();
+          updateStatuses();
+          bindEvents();
+          setMessage("Zadaj alebo ponechaj ukážkové slovo a stlač „Spustiť hru“.", "");
+          els.secret.type = state.settings.hideSettings ? "password" : "text";
+          updateSecretVisibility();
+        }
+
+        init();
+      })();
+    </script>
+  </body>
+</html>
