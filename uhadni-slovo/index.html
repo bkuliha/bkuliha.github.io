@@ -33,7 +33,8 @@
 
       #us-app button,
       #us-app input,
-      #us-app select {
+      #us-app select,
+      #us-app textarea {
         font: inherit;
       }
 
@@ -155,6 +156,7 @@
       }
 
       #us-app .us-input,
+      #us-app .us-textarea,
       #us-app .us-select {
         width: 100%;
         min-height: 48px;
@@ -169,6 +171,11 @@
       #us-app .us-input:disabled {
         background: #eef2f7;
         color: #5d6978;
+      }
+
+      #us-app .us-textarea {
+        min-height: 86px;
+        resize: vertical;
       }
 
       #us-app .us-check {
@@ -373,6 +380,45 @@
       #us-app .us-message.us-note {
         background: var(--us-gold);
         color: #62450b;
+      }
+
+      #us-app .us-topic-card {
+        display: grid;
+        gap: 8px;
+        margin: 0 0 16px;
+        padding: 14px 16px;
+        border: 2px solid rgba(33, 102, 209, 0.16);
+        border-radius: 18px;
+        background: linear-gradient(135deg, #ffffff 0%, #e9fbff 100%);
+      }
+
+      #us-app .us-topic-label {
+        color: var(--us-primary-dark);
+        font-size: 0.92rem;
+        font-weight: 900;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+      }
+
+      #us-app .us-topic-text {
+        margin: 0;
+        color: #1d2d3d;
+        font-size: clamp(1.08rem, 2vw, 1.35rem);
+        font-weight: 900;
+      }
+
+      #us-app .us-hint-text {
+        margin: 0;
+        color: #385064;
+        font-weight: 700;
+      }
+
+      #us-app .us-play-actions {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+        margin: -4px 0 18px;
       }
 
       #us-app .us-legend {
@@ -582,6 +628,18 @@
             </div>
 
             <div class="us-field">
+              <label class="us-label" for="us-topic">Téma pre žiakov</label>
+              <input class="us-input" id="us-topic" type="text" autocomplete="off" maxlength="80" />
+              <div class="us-help">Napríklad: škola, príroda, vybrané slová, rozprávky.</div>
+            </div>
+
+            <div class="us-field">
+              <label class="us-label" for="us-hint">Nápoveda pre žiakov</label>
+              <textarea class="us-textarea" id="us-hint" maxlength="180"></textarea>
+              <div class="us-help">Neuvádzaj tajné slovo, iba smer, z ktorého majú žiaci čerpať.</div>
+            </div>
+
+            <div class="us-field">
               <label class="us-label" for="us-word-length">Dĺžka slova</label>
               <select class="us-select" id="us-word-length"></select>
             </div>
@@ -621,6 +679,12 @@
               Zadaj slovo v nastaveniach a stlač „Spustiť hru“.
             </div>
 
+            <div class="us-topic-card" aria-live="polite">
+              <div class="us-topic-label">Téma</div>
+              <p class="us-topic-text" id="us-topic-display">Zatiaľ nezadaná</p>
+              <p class="us-hint-text" id="us-hint-display">Po spustení hry sa tu zobrazí nápoveda pre žiakov.</p>
+            </div>
+
             <div class="us-legend" aria-label="Vysvetlivky hodnotenia písmen">
               <div class="us-legend-item"><span class="us-mark us-mark-correct">✓</span> správne miesto</div>
               <div class="us-legend-item"><span class="us-mark us-mark-present">↔</span> iné miesto</div>
@@ -629,6 +693,11 @@
 
             <div class="us-board-wrap">
               <div class="us-board" id="us-board" aria-label="Hracia mriežka"></div>
+            </div>
+
+            <div class="us-play-actions">
+              <button class="us-button us-button-primary" id="us-submit-guess" type="button">Vyhodnotiť pokus</button>
+              <button class="us-button" id="us-delete-letter" type="button">Zmazať písmeno</button>
             </div>
 
             <div class="us-keyboard" id="us-keyboard" aria-label="Slovenská virtuálna klávesnica"></div>
@@ -654,6 +723,8 @@
         ];
         const defaultSettings = {
           secret: "ŠKOLA",
+          topic: "Škola a školské pomôcky",
+          hint: "Hľadajte slovo, ktoré poznáte z triedy alebo zo školského dňa.",
           length: 5,
           attempts: 6,
           hideSettings: true
@@ -669,6 +740,8 @@
         const els = {
           settingsPanel: root.querySelector("#us-settings-panel"),
           secret: root.querySelector("#us-secret-word"),
+          topic: root.querySelector("#us-topic"),
+          hint: root.querySelector("#us-hint"),
           toggleSecret: root.querySelector("#us-toggle-secret"),
           length: root.querySelector("#us-word-length"),
           attempts: root.querySelector("#us-attempts"),
@@ -682,6 +755,10 @@
           lengthStatus: root.querySelector("#us-length-status"),
           attemptStatus: root.querySelector("#us-attempt-status"),
           message: root.querySelector("#us-message"),
+          topicDisplay: root.querySelector("#us-topic-display"),
+          hintDisplay: root.querySelector("#us-hint-display"),
+          submitGuess: root.querySelector("#us-submit-guess"),
+          deleteLetter: root.querySelector("#us-delete-letter"),
           board: root.querySelector("#us-board"),
           keyboard: root.querySelector("#us-keyboard"),
           live: root.querySelector("#us-live")
@@ -711,6 +788,8 @@
             if (!saved || typeof saved !== "object") return { ...defaultSettings };
             return {
               secret: normalizeWord(saved.secret || defaultSettings.secret) || defaultSettings.secret,
+              topic: cleanText(saved.topic || defaultSettings.topic, 80) || defaultSettings.topic,
+              hint: cleanText(saved.hint || defaultSettings.hint, 180) || defaultSettings.hint,
               length: clampNumber(saved.length, 3, 10, defaultSettings.length),
               attempts: clampNumber(saved.attempts, 3, 10, defaultSettings.attempts),
               hideSettings: Boolean(saved.hideSettings)
@@ -726,6 +805,14 @@
           } catch (error) {
             showError("Nastavenia sa nepodarilo uložiť. Hra však môže pokračovať.");
           }
+        }
+
+        function cleanText(value, maxLength) {
+          return String(value || "")
+            .replace(/[<>]/g, "")
+            .replace(/\s+/g, " ")
+            .trim()
+            .slice(0, maxLength);
         }
 
         function clampNumber(value, min, max, fallback) {
@@ -751,6 +838,8 @@
 
         function syncSettingsToInputs() {
           els.secret.value = state.settings.secret;
+          els.topic.value = state.settings.topic;
+          els.hint.value = state.settings.hint;
           els.length.value = String(state.settings.length);
           els.attempts.value = String(state.settings.attempts);
           els.hideSettings.checked = state.settings.hideSettings;
@@ -759,6 +848,8 @@
 
         function readInputsToSettings() {
           state.settings.secret = normalizeWord(els.secret.value);
+          state.settings.topic = cleanText(els.topic.value, 80);
+          state.settings.hint = cleanText(els.hint.value, 180);
           state.settings.length = clampNumber(els.length.value, 3, 10, defaultSettings.length);
           state.settings.attempts = clampNumber(els.attempts.value, 3, 10, defaultSettings.attempts);
           state.settings.hideSettings = els.hideSettings.checked;
@@ -849,6 +940,13 @@
           els.readyPill.textContent = state.gameActive ? "Hra je spustená" : "Pripravené pre triedu";
         }
 
+        function updateStudentHint() {
+          const topic = cleanText(state.settings.topic, 80) || "Téma nie je zadaná";
+          const hint = cleanText(state.settings.hint, 180) || "Učiteľ môže doplniť nápovedu v nastaveniach.";
+          els.topicDisplay.textContent = topic;
+          els.hintDisplay.textContent = hint;
+        }
+
         function startGame() {
           if (state.inputLocked) return;
           readInputsToSettings();
@@ -870,7 +968,8 @@
           buildBoard();
           updateKeyboardStates();
           updateStatuses();
-          setMessage(`Hra začala. Zadaj slovo s dĺžkou ${state.settings.length} písmen.`, "");
+          updateStudentHint();
+          setMessage(`Hra začala. Zadaj slovo s dĺžkou ${state.settings.length} písmen a potom stlač „Vyhodnotiť pokus“.`, "");
           els.settingsPanel.classList.toggle("us-hidden-for-play", state.settings.hideSettings);
         }
 
@@ -892,6 +991,7 @@
           buildBoard();
           updateKeyboardStates();
           updateStatuses();
+          updateStudentHint();
           els.settingsPanel.classList.remove("us-hidden-for-play");
           setMessage("Pôvodné nastavenia sú obnovené. Môžeš spustiť novú hru.", "note");
         }
@@ -1047,6 +1147,14 @@
         }
 
         function bindEvents() {
+          [els.topic, els.hint].forEach((field) => {
+            field.addEventListener("input", () => {
+              readInputsToSettings();
+              saveSettings();
+              updateStudentHint();
+            });
+          });
+
           els.secret.addEventListener("input", () => {
             const normalized = normalizeWord(els.secret.value);
             if (els.secret.value !== normalized) els.secret.value = normalized;
@@ -1082,6 +1190,8 @@
           els.start.addEventListener("click", startGame);
           els.newGame.addEventListener("click", startGame);
           els.newGamePlay.addEventListener("click", startGame);
+          els.submitGuess.addEventListener("click", submitGuess);
+          els.deleteLetter.addEventListener("click", removeLetter);
           els.reset.addEventListener("click", resetDefaults);
 
           document.addEventListener("keydown", (event) => {
@@ -1103,6 +1213,7 @@
           buildKeyboard();
           updateKeyboardStates();
           updateStatuses();
+          updateStudentHint();
           bindEvents();
           setMessage("Zadaj alebo ponechaj ukážkové slovo a stlač „Spustiť hru“.", "");
           els.secret.type = state.settings.hideSettings ? "password" : "text";
