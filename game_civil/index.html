@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="sk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#245c48">
+  <meta name="description" content="Interaktívna hra o civilnej ochrane, prvej pomoci, orientácii a prírode pre 1. až 9. ročník základnej školy.">
+  <title>Pripravení pre život — vedomosti, ktoré pomáhajú</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script src="questions.js" defer></script>
+  <script src="engine.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Preskočiť na obsah</a>
+  <header class="site-header">
+    <a class="brand" href="#" id="brand" aria-label="Pripravení pre život – úvod"><span class="brand-mark" aria-hidden="true">↗</span><span>pripravení<span class="brand-sub">PRE ŽIVOT</span></span></a>
+    <nav aria-label="Hlavná navigácia"><button class="nav-link" id="topics-link">Čo sa naučíš</button><button class="nav-link" data-modal="about">Ako to funguje</button><button class="nav-pill" data-modal="sources"><span aria-hidden="true">▤</span> Pre učiteľov</button></nav>
+  </header>
+  <main id="main">
+    <section id="home-view">
+      <div class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow"><span class="live-dot"></span> MALÉ ROZHODNUTIA. VEĽKÝ ROZDIEL.</p>
+          <h1>Vedieť sa zorientovať.<br>Dokázať pomôcť.<br><em>Byť pripravený.</em></h1>
+          <p class="hero-description">Čo urobíš, keď na tom záleží? Preskúmaj svet civilnej ochrany, prvej pomoci a prírody v kvíze, ktorý ťa pripraví na skutočný život.</p>
+          <a class="primary-button hero-cta" href="#choose-grade">Poďme na to <span aria-hidden="true">↗</span></a>
+          <div class="hero-footnote"><span class="mini-check">✓</span> Pre 1. až 9. ročník ZŠ <span class="dot-separator">·</span> Bez časového stresu</div>
+        </div>
+        <div class="hero-art" aria-label="Ilustrácie záchranárov, prvej pomoci, kompasu a ochrany prírody">
+          <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="art-cross cross-one">+</div><div class="art-cross cross-two">+</div>
+          <div class="art-note"><span class="note-dot"></span> Zručnosti pre skutočný svet</div>
+          <div class="art-tile tile-aid"><span class="tile-label">01 / POMÁHAJ</span><div data-art="aid"></div><span class="art-badge">Prvá pomoc <span>↗</span></span></div>
+          <div class="art-tile tile-compass"><span class="tile-label">02 / OBJAVUJ</span><div data-art="compass"></div></div>
+          <div class="art-tile tile-nature"><div data-art="nature"></div><span class="tile-label">03 / CHRÁŇ</span></div>
+          <div class="art-tile tile-rescue"><div data-art="rescue"></div><span class="art-badge">Spolu to zvládneme <span>✓</span></span></div>
+          <div class="art-caption"><span>✦</span> Pripravenosť začína zvedavosťou.</div>
+        </div>
+      </div>
+      <section class="mission-strip" aria-label="O hre"><div><strong>9</strong><span>ročníkov<br>od prvákov po deviatakov</span></div><div><strong>4</strong><span>oblasti<br>užitočné každý deň</span></div><div><strong>12</strong><span>otázok v jednej výzve<br>vždy nový výber</span></div><div><strong>360</strong><span>otázok na objavovanie<br>40 pre každý ročník</span></div></section>
+      <section class="choose-section" id="choose-grade" aria-labelledby="choose-heading">
+        <div class="section-heading"><div><p class="eyebrow">TVOJA VÝZVA ZAČÍNA TU</p><h2 id="choose-heading">Vyber si svoj ročník.</h2></div><p>Otázky rastú spolu s tebou.<br>Vyber si úroveň a otestuj svoje rozhodnutia.</p></div>
+        <div class="grade-layout"><div class="grade-picker"><div class="school-levels"><span>1. stupeň <small>1. – 4. ročník</small></span><span>2. stupeň <small>5. – 9. ročník</small></span></div><div class="grade-buttons" role="group" aria-label="Výber ročníka" id="grade-buttons"></div><div class="grade-detail" aria-live="polite"><div><span class="detail-label" id="grade-label"></span><h3 id="grade-title"></h3><p id="grade-description"></p></div><span class="grade-seal" id="grade-seal" aria-hidden="true"></span></div></div>
+        <aside class="start-card"><div class="start-card-top"><span class="eyebrow">TVOJA MISIA</span><span class="small-shield">✓</span></div><h3>Vedomosti, ktoré<br>sa ti raz zídu.</h3><ul><li><span>✓</span> 12 otázok zo štyroch oblastí</li><li><span>✓</span> Vysvetlenie po každej odpovedi</li><li><span>✓</span> Nové otázky pri ďalšom hraní</li></ul><button class="primary-button" id="start-button">Spustiť výzvu <span aria-hidden="true">→</span></button><p class="start-caption" id="start-caption">5. ročník · približne 5 – 8 minút</p><p class="best-score" id="best-score"></p></aside></div>
+      </section>
+      <section class="topics-section" id="topics" aria-labelledby="topics-heading"><div class="section-heading"><div><p class="eyebrow">ŠTYRI OBLASTI. JEDEN SPOLOČNÝ CIEĽ.</p><h2 id="topics-heading">Pripraviť sa na život.</h2></div><p>Od správneho smeru po pomoc druhým.</p></div><div class="topic-grid" id="topic-grid"></div></section>
+      <div class="bottom-note"><span class="note-symbol">↗</span><p><strong>Nemusíš vedieť všetko. Stačí začať.</strong><br>Každá otázka je príležitosť naučiť sa niečo užitočné.</p><a href="#choose-grade">Prijať výzvu <span aria-hidden="true">→</span></a></div>
+    </section>
+    <section id="quiz-view" hidden aria-labelledby="question-heading"></section>
+    <section id="results-view" hidden aria-labelledby="results-heading"></section>
+  </main>
+  <footer class="site-footer"><span>pripravení <b>PRE ŽIVOT</b></span><p>Uč sa. Rozhoduj sa. Pomáhaj.</p><button class="nav-link" data-modal="sources">Zdroje a vzdelávacie okruhy ↗</button></footer>
+  <dialog id="info-dialog" aria-labelledby="dialog-title"><div class="dialog-top"><span class="eyebrow">PRIPRAVENÍ PRE ŽIVOT</span><button class="icon-button" id="close-dialog" aria-label="Zavrieť okno">×</button></div><div id="dialog-content"></div></dialog>
+  <noscript><p class="noscript">Na spustenie kvízu povoľ JavaScript v prehliadači.</p></noscript>
+</body>
+</html>
